@@ -14,7 +14,7 @@
 
   <ResponsiveNav v-bind:hideNav="hideNav">
     <button v-on:click="switchLanguage">
-      {{ uiLabels.changeLanguage }}
+      <img> src = {{ uiLabels.flag }} </img>
     </button>
     <router-link to="/create/">
       {{ uiLabels.createPoll }}
@@ -24,7 +24,7 @@
       {{ uiLabels.about }}
     </a>
     
-    <a href="">Rules</a>
+    <a href="">{{ uiLabels.rules }}</a>
   </ResponsiveNav>
 
   <h1>{{ uiLabels["sales-pitch"] }}</h1>
