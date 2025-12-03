@@ -3,12 +3,15 @@
     <div v-bind:class="['hamburger', {'close': !hideNav}]" 
          v-on:click="toggleNav">
     </div>
+
     <div class="logo">
       <img src="/img/logo.png">
-      Polly polling tool 
+      {{ uiLabels.siteName }}
       <img src="../assets/logo.svg">
     </div>
+
   </header>
+
   <ResponsiveNav v-bind:hideNav="hideNav">
     <button v-on:click="switchLanguage">
       {{ uiLabels.changeLanguage }}
@@ -16,11 +19,14 @@
     <router-link to="/create/">
       {{ uiLabels.createPoll }}
     </router-link>
+
     <a href="">
       {{ uiLabels.about }}
     </a>
-    <a href="">FAQ</a>
+    
+    <a href="">Rules</a>
   </ResponsiveNav>
+
   <h1>{{ uiLabels["sales-pitch"] }}</h1>
   <h2>{{ uiLabels.subHeading }}</h2>
   <label>
