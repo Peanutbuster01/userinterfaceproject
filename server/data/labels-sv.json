@@ -1,11 +1,5 @@
 {
-	"sales-pitch": "Svar. Helt. Enkelt.",
-	"subHeading": "Ett enkelt enkätverktyg",
-	"invite": "Bjud in deltagare med den här länken:",
-	"createPoll": "Skapa röstning",
-	"participatePoll": "Delta i röstning",
-	"question": "Fråga",
-	"changeLanguage": "Change to English",
-	"about": "Om oss",
-	"participateInPoll": "Delta i enkäten"
+	"siteName": "Mattekriget",
+	"rules": "Spelregler",
+	"flag": "../public/img/eng.png"
 }
