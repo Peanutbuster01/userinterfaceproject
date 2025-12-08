@@ -17,11 +17,18 @@
 
 
 
-    <button popovertarget="ruleSquare">
+    <button @click="showRulesBoolean = !showRulesBoolean">
       {{ uiLabels.rules }}
     </button>
 
   </ResponsiveNav>
+
+  <div class="ruleSquare" v-if="showRulesBoolean">
+
+    {{ uiLabels.ruleBody }}
+
+  </div>
+
 
   <div id="createJoin">
     <button>
@@ -43,11 +50,7 @@
   </div>
 
 
-  <div id="ruleSquare" popover="">
 
-    {{ uiLabels.ruleBody }}
-
-  </div>
 
 
 
@@ -90,12 +93,7 @@ export default {
     toggleNav: function () {
       this.hideNav = !this.hideNav;
     },
-    showRules: function () {
-      if (!this.showRulesBoolean) {
-        ruleSquare.style.display = 'none';
-      }
-      this.showRulesBoolean = !this.showRulesBoolean
-    },
+
   }
 }
 
@@ -157,7 +155,7 @@ header {
   }
 }
 
-#ruleSquare {
+.ruleSquare {
   margin: 10% auto;
   color: blue;
   width: 50rem;
