@@ -6,12 +6,16 @@
     </div>
 </template>
 <script>
+    import io from 'socket.io-client';
+    const socket = io("localhost:3000");
+
     export default{
         data: function(){
-
+            uiLabels: {},
+            lang: localStorage.getItem("lang") || "en"
         },
         created: function(){
-
+            socket.emit( "getUILabels", this.lang );
         },
         methods: function(){
 
