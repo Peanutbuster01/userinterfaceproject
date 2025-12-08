@@ -2,6 +2,6 @@
 	"siteName": "The War of Math",
 	"rules": "Rules",
 	"flag": "../img/swe.png",
-	"ruleBody": "Gamerules - the math battle!\nGoal:\nThe goal of the game is to eliminate all of your opponent's players.\nA math problem will appear on the screen.\nThe first player to answer correctly gets to take a shot at the opponent's players — so be quick! 😀\nThe player who eliminates all of the opponent's players first wins.\nStart by:\nPlace your three players strategically on your game board.\nPress start and wait for your opponent to be ready.\nMay the best mathematician win!",
+	"ruleBody": "Gamerules - the math battle!\n\nGoal:\nThe goal of the game is to eliminate all of your opponent's players.\nA math problem will appear on the screen.\nThe first player to answer correctly gets to take a shot at the opponent's players — so be quick! 😀\nThe player who eliminates all of the opponent's players first wins.\n\nStart by:\nPlace your three players strategically on your game board.\nPress start and wait for your opponent to be ready.\nMay the best mathematician win!",
 	"close": "Close"
 }
