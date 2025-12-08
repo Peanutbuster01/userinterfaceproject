@@ -26,11 +26,10 @@
         }
     }
 </script>
-<style>
+<style scoped>
 header {
   background-color: gray;
   width: 100%;
-  display: grid;
   grid-template-columns: 2em auto;
 }
 .logo {
@@ -39,6 +38,6 @@ header {
   font-size: 2.5rem;
   color: white; 
   padding-top: 0.2em;
-  grid
 }
+
 </style>
