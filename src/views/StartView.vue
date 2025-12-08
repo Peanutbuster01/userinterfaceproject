@@ -2,7 +2,6 @@
   <header>
     <div v-bind:class="['hamburger', { 'close': !hideNav }]" v-on:click="toggleNav">
     </div>
-
     <div class="logo">
       <img src="/img/logo.png">
       {{ uiLabels.siteName }}
