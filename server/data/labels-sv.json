@@ -3,5 +3,6 @@
 	"rules": "Spelregler",
 	"flag": "../img/eng.png",
 	"ruleBody": "Spelregler - mattekriget!\n\nMål:\nSpelet går ut på att sänka din motståndares spelare\nEtt matteproblem kommer att presenteras\nDen som först svarar rätt får ett skott mot motståndarens spelare - så se till att vara snabb! 😀\nDen som först slagit ut alla motståndarens spelare vinner\n\nStarta genom att:\nPlacera dina tre spelare taktiskt på din spelplan\nTryck sedan start och vänta på att motståndaren är redo\nMå den bäste matematikern vinna!",
-	"close": "Stäng"
+	"close": "Stäng",
+	"create": "Skapa Lobby"
 }

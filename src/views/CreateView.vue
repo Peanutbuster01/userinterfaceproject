@@ -1,9 +1,10 @@
 <template>
+    <title>{{uiLabels.create}}</title>
+    <header>
     <div class="logo">
-      <img src="/img/logo.png">
       {{ uiLabels.siteName }}
-      <img src="../assets/logo.svg">
     </div>
+    </header>   
 </template>
 <script>
     import io from 'socket.io-client';
@@ -11,10 +12,13 @@
 
     export default{
         data: function(){
+            return{
             uiLabels: {},
-            lang: localStorage.getItem("lang") || "en"
+            lang: localStorage.getItem("lang") || "sv"
+            }
         },
         created: function(){
+            socket.on( "uiLabels", labels => this.uiLabels = labels );
             socket.emit( "getUILabels", this.lang );
         },
         methods: function(){
@@ -28,5 +32,13 @@ header {
   width: 100%;
   display: grid;
   grid-template-columns: 2em auto;
+}
+.logo {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 2.5rem;
+  color: white; 
+  padding-top: 0.2em;
+  grid
 }
 </style>
