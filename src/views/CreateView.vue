@@ -4,7 +4,17 @@
     <div class="logo">
       {{ uiLabels.siteName }}
     </div>
-    </header>   
+    </header>
+    <div class="lobbyID">Lobby-ID: </div>
+    <div class="settings">
+    <div class="operations">
+
+    </div>
+    <div class="numbers">
+        
+    </div>
+    
+    </div>   
 </template>
 <script>
     import io from 'socket.io-client';
@@ -39,6 +49,11 @@ header {
   font-size: 2.5rem;
   color: white; 
   padding-top: 0.2em;
-  grid
+  grid-area: 1/span 2;
+}
+.lobbyID{
+    text-align: center;
+    margin: 3%;
+    font-size: 1.5rem;
 }
 </style>
