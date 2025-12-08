@@ -15,33 +15,42 @@
       <img :src="uiLabels.flag" style="width: 60%;">
     </button>
 
-    <router-link to="/create/">
-      {{ uiLabels.createPoll }}
-    </router-link>"
 
-    <a href="">
-      {{ uiLabels.about }}
-    </a>
-    <button v-on:click="">
-      <a href="">{{ uiLabels.rules }}</a>
+
+    <button popovertarget="ruleSquare">
+      {{ uiLabels.rules }}
     </button>
+
   </ResponsiveNav>
 
-  <div class="ruleSquare">
+  <div id="createJoin">
+    <button>
+      <router-link to="/create/">
+        {{ uiLabels.createGame }}
+      </router-link>
+    </button>
+
+    <label>
+      {{ uiLabels.writeGameID }}
+      <input type="text" v-model="newPollId">
+    </label>
+
+    <button>
+      <router-link v-bind:to="'/lobby/' + newPollId">
+        {{ uiLabels.joinGame }}
+      </router-link>
+    </button>
+  </div>
+
+
+  <div id="ruleSquare" popover="">
 
     {{ uiLabels.ruleBody }}
 
   </div>
 
-  <h1>{{ uiLabels["sales-pitch"] }}</h1>
-  <h2>{{ uiLabels.subHeading }}</h2>
-  <label>
-    Write poll id:
-    <input type="text" v-model="newPollId">
-  </label>
-  <router-link v-bind:to="'/lobby/' + newPollId">
-    {{ uiLabels.participatePoll }}
-  </router-link>
+
+
 </template>
 
 <script>
@@ -60,7 +69,7 @@ export default {
       newPollId: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true,
-      showRulesBoolean: false
+      showRulesBoolean: false,
     }
   },
   created: function () {
@@ -82,10 +91,14 @@ export default {
       this.hideNav = !this.hideNav;
     },
     showRules: function () {
+      if (!this.showRulesBoolean) {
+        ruleSquare.style.display = 'none';
+      }
       this.showRulesBoolean = !this.showRulesBoolean
-    }
+    },
   }
 }
+
 </script>
 <style scoped>
 header {
@@ -144,7 +157,7 @@ header {
   }
 }
 
-.ruleSquare {
+#ruleSquare {
   margin: 10% auto;
   color: blue;
   width: 50rem;
