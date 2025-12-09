@@ -17,7 +17,7 @@
 
 
 
-    <button @click="showRulesBoolean = !showRulesBoolean">
+    <button v-on:click="showRulesBoolean = !showRulesBoolean">
       {{ uiLabels.rules }}
     </button>
 
@@ -31,26 +31,26 @@
 
 
   <div id="createJoin">
-    <button>
-      <router-link to="/create/">
-        {{ uiLabels.createGame }}
-      </router-link>
-    </button>
+    <div id="create">
+      <button>
+        <router-link to="/create/">
+          {{ uiLabels.createGame }}
+        </router-link>
+      </button>
+    </div>
 
-    <label>
-      {{ uiLabels.writeGameID }}
-      <input type="text" v-model="newPollId">
-    </label>
+    <div id="join">
+      <label>
+        <input type="text" v-model="newPollId" :placeholder="uiLabels.writeGameID">
+      </label>
 
-    <button>
-      <router-link v-bind:to="'/lobby/' + newPollId">
-        {{ uiLabels.joinGame }}
-      </router-link>
-    </button>
+      <button>
+        <router-link v-bind:to="'/lobby/' + newPollId">
+          {{ uiLabels.joinGame }}
+        </router-link>
+      </button>
+    </div>
   </div>
-
-
-
 
 
 
@@ -98,6 +98,8 @@ export default {
 }
 
 </script>
+
+
 <style scoped>
 header {
   background-color: gray;
@@ -156,11 +158,23 @@ header {
 }
 
 .ruleSquare {
-  margin: 10% auto;
+  margin: 5% auto;
   color: blue;
   width: 50rem;
   background-color: aqua;
-  opacity: 0.5;
   white-space: pre-line;
+}
+
+input {
+  padding: 10pt;
+}
+
+
+#create {
+  margin: 10pt;
+}
+
+#join {
+  margin: 20pt;
 }
 </style>
