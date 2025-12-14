@@ -3,12 +3,18 @@
         "image": "/img/catCharacter.jpg"
     },
     {
-        "image": "/img/goatCharacter.png"
+        "image": "/img/fireCat.png"
     },
     {
         "image": "/img/girlCharacter.jpg"
     },
     {
         "image": "/img/monkeyCharacter.jpg"
+    },
+    {
+        "image": "/img/goat2.png"
+    },
+    {
+        "image": "/img/crab.png"
     }
 ]

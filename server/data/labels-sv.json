@@ -6,6 +6,8 @@
 	"close": "Stäng",
 	"join": "Anslut",
 	"joinWelcome": "Välj spelare och placera skepp!",
-	"playerName": "Namn",
-	"placePlayerInstruction": "Klicka på rutorna för att placera dina tre spelare!"
+	"playerName": "Namn: ",
+	"placePlayerInstruction": "Klicka på rutorna för att placera dina tre spelare!",
+	"ready": "KLAR",
+	"notReadyPopup": "Du måste fylla i ditt namn och placera dina spelare för att gå vidare!"
 }

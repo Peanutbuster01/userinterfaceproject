@@ -6,6 +6,8 @@
 	"close": "Close",
 	"join": "Join",
 	"joinWelcome": "Choose character and place your ships!",
-	"playerName": "Name",
-	"placePlayerInstruction": "Click on the squares to place your three players!"
+	"playerName": "Name: ",
+	"placePlayerInstruction": "Click on the squares to place your three players!",
+	"ready": "READY",
+	"notReadyPopup": "You need to fill in your name and place all your players to move on!"
 }
