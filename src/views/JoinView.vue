@@ -53,9 +53,13 @@
         </div>
 
     </div>
-    <div class="popup" :style="{ display: showPopupBoolean ? 'block' : 'none' }">
-        <p>{{ uiLabels.notReadyPopup }}</p>
-        <button @click="showPopupBoolean = false" id="okButton">OK</button>
+    <div class="popupBackground" :style="{ display: showPopupBoolean ? 'block' : 'none' }">
+        <div class="popup">
+            <p>{{ uiLabels.notReadyPopup }}</p>
+            <button @click="showPopupBoolean = false" id="okButton">OK</button>
+
+        </div>
+
     </div>
 
 
@@ -296,7 +300,17 @@ header {
     border: double 10px rgb(159, 50, 119);
     padding: 30px;
     max-width: 40%;
-    z-index: 50;
+
+}
+
+.popupBackground {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    background-color: #00000040;
 }
 
 #okButton {
