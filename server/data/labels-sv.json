@@ -4,7 +4,40 @@
 	"flag": "../img/eng.png",
 	"ruleBody": "Spelregler - mattekriget!\n\nMål:\nSpelet går ut på att sänka din motståndares spelare\nEtt matteproblem kommer att presenteras\nDen som först svarar rätt får ett skott mot motståndarens spelare - så se till att vara snabb! 😀\nDen som först slagit ut alla motståndarens spelare vinner\n\nStarta genom att:\nPlacera dina tre spelare taktiskt på din spelplan\nTryck sedan start och vänta på att motståndaren är redo\nMå den bäste matematikern vinna!",
 	"close": "Stäng",
+
 	"createGame": "Skapa",
 	"joinGame": "Gå med",
-	"writeGameID": "Skriv spel-id!"
+	"writeGameID": "Skriv spel-id!",
+
+	"join": "Anslut",
+	"joinWelcome": "Välj spelare och placera skepp!",
+	"playerName": "Namn: ",
+	"placePlayerInstruction": "Klicka på rutorna för att placera dina tre spelare!",
+	"ready": "KLAR",
+	"notReadyPopup": "Du måste fylla i ditt namn och placera dina spelare för att gå vidare!",
+
+	"createLobbyID": "Skapa Lobby ID",
+	"chooseOperation": "Välj räknesätt",
+	"addition": "Addition",
+  	"subtraction": "Subtraktion",
+  	"multiplication": "Multiplikation",
+  	"division": "Division",
+	
+	"level": "Välj svårighetsgrad",
+	"easy": "Lätt",
+	"medium": "Mellan",
+	"hard": "Svår",
+	"nightmare": "Mardröm",
+
+	"pageDescription": "Skapa en lobby och välj dina spelinställningar",
+
+	"createLobby": "Skapa Lobby",
+	"lobbyErrorMessage": "Lobby ID måste vara 4 tecken",
+	"lobbyApprovedMessage": "Lobby ID är giltigt",
+	"fourCharLobbyID": "4 tecken",
+
+	"createLobbyInstructions": "Fyll i alla fält för att skapa lobby",
+	"createLobbyButtonReady": "Skapa lobby nu",
+	"createLobbyButtonNotReady": "Väntar på att alla fält ska fyllas i"
+
 }
