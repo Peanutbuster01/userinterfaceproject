@@ -4,16 +4,18 @@
 </head>
 <header>
     <div class="logo">
+      <img src="/img/logo.png">
       {{ uiLabels.siteName }}
+      <img src="../assets/logo.svg">
     </div>
 </header>
-<main>
+<div class = 'wrapper'>
 <div class = 'ruleDiv'>
- Rules here
+ <p>{{ uiLabels.ruleBody }}</p>
 </div>
 <div class = 'lobbyDiv'>
  Lobbystuff here
-</div></main>
+</div></div>
 </template>
 <script>
     import io from 'socket.io-client';
@@ -55,21 +57,29 @@ header {
     margin: 3%;
     font-size: 1.5rem;
 }
-main {
+.wrapper {
     display: grid;
-    grid-template-columns: 30%, 30%, 30%;
-    padding: 5%;
+    grid-gap: 0%;
+    grid-template-columns: 30% 30% 30%;
+    grid-template-rows: 100%;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
+    grid-column-gap: 1%;
+    height: auto;
 }
 .lobbyDiv {
     background-color: blue;
     grid-column: 1 /span 2;
-    width: 100%;
-    height: auto;
+    grid-row: 1;
 }
 .ruleDiv{
     background-color: red;
     grid-column: 3;
-    width: 100%;
-    height: auto;
+    grid-row: 1;
+}
+.logo img {
+  height: 2.5rem;
+  vertical-align: bottom;
+  margin-right: 0.5rem;
 }
 </style>
