@@ -15,13 +15,8 @@
       <img :src="uiLabels.flag" style="width: 60%;">
     </button>
 
-<<<<<<< HEAD
 
-
-    <button v-on:click="showRulesBoolean = !showRulesBoolean">
-=======
     <button @click="showRulesBoolean = !showRulesBoolean">
->>>>>>> 5e9523b (fixed buttons and input field in css)
       {{ uiLabels.rules }}
     </button>
 
@@ -32,50 +27,25 @@
   </div>
 
 
-  <div id="createJoin">
-<<<<<<< HEAD
-    <div id="create">
-      <button>
-        <router-link to="/create/">
-          {{ uiLabels.createGame }}
-        </router-link>
-      </button>
-    </div>
+    <div id="createJoin">
 
-    <div id="join">
-      <label>
-        <input type="text" v-model="newPollId" :placeholder="uiLabels.writeGameID">
-      </label>
-
-      <button>
-        <router-link v-bind:to="'/lobby/' + newPollId">
-          {{ uiLabels.joinGame }}
-        </router-link>
-      </button>
-    </div>
-  </div>
-
-
-
-=======
     <button class="gameEntry">
       <router-link class ="linkModifier" to="/create/">
         {{ uiLabels.createGame }}
       </router-link>
     </button>
 
-      <div>
-      <input class ="gameEntry" type="text" v-model="newPollId" :placeholder ="uiLabels.writeGameID">
+        <div>
+        <input class ="gameEntry" type="text" v-model="newPollId" :placeholder ="uiLabels.writeGameID">
 
-      <button class="gameEntry">
-        <router-link class ="linkModifier" v-bind:to="'/lobby/' + newPollId">
-          {{ uiLabels.joinGame }}
-        </router-link>
-      </button>
+        <button class="gameEntry">
+          <router-link class ="linkModifier" v-bind:to="'/lobby/' + newPollId">
+            {{ uiLabels.joinGame }}
+          </router-link>
+        </button>
+        </div>
       </div>
-  </div>
 
->>>>>>> 5e9523b (fixed buttons and input field in css)
 </template>
 
 
@@ -181,13 +151,10 @@ header {
 }
 
 .ruleSquare {
-<<<<<<< HEAD
   margin: 5% auto;
-=======
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
->>>>>>> 5e9523b (fixed buttons and input field in css)
   color: blue;
   width: 50rem;
   background-color: aqua;
@@ -195,20 +162,6 @@ header {
   position: fixed;
 }
 
-<<<<<<< HEAD
-input {
-  padding: 10pt;
-}
-
-
-#create {
-  margin: 10pt;
-}
-
-#join {
-  margin: 20pt;
-}
-=======
 #createJoin {
   display: flex;
   justify-content: center;
@@ -227,5 +180,4 @@ input {
   color: inherit;
 }
 
->>>>>>> 5e9523b (fixed buttons and input field in css)
 </style>
