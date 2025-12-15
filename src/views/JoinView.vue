@@ -151,7 +151,10 @@ export default {
                 this.showPopupBoolean = true;
             }
             else {
-
+                socket.emit("sendPlayerName", {
+                    name: this.playerName,
+                    ships: this.placedShips
+                });
             }
 
         }
