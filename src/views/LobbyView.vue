@@ -14,17 +14,19 @@
  <p>{{ uiLabels.ruleBody }}</p>
 </div>
 <div class = 'lobbyDiv'>
-<PlayerCardComponent/>
-<PlayerCardComponent/>
+<PlayerCardComponent playerNumber = '1'/>
+<PlayerCardComponent playerNumber = '2'/>
 <button class="readyButton" v-on:pointerover="">{{ uiLabels.ready }}</button>
 </div></div>
 </template>
 <script>
     import io from 'socket.io-client';
-import PlayerCardComponent from '../components/PlayerCardComponent.vue';
     const socket = io("localhost:3000");
 
     export default{
+        props: [
+            'playerNumber'
+        ],
         data: function(){
             return{
             uiLabels: {},
@@ -59,13 +61,11 @@ import PlayerCardComponent from '../components/PlayerCardComponent.vue';
     height: auto;
 }
 .lobbyDiv {
-    background-color: blue;
     grid-column: 1 /span 2;
     grid-row: 1;
     padding-top: 5%;
 }
 .ruleDiv{
-    background-color: red;
     grid-column: 3;
     grid-row: 1;
     padding: 5%;
@@ -80,4 +80,5 @@ import PlayerCardComponent from '../components/PlayerCardComponent.vue';
 .readyButton:hover {
     background-color: green;
 }
+
 </style>

@@ -6,7 +6,7 @@ import router from './router'
 import PlayerCardComponent from './components/PlayerCardComponent.vue'
 
 const app = createApp(App)
-app.component(PlayerCardComponent)
+app.component('PlayerCardComponent', PlayerCardComponent)
 app.use(router)
 
 app.mount('#app')
