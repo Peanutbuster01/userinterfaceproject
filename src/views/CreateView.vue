@@ -128,7 +128,9 @@
 <div class="createLobbyButton">
     <p>{{ uiLabels.createLobbyInstructions }}</p>
     <button :class="createLobbyReady ? 'createLobbyButtonReady' : 'createLobbyButtonNotReady'">
+      <router-link to="/game/">
     {{ createLobbyReady ? uiLabels.createLobbyButtonReady : uiLabels.createLobbyButtonNotReady}}
+    </router-link>
     </button> 
 </div>
          

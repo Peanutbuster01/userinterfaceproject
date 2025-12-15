@@ -36,7 +36,7 @@
     </button>
 
         <div>
-        <input class ="gameEntry" type="text" v-model="newPollId" :placeholder ="uiLabels.writeGameID">
+        <input class ="gameEntry" type="text" maxlength="4" @input= "validateLobbyID" v-model="newPollId" :placeholder ="uiLabels.writeGameID">
 
         <button class="gameEntry">
           <router-link class ="linkModifier" v-bind:to="'/join/' + newPollId">
@@ -86,6 +86,14 @@ export default {
     toggleNav: function () {
       this.hideNav = !this.hideNav;
     },
+
+    validateLobbyID() {
+              if (this.lobbyID.length === 4) {
+                this.lobbyMessage = this.uiLabels.lobbyApprovedMessage || "Lobby-ID godkänt";
+              } else {
+                this.lobbyMessage = this.uiLabels.lobbyErrorMessage || "Lobby-ID måste vara 4 tecken";
+              }
+            },
 
   }
 }
