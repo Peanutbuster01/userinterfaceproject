@@ -10,7 +10,7 @@
         <button>
             <img v-on:click="switchLanguage" :src="uiLabels.flag" style="width: 60%;">
         </button>
-        <div class="lobbyID">Lobby-ID: </div>
+        <div class="lobbyID">Lobby-ID: {{ lobbyID }} </div>
     </ResponsiveNav>
 
     <h1>{{ uiLabels.joinWelcome }}</h1>
@@ -57,7 +57,6 @@
         <div class="popup">
             <p>{{ uiLabels.notReadyPopup }}</p>
             <button @click="showPopupBoolean = false" id="okButton">OK</button>
-
         </div>
 
     </div>
@@ -80,6 +79,7 @@ export default {
             uiLabels: {},
             lang: localStorage.getItem("lang") || "sv",
             hideNav: true,
+            lobbyID: "",
             playerName: "",
             characters,
             characterIndex: 0,
@@ -93,6 +93,7 @@ export default {
     created: function () {
         socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.emit("getUILabels", this.lang);
+        this.lobbyID = this.$route.params.id;
     },
     methods: {
         switchLanguage: function () {
@@ -151,14 +152,14 @@ export default {
                 this.showPopupBoolean = true;
             }
             else {
-                socket.emit("sendPlayerName", {
+                socket.emit("submitPlayerInfo", {
                     name: this.playerName,
-                    ships: this.placedShips
+                    ships: this.placedShips,
+                    lobbyNum: this.lobbyID,
+                    charIndex: this.characterIndex
                 });
             }
-
         }
-
     }
 }
 </script>

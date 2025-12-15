@@ -27,24 +27,24 @@
   </div>
 
 
-    <div id="createJoin">
+  <div id="createJoin">
 
     <button class="gameEntry">
-      <router-link class ="linkModifier" to="/create/">
+      <router-link class="linkModifier" to="/create/">
         {{ uiLabels.createGame }}
       </router-link>
     </button>
 
-        <div>
-        <input class ="gameEntry" type="text" v-model="newPollId" :placeholder ="uiLabels.writeGameID">
+    <div>
+      <input class="gameEntry" type="text" v-model="newLobbyID" :placeholder="uiLabels.writeGameID">
 
-        <button class="gameEntry">
-          <router-link class ="linkModifier" v-bind:to="'/join/' + newPollId">
-            {{ uiLabels.joinGame }}
-          </router-link>
-        </button>
-        </div>
-      </div>
+      <button class="gameEntry">
+        <router-link class="linkModifier" v-bind:to="'/join/' + newLobbyID">
+          {{ uiLabels.joinGame }}
+        </router-link>
+      </button>
+    </div>
+  </div>
 
 </template>
 
@@ -62,7 +62,7 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      newPollId: "",
+      newLobbyID: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true,
       showRulesBoolean: false,
@@ -167,7 +167,7 @@ header {
   justify-content: center;
   gap: 4rem;
   margin-top: 20rem;
-} 
+}
 
 .gameEntry {
   padding: 12px 15px;
@@ -179,5 +179,4 @@ header {
   text-decoration: none;
   color: inherit;
 }
-
 </style>
