@@ -1,6 +1,7 @@
 <template>
+    <body>
 <p>Player 1: {{ player1Name }}</p>
-
+</body>
 </template>
 
 <script>
@@ -15,5 +16,8 @@ export default {
 </script>
 
 <style>
-
+body {
+    border-width: 2px;
+    border-color: black;
+}
 </style>

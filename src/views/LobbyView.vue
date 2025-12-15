@@ -16,6 +16,7 @@
 <div class = 'lobbyDiv'>
 <PlayerCardComponent/>
 <PlayerCardComponent/>
+<button class="readyButton">{{ uiLabels.ready }}</button>
 </div></div>
 </template>
 <script>
