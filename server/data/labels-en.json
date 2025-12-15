@@ -9,5 +9,29 @@
 	"playerName": "Name: ",
 	"placePlayerInstruction": "Click on the squares to place your three players!",
 	"ready": "READY",
-	"notReadyPopup": "You need to fill in your name and place all your players to move on!"
+	"notReadyPopup": "You need to fill in your name and place all your players to move on!",
+
+
+	"createLobbyID": "Create Lobby ID",
+	"chooseOperation": "Choose operation",
+	"addition": "Addition",
+	"subtraction": "Subtraction",
+	"multiplication": "Multiplication",
+	"division": "Division",
+	
+	"level": "Choose level",
+	"easy": "Easy",
+	"medium": "Medium",
+	"hard": "Hard",
+	"nightmare":"Nightmare",
+
+	"pageDescription": "Create a lobby and choose your game settings",
+
+	"lobbyErrorMessage": "lobby ID must be 4 charachters",
+	"lobbyApprovedMessage": "lobby ID is valid",
+	"fourCharLobbyID": "4 characters",
+
+	"createLobbyInstructions": "Fill in all fields to create lobby",
+	"createLobbyButtonReady": "Create lobby now",
+	"createLobbyButtonNotReady": "Waiting for all fields to be filled in"
 }

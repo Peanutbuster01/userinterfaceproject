@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import StartView from '../views/StartView.vue'
-
+import CreateView from '../views/CreateView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -9,16 +9,20 @@ const router = createRouter({
       name: 'Start',
       component: StartView
     },
+
     {
       path: '/lobby/:id',
       name: 'LobbyViewLegacy',
       component: () => import('../views/LobbyViewLegacy.vue')
     },
+
+
     {
       path: '/create/',
       name: 'CreateViewLegacy',
       component: () => import('../views/CreateViewLegacy.vue')
     },
+
     {
       path: '/result/:id',
       name: 'ResultViewLegacy',
@@ -29,6 +33,7 @@ const router = createRouter({
       name: 'JoinView',
       component: () => import('../views/JoinView.vue')
     }
+
   ]
 })
 
