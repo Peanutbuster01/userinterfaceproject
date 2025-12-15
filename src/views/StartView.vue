@@ -39,7 +39,7 @@
         <input class ="gameEntry" type="text" v-model="newPollId" :placeholder ="uiLabels.writeGameID">
 
         <button class="gameEntry">
-          <router-link class ="linkModifier" v-bind:to="'/lobby/' + newPollId">
+          <router-link class ="linkModifier" v-bind:to="'/join/' + newPollId">
             {{ uiLabels.joinGame }}
           </router-link>
         </button>
