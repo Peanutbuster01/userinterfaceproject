@@ -9,10 +9,14 @@ const router = createRouter({
       name: 'Start',
       component: StartView
     },
-
+    {
+      path: '/poll/:id',
+      name: 'PollView',
+      component: () => import('../views/PollViewLegacy.vue')
+    },
     {
       path: '/lobby/:id',
-      name: 'LobbyViewLegacy',
+      name: 'LobbyView',
       component: () => import('../views/LobbyViewLegacy.vue')
     },
 
@@ -25,7 +29,8 @@ const router = createRouter({
 
     {
       path: '/result/:id',
-      name: 'ResultViewLegacy',
+
+      name: 'ResultView',
       component: () => import('../views/ResultViewLegacy.vue')
     },
     {

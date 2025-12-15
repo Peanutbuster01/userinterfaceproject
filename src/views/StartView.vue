@@ -2,7 +2,6 @@
   <header>
     <div v-bind:class="['hamburger', { 'close': !hideNav }]" v-on:click="toggleNav">
     </div>
-
     <div class="logo">
       <img src="/img/logo.png">
       {{ uiLabels.siteName }}
@@ -16,34 +15,39 @@
       <img :src="uiLabels.flag" style="width: 60%;">
     </button>
 
-    <router-link to="/create/">
-      {{ uiLabels.createPoll }}
-    </router-link>"
 
-    <a href="">
-      {{ uiLabels.about }}
-    </a>
-    <button v-on:click="">
-      <a href="">{{ uiLabels.rules }}</a>
+    <button @click="showRulesBoolean = !showRulesBoolean">
+      {{ uiLabels.rules }}
     </button>
+
   </ResponsiveNav>
 
-  <div class="ruleSquare">
-
+  <div class="ruleSquare" v-if="showRulesBoolean">
     {{ uiLabels.ruleBody }}
-
   </div>
 
-  <h1>{{ uiLabels["sales-pitch"] }}</h1>
-  <h2>{{ uiLabels.subHeading }}</h2>
-  <label>
-    Write poll id:
-    <input type="text" v-model="newlobbyID">
-  </label>
-  <router-link v-bind:to="'/join/' + newlobbyID">
-    {{ uiLabels.participatePoll }}
-  </router-link>
+
+  <div id="createJoin">
+
+    <button class="gameEntry">
+      <router-link class="linkModifier" to="/create/">
+        {{ uiLabels.createGame }}
+      </router-link>
+    </button>
+
+    <div>
+      <input class="gameEntry" type="text" v-model="newPollId" :placeholder="uiLabels.writeGameID">
+
+      <button class="gameEntry">
+        <router-link class="linkModifier" v-bind:to="'/join/' + newPollId">
+          {{ uiLabels.joinGame }}
+        </router-link>
+      </button>
+    </div>
+  </div>
+
 </template>
+
 
 <script>
 import ResponsiveNav from '@/components/ResponsiveNav.vue';
@@ -61,7 +65,7 @@ export default {
       newlobbyID: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true,
-      showRulesBoolean: false
+      showRulesBoolean: false,
     }
   },
   created: function () {
@@ -82,12 +86,13 @@ export default {
     toggleNav: function () {
       this.hideNav = !this.hideNav;
     },
-    showRules: function () {
-      this.showRulesBoolean = !this.showRulesBoolean
-    }
+
   }
 }
+
 </script>
+
+
 <style scoped>
 header {
   background-color: gray;
@@ -146,11 +151,32 @@ header {
 }
 
 .ruleSquare {
-  margin: 10% auto;
+  margin: 5% auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: blue;
   width: 50rem;
   background-color: aqua;
-  opacity: 0.5;
   white-space: pre-line;
+  position: fixed;
+}
+
+#createJoin {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin-top: 20rem;
+}
+
+.gameEntry {
+  padding: 12px 15px;
+  font-size: 15px;
+  width: 12ch;
+}
+
+.linkModifier {
+  text-decoration: none;
+  color: inherit;
 }
 </style>
