@@ -15,22 +15,25 @@
       <img :src="uiLabels.flag" style="width: 60%;">
     </button>
 
+<<<<<<< HEAD
 
 
     <button v-on:click="showRulesBoolean = !showRulesBoolean">
+=======
+    <button @click="showRulesBoolean = !showRulesBoolean">
+>>>>>>> 5e9523b (fixed buttons and input field in css)
       {{ uiLabels.rules }}
     </button>
 
   </ResponsiveNav>
 
   <div class="ruleSquare" v-if="showRulesBoolean">
-
     {{ uiLabels.ruleBody }}
-
   </div>
 
 
   <div id="createJoin">
+<<<<<<< HEAD
     <div id="create">
       <button>
         <router-link to="/create/">
@@ -54,7 +57,27 @@
 
 
 
+=======
+    <button class="gameEntry">
+      <router-link class ="linkModifier" to="/create/">
+        {{ uiLabels.createGame }}
+      </router-link>
+    </button>
+
+      <div>
+      <input class ="gameEntry" type="text" v-model="newPollId" :placeholder ="uiLabels.writeGameID">
+
+      <button class="gameEntry">
+        <router-link class ="linkModifier" v-bind:to="'/lobby/' + newPollId">
+          {{ uiLabels.joinGame }}
+        </router-link>
+      </button>
+      </div>
+  </div>
+
+>>>>>>> 5e9523b (fixed buttons and input field in css)
 </template>
+
 
 <script>
 import ResponsiveNav from '@/components/ResponsiveNav.vue';
@@ -158,13 +181,21 @@ header {
 }
 
 .ruleSquare {
+<<<<<<< HEAD
   margin: 5% auto;
+=======
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+>>>>>>> 5e9523b (fixed buttons and input field in css)
   color: blue;
   width: 50rem;
   background-color: aqua;
   white-space: pre-line;
+  position: fixed;
 }
 
+<<<<<<< HEAD
 input {
   padding: 10pt;
 }
@@ -177,4 +208,24 @@ input {
 #join {
   margin: 20pt;
 }
+=======
+#createJoin {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin-top: 20rem;
+} 
+
+.gameEntry {
+  padding: 12px 15px;
+  font-size: 15px;
+  width: 12ch;
+}
+
+.linkModifier {
+  text-decoration: none;
+  color: inherit;
+}
+
+>>>>>>> 5e9523b (fixed buttons and input field in css)
 </style>
