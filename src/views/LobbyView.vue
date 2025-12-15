@@ -14,11 +14,13 @@
  <p>{{ uiLabels.ruleBody }}</p>
 </div>
 <div class = 'lobbyDiv'>
- Lobbystuff here
+<PlayerCardComponent/>
+<PlayerCardComponent/>
 </div></div>
 </template>
 <script>
     import io from 'socket.io-client';
+import PlayerCardComponent from '../components/PlayerCardComponent.vue';
     const socket = io("localhost:3000");
 
     export default{
