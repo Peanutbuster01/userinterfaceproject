@@ -10,7 +10,7 @@
         <button>
             <img v-on:click="switchLanguage" :src="uiLabels.flag" style="width: 60%;">
         </button>
-        <div class="lobbyID">Lobby-ID: </div>
+        <div class="lobbyID">Lobby-ID: {{ lobbyID }} </div>
     </ResponsiveNav>
 
     <h1>{{ uiLabels.joinWelcome }}</h1>
@@ -57,7 +57,6 @@
         <div class="popup">
             <p>{{ uiLabels.notReadyPopup }}</p>
             <button @click="showPopupBoolean = false" id="okButton">OK</button>
-
         </div>
 
     </div>
@@ -156,13 +155,11 @@ export default {
                 socket.emit("submitPlayerInfo", {
                     name: this.playerName,
                     ships: this.placedShips,
-                    lobbynum: this.lobbyID,
+                    lobbyNum: this.lobbyID,
                     charIndex: this.characterIndex
                 });
             }
-
         }
-
     }
 }
 </script>

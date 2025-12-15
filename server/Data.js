@@ -1,5 +1,5 @@
 'use strict';
-import {readFileSync} from "fs";
+import { readFileSync } from "fs";
 
 // Store data in an object to keep the global namespace clean. In an actual implementation this would be interfacing a database...
 function Data() {
@@ -7,11 +7,13 @@ function Data() {
   this.polls['test'] = {
     lang: "en",
     questions: [
-      {q: "How old are you?", 
-       a: ["0-13", "14-18", "19-25", "26-35", "36-45","45-"]
+      {
+        q: "How old are you?",
+        a: ["0-13", "14-18", "19-25", "26-35", "36-45", "45-"]
       },
-      {q: "How much do you enjoy coding?", 
-       a: ["1", "2", "3", "4", "5"]
+      {
+        q: "How much do you enjoy coding?",
+        a: ["1", "2", "3", "4", "5"]
       }
     ],
     answers: [],
@@ -32,56 +34,55 @@ Data.prototype.pollExists = function (pollId) {
 
 Data.prototype.getUILabels = function (lang) {
   //check if lang is valid before trying to load the dictionary file
-  if (!["en", "sv"].some( el => el === lang))
+  if (!["en", "sv"].some(el => el === lang))
     lang = "en";
   const labels = readFileSync("./server/data/labels-" + lang + ".json");
   return JSON.parse(labels);
 }
 
-Data.prototype.createPoll = function(pollId, lang="en") {
+Data.prototype.createGame = function (pollId, lang = "en") {
   if (!this.pollExists(pollId)) {
     let poll = {};
-    poll.lang = lang;  
+    poll.lang = lang;
     poll.questions = [];
     poll.answers = [];
     poll.participants = [];
-    poll.currentQuestion = 0;              
+    poll.currentQuestion = 0;
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
   return this.polls[pollId];
 }
 
-Data.prototype.getPoll = function(pollId) {
+Data.prototype.getGame = function (pollId) {
   if (this.pollExists(pollId)) {
     return this.polls[pollId];
   }
   return {};
 }
 
-Data.prototype.participateInPoll = function(pollId, name) {
-  console.log("participant will be added to", pollId, name);
-  if (this.pollExists(pollId)) {
-    this.polls[pollId].participants.push({name: name, answers: []})
+Data.prototype.joinGame = function (d) {
+  if (this.pollExists(d.lobbyID)) {
+    this.polls[d.lobbyID].participants.push({ playerName: d.playerName, placedShips: d.placedShips })
   }
 }
 
-Data.prototype.getParticipants = function(pollId) {
+Data.prototype.getParticipants = function (pollId) {
   const poll = this.polls[pollId];
   console.log("participants requested for", pollId);
-  if (this.pollExists(pollId)) { 
+  if (this.pollExists(pollId)) {
     return this.polls[pollId].participants
   }
   return [];
 }
 
-Data.prototype.addQuestion = function(pollId, q) {
+Data.prototype.addQuestion = function (pollId, q) {
   if (this.pollExists(pollId)) {
     this.polls[pollId].questions.push(q);
   }
 }
 
-Data.prototype.activateQuestion = function(pollId, qId = null) {
+Data.prototype.activateQuestion = function (pollId, qId = null) {
   if (this.pollExists(pollId)) {
     const poll = this.polls[pollId];
     if (qId !== null) {
@@ -92,7 +93,7 @@ Data.prototype.activateQuestion = function(pollId, qId = null) {
   return {}
 }
 
-Data.prototype.getSubmittedAnswers = function(pollId) {
+Data.prototype.getSubmittedAnswers = function (pollId) {
   if (this.pollExists(pollId)) {
     const poll = this.polls[pollId];
     const answers = poll.answers[poll.currentQuestion];
@@ -103,7 +104,7 @@ Data.prototype.getSubmittedAnswers = function(pollId) {
   return {}
 }
 
-Data.prototype.submitAnswer = function(pollId, answer) {
+Data.prototype.submitAnswer = function (pollId, answer) {
   if (this.pollExists(pollId)) {
     const poll = this.polls[pollId];
     let answers = poll.answers[poll.currentQuestion];

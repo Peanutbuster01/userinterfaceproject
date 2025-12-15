@@ -36,10 +36,10 @@
     </button>
 
     <div>
-      <input class="gameEntry" type="text" v-model="newPollId" :placeholder="uiLabels.writeGameID">
+      <input class="gameEntry" type="text" v-model="newLobbyID" :placeholder="uiLabels.writeGameID">
 
       <button class="gameEntry">
-        <router-link class="linkModifier" v-bind:to="'/join/' + newPollId">
+        <router-link class="linkModifier" v-bind:to="'/join/' + newLobbyID">
           {{ uiLabels.joinGame }}
         </router-link>
       </button>
@@ -62,7 +62,7 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      newlobbyID: "",
+      newLobbyID: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true,
       showRulesBoolean: false,
