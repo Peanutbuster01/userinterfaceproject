@@ -19,8 +19,8 @@ const router = createRouter({
 
     {
       path: '/create/',
-      name: 'CreateViewLegacy',
-      component: () => import('../views/CreateViewLegacy.vue')
+      name: 'CreateView',
+      component: () => import('../views/CreateView.vue')
     },
 
     {
