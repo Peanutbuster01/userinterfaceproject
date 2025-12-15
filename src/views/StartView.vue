@@ -38,9 +38,9 @@
   <h2>{{ uiLabels.subHeading }}</h2>
   <label>
     Write poll id:
-    <input type="text" v-model="newPollId">
+    <input type="text" v-model="newlobbyID">
   </label>
-  <router-link v-bind:to="'/lobby/' + newPollId">
+  <router-link v-bind:to="'/join/' + newlobbyID">
     {{ uiLabels.participatePoll }}
   </router-link>
 </template>
@@ -58,7 +58,7 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      newPollId: "",
+      newlobbyID: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true,
       showRulesBoolean: false

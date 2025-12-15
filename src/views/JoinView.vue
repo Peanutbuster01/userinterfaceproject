@@ -80,6 +80,7 @@ export default {
             uiLabels: {},
             lang: localStorage.getItem("lang") || "sv",
             hideNav: true,
+            lobbyID: "",
             playerName: "",
             characters,
             characterIndex: 0,
@@ -93,6 +94,7 @@ export default {
     created: function () {
         socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.emit("getUILabels", this.lang);
+        this.lobbyID = this.$route.params.id;
     },
     methods: {
         switchLanguage: function () {
@@ -151,9 +153,11 @@ export default {
                 this.showPopupBoolean = true;
             }
             else {
-                socket.emit("sendPlayerName", {
+                socket.emit("submitPlayerInfo", {
                     name: this.playerName,
-                    ships: this.placedShips
+                    ships: this.placedShips,
+                    lobbynum: this.lobbyID,
+                    charIndex: this.characterIndex
                 });
             }
 
