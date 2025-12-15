@@ -1,12 +1,13 @@
 <template>
     <body>
-<p>Player 1: {{ player1Name }}</p>
+<h1>Player 1:</h1>
+<p>Hello There!</p>
 </body>
 </template>
 
 <script>
 export default {
-    data() {
+    data: function() {
         return {
             player1Name: '',
             player1Image: ''
@@ -19,5 +20,6 @@ export default {
 body {
     border-width: 2px;
     border-color: black;
+    width: 100%;
 }
 </style>

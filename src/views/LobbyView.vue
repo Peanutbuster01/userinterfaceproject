@@ -16,7 +16,7 @@
 <div class = 'lobbyDiv'>
 <PlayerCardComponent/>
 <PlayerCardComponent/>
-<button class="readyButton">{{ uiLabels.ready }}</button>
+<button class="readyButton" v-on:pointerover="">{{ uiLabels.ready }}</button>
 </div></div>
 </template>
 <script>
@@ -28,7 +28,8 @@ import PlayerCardComponent from '../components/PlayerCardComponent.vue';
         data: function(){
             return{
             uiLabels: {},
-            lang: localStorage.getItem("lang") || "en"
+            lang: localStorage.getItem("lang") || "en",
+            PlayerCardComponent: {}
             }
         },
         created: function(){
@@ -36,7 +37,7 @@ import PlayerCardComponent from '../components/PlayerCardComponent.vue';
             socket.emit( "getUILabels", this.lang );
         },
         methods: function(){
-
+            
         }
     }
 </script>
@@ -61,10 +62,22 @@ import PlayerCardComponent from '../components/PlayerCardComponent.vue';
     background-color: blue;
     grid-column: 1 /span 2;
     grid-row: 1;
+    padding-top: 5%;
 }
 .ruleDiv{
     background-color: red;
     grid-column: 3;
     grid-row: 1;
+    padding: 5%;
+}
+.readyButton {
+    font-size: 400%;
+    background-color: rgb(0, 100, 0);
+    
+    border-width: 5px;
+    
+}
+.readyButton:hover {
+    background-color: green;
 }
 </style>
