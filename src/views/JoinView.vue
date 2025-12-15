@@ -19,9 +19,9 @@
         <div id="board">
             <div id="overlay">
                 <div v-for="(x, i) in 12" class="square" @click="placeCharacter(i)">
-                    <img :class="[{ 'characterShipBorder': placedShips.findIndex(x => x == i) == selectedCharacter }]"
-                        v-if="placedShips.includes(i)" :src="characters[characterIndex].image"
-                        style="box-sizing: border-box; width: 100%; height: 100%; display: block; object-fit: contain;">
+                    <img class="placedCharacterShip"
+                        :class="[{ 'characterShipBorder': placedShips.findIndex(x => x == i) == selectedCharacter }]"
+                        v-if="placedShips.includes(i)" :src="characters[characterIndex].image">
                 </div>
             </div>
             <div>
@@ -214,7 +214,13 @@ header {
     transform: scale(0.95);
 }
 
-
+.placedCharacterShip {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
 
 #player {
     margin: 20px;
