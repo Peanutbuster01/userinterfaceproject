@@ -89,26 +89,6 @@ export default {
 }
 </script>
 <style scoped>
-header {
-  background-color: gray;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 2em auto;
-}
-
-.logo {
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  font-size: 2.5rem;
-  color: white;
-  padding-top: 0.2em;
-}
-
-.logo img {
-  height: 2.5rem;
-  vertical-align: bottom;
-  margin-right: 0.5rem;
-}
 
 .hamburger {
   color: white;
