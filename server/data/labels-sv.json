@@ -4,10 +4,16 @@
 	"flag": "../img/eng.png",
 	"ruleBody": "Spelregler - mattekriget!\n\nMål:\nSpelet går ut på att sänka din motståndares spelare\nEtt matteproblem kommer att presenteras\nDen som först svarar rätt får ett skott mot motståndarens spelare - så se till att vara snabb! 😀\nDen som först slagit ut alla motståndarens spelare vinner\n\nStarta genom att:\nPlacera dina tre spelare taktiskt på din spelplan\nTryck sedan start och vänta på att motståndaren är redo\nMå den bäste matematikern vinna!",
 	"close": "Stäng",
-
-	"createGame": "Skapa",
-	"joinGame": "Gå med",
-	"writeGameID": "Skriv spel-id!",
+	"welcomeTitle": "Välkommen till Mattekriget!",
+	"createGame": "Skapa spel",
+	"createGameInstructions": "Skapa ett nytt spel",
+	"createGameButton": "Skapa",
+	"joinGame": "Gå med spel",
+	"joinGameInstructions": "Skriv in spel-ID från host",
+	"joinGameButton": "Gå med",
+	"fourCharGameID": "Ange 4 tecken",
+	"joinErrorMessage": "Spel-ID måste vara 4 tecken",
+	"joinApprovedMessage": "Spel-ID är giltigt",
 
 	"join": "Anslut",
 	"joinWelcome": "Välj spelare och placera skepp!",
@@ -38,6 +44,9 @@
 
 	"createLobbyInstructions": "Fyll i alla fält för att skapa lobby",
 	"createLobbyButtonReady": "Skapa lobby nu",
-	"createLobbyButtonNotReady": "Väntar på att alla fält ska fyllas i"
+	"createLobbyButtonNotReady": "Väntar på att alla fält ska fyllas i",
+
+	"answerMathQuestion": "Skriv ditt svar här",
+	"send": "Skicka"
 
 }

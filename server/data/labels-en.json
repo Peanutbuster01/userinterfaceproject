@@ -4,9 +4,16 @@
 	"flag": "../img/swe.png",
 	"ruleBody": "Gamerules - the math battle!\n\nGoal:\nThe goal of the game is to eliminate all of your opponent's players.\nA math problem will appear on the screen.\nThe first player to answer correctly gets to take a shot at the opponent's players — so be quick! 😀\nThe player who eliminates all of the opponent's players first wins.\n\nStart by:\nPlace your three players strategically on your game board.\nPress start and wait for your opponent to be ready.\nMay the best mathematician win!",
 	"close": "Close",
-	"createGame": "Create",
-	"joinGame": "Join",
-	"writeGameID": "Write game id",
+	"welcomeTitle": "Welcome to War of Math!",
+	"createGame": "Create game",
+	"createGameInstructions": "Create a new game",
+	"createGameButton": "Create",
+	"joinGame": "Join game",
+	"joinGameInstructions": "Enter game ID from host",
+	"joinGameButton": "Join",
+	"fourCharGameID": "state 4 characters",
+	"joinErrorMessage": "game ID must be 4 characters",
+	"joinApprovedMessage": "game ID is valid",
 	"join": "Join",
 	"joinWelcome": "Choose character and place your ships!",
 	"playerName": "Name: ",
@@ -36,5 +43,8 @@
 
 	"createLobbyInstructions": "Fill in all fields to create lobby",
 	"createLobbyButtonReady": "Create lobby now",
-	"createLobbyButtonNotReady": "Waiting for all fields to be filled in"
+	"createLobbyButtonNotReady": "Waiting for all fields to be filled in",
+
+	"answerMathQuestion": "Type your answer here",	
+	"send": "Send"	
 }

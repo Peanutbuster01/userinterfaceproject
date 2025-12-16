@@ -7,7 +7,6 @@
       {{ uiLabels.siteName }}
       <img src="../assets/logo.svg">
     </div>
-
   </header>
 
   <ResponsiveNav v-bind:hideNav="hideNav">
@@ -26,24 +25,47 @@
     {{ uiLabels.ruleBody }}
   </div>
 
+  <div class="welcomeMessages">
+    <h1>{{ uiLabels.welcomeTitle }}</h1>
+  </div>
 
   <div id="createJoin">
 
-    <button class="gameEntry">
-      <router-link class="linkModifier" to="/create/">
-        {{ uiLabels.createGame }}
-      </router-link>
-    </button>
+    <section class="gamePanel">
+      <h6 class="gameSubtitles">{{ uiLabels.createGame }}</h6>
+      <p>{{ uiLabels.createGameInstructions }}</p>
 
-    <div>
-      <input class="gameEntry" type="text" v-model="newLobbyID" :placeholder="uiLabels.writeGameID">
+      <div class="ButtonRow">
+        <button class="gameButtons">
+          <router-link class="linkModifier" to="/create/">
+            {{ uiLabels.createGameButton }}
+          </router-link>
+        </button>
+      </div>
+    </section>
 
-      <button class="gameEntry">
-        <router-link class="linkModifier" v-bind:to="'/join/' + newLobbyID">
-          {{ uiLabels.joinGame }}
-        </router-link>
-      </button>
-    </div>
+    <section class="gamePanel">
+      <h6 class="gameSubtitles">{{ uiLabels.joinGame }}</h6>
+      <p>{{ uiLabels.joinGameInstructions }}</p>
+
+
+      <div>
+        <input class="gameButtons" type="text" maxlength="4" @input="validateLobbyID" v-model="newPollId"
+          :placeholder="uiLabels.fourCharGameID">
+
+        <p v-if="joinMessage" :class="newPollId.length === 4 ? 'joinApprovedMessage' : 'joinErrorMessage'">
+          {{ joinMessage }}
+        </p>
+      </div>
+
+      <div class="ButtonRow">
+        <button class="gameButtons">
+          <router-link class="linkModifier" v-bind:to="'/join/' + newPollId">
+            {{ uiLabels.joinGameButton }}
+          </router-link>
+        </button>
+      </div>
+    </section>
   </div>
 
 </template>
@@ -63,6 +85,7 @@ export default {
     return {
       uiLabels: {},
       newLobbyID: "",
+      joinMessage: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true,
       showRulesBoolean: false,
@@ -85,6 +108,14 @@ export default {
     },
     toggleNav: function () {
       this.hideNav = !this.hideNav;
+    },
+
+    validateLobbyID() {
+      if (this.newPollId.length === 4) {
+        this.joinMessage = this.uiLabels.joinApprovedMessage || "Spel-ID godkänt";
+      } else {
+        this.joinMessage = this.uiLabels.joinErrorMessage || "Spel-ID måste vara 4 tecken";
+      }
     },
 
   }
@@ -150,6 +181,12 @@ header {
   }
 }
 
+.welcomeMessages {
+  border-radius: 6px;
+  margin-top: 5rem;
+  text-align: center;
+}
+
 .ruleSquare {
   margin: 5% auto;
   top: 50%;
@@ -166,17 +203,52 @@ header {
   display: flex;
   justify-content: center;
   gap: 4rem;
-  margin-top: 20rem;
+  margin-top: 12rem;
 }
 
-.gameEntry {
+.gamePanel {
+  background: rgb(224, 223, 223);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  width: 320px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gameSubtitles {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.gameButtons {
   padding: 12px 15px;
   font-size: 15px;
-  width: 12ch;
+  width: 19ch;
+  text-align: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.ButtonRow {
+  justify-content: center;
+  display: flex;
+  margin-top: auto;
 }
 
 .linkModifier {
   text-decoration: none;
   color: inherit;
+}
+
+.joinErrorMessage {
+  color: red;
+}
+
+.joinApprovedMessage {
+  color: darkgreen;
 }
 </style>
