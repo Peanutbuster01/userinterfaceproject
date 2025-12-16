@@ -96,6 +96,13 @@ export default {
         socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.on("gameSettings", (settings) => { console.log(settings) })
 
+
+        socket.on("playerJoined", (lobbyId) => {
+            console.log("spelare skapad", lobbyId);
+            this.$router.push({ path: `/game/${lobbyId}` });
+        });
+
+
         socket.emit("getGameSettings", this.lobbyID)
         socket.emit("getUILabels", this.lang);
 
