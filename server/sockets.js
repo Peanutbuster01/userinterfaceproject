@@ -15,7 +15,10 @@ function sockets(io, socket, data) {
     socket.emit('gameSettings', data.getGame(lobbyID).settings);
   });
 
-
+  socket.on('submitPlayerInfo', function (playerInfo) {
+    data.joinGame(playerInfo);
+    socket.emit('playerJoined')
+  });
 
 
   socket.on('addQuestion', function (d) {
@@ -47,17 +50,9 @@ function sockets(io, socket, data) {
     io.to(d.lobbyID).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.lobbyID));
   });
 
-  socket.on('submitPlayerInfo', function (playerInfo) {
-    data.joinGame(playerInfo);
-    socket.emit('playerJoined')
-  });
 
 
 
-  // name: this.playerName,
-  // ships: this.placedShips,
-  //lobbyNum: this.lobbyID,
-  //charIndex: this.characterIndex
 
 }
 
