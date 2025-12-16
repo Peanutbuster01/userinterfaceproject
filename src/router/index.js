@@ -39,12 +39,7 @@ const router = createRouter({
       component: () => import('../views/JoinView.vue')
     },
 
-    {
-      path: '/game/',
-      name: 'GameView',
-      component: () => import('../views/GameView.vue')
-    }
-
+    
   ]
 })
 
