@@ -30,7 +30,7 @@ const router = createRouter({
       path: '/lobby/',
       name: 'LobbyView',
       component: () => import('../views/LobbyView.vue')
-    }
+    },
 
     {
       path: '/result/:id',

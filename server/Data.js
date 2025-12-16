@@ -65,6 +65,11 @@ Data.prototype.joinGame = function (d) {
   }
 }
 
+
+
+
+
+
 Data.prototype.getParticipants = function (pollId) {
   const poll = this.polls[pollId];
   console.log("participants requested for", pollId);
