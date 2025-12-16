@@ -17,7 +17,6 @@
 
     <!--vänster sida (boards)-->
     <div class="leftColumns">
-
         <div id="playerBoard">
             <div id="board">
                 <div id="overlay">
@@ -44,7 +43,7 @@
     </div>
 
     <!--höger karaktär, fråga, svar-->
-<div class="rightColumn">
+    <div class="rightColumn">
         <div id="playerCharacter">
             <h2 class="playerName">{{ playerName }}</h2>
 
@@ -68,11 +67,10 @@
                 :placeholder="uiLabels.answerMathQuestion"  
                 />
 
-                <button class="anserButton" @click="submitAnswer">{{uiLabels.send}}</button>
+                <button class="answerButton" @click="submitAnswer">{{uiLabels.send}}</button>
         </div>
     </div>    
 </div>
-
 
 
 </template>
@@ -104,10 +102,11 @@ export default {
             selectedCharacterIndex: 1, //byt så index byt ut automatiskt
             characters: characters,
 
-            currentQuestion: "2+2=?", //plceholder
+            currentQuestion: "",
             playerAnswer: "",
         }
     },
+
     created: function () {
         socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.emit("getUILabels", this.lang);
@@ -138,27 +137,104 @@ export default {
             // sen: socket.emit(...) när du kopplar det
         },
 
-        getDifficultySettings: function(level){
-            if (level === "easy") return {min:0, max:10};
-            if (level === "medium") return {min:0, max:20};
-            if (level === "hard") return {min:0, max:50};
-            return {min:0, max:100}; // level nightmare
-        },
-
         randomInt: function (min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
 
-        makeAddition: function (settings) {
-            const a = this.randomInt(settings.min, settings.max);
-            const b = this.randomInt(settings.min, settings.max);
+        makeAddition: function (level) {
+            const a = this.randomInt(level.min, level.max);
+            const b = this.randomInt(level.min, level.max);
 
             return {
                 question: `${a} + ${b} = ?`,
                 answer: a + b
             };
+        },
+
+        makeSubtraction: function (level) {
+            const a = this.randomInt(level.min, level.max);
+            const b = this.randomInt(level.min, level.max);
+
+            return {
+                question: `${a} - ${b} = ?`,
+                answer: a - b
+            };
+
+        },
+
+        makeMultiplication: function (level) {
+            const a = this.randomInt(level.min, level.max);
+            const b = this.randomInt(level.min, level.max);
+
+            return {
+                question: `${a} × ${b} = ?`,
+                answer: a * b
+            };
+        },
+
+        makeDivision: function (level) {
+            const b = this.randomInt(level.min + 1, level.max); // undvik division med 0
+            const answer = this.randomInt(level.min, level.max);
+            const a = b * answer; // se till att det går jämnt ut
+
+            return {
+                question: `${a} ÷ ${b} = ?`,
+                answer: answer
+            };
+        },
+
+    chosenGameSetting: function(chosenGameLevel, chosenGameCalcuationMethods){
+        let chosenMethods = [];
+        let chosenLevel = {min:0, max:0};
+
+        if (chosenGameLevel === "easy") {
+            chosenLevel = {min:0, max:10};
+        } else if (chosenGameLevel === "medium") {
+            chosenLevel = {min:0, max:20};
+        } else if (chosenGameLevel === "hard") {
+            chosenLevel = {min:0, max:50};
+        } else {
+            chosenLevel = {min:0, max:100}; // level nightmare
+        }
+
+        if (chosenGameCalcuationMethods.includes("addition")) {
+            chosenMethods.push(this.makeAddition);
+        }
+        if (chosenGameCalcuationMethods.includes("subtraction")) {
+            chosenMethods.push(this.makeSubtraction); 
+        }                          
+        if (chosenGameCalcuationMethods.includes("multiplication")) {
+            chosenMethods.push(this.makeMultiplication);                       
+        }
+        if (chosenGameCalcuationMethods.includes("division")) {
+            chosenMethods.push(this.makeDivision);  
+        }
+
+        return {
+            level: chosenLevel,
+            methods: chosenMethods
+        };
+    }, 
+    
+    generateEquation: function(chosenGameSetting) {
+        const methods = chosenGameSetting.methods;
+        const level = chosenGameSetting.level;
+
+        let randomCalculationMethod = methods[Math.floor(Math.random() * methods.length)];
+        let equation = randomCalculationMethod(level);
+        return {
+            currentEquation: equation
+        };
+    },
+
+    checkAnswer: function(playerAnswer, currentEquation) {
+        if (parseInt(playerAnswer) === currentEquation.answer) {
+            return true;
+        } else {
+            return false;
         }
     }
+  }
 }
 </script>
 
