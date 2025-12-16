@@ -147,8 +147,9 @@ export default {
   created: function () {
     socket.on("uiLabels", labels => this.uiLabels = labels);
     socket.emit("getUILabels", this.lang);
-    socket.on('gameCreated', function (d) {
-      console.log("spel skapat", d)
+    socket.on('gameCreated', (lobbyId) => {
+      console.log("spel skapat", lobbyId)
+      this.$router.push({ path: `/join/${lobbyId}` })
     });
   },
 
@@ -184,7 +185,15 @@ export default {
     },
 
     createGame: function () {
-      socket.emit('createGame', { lobbyID: this.lobbyID, lang: this.lang })
+      socket.emit('createGame', {
+        lobbyID: this.lobbyID,
+        settings: {
+          level: this.selectedLevel,
+          operations: this.selectedOperations
+        }
+
+      })
+
     },
 
     validateLobbyID() {

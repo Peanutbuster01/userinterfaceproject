@@ -91,9 +91,14 @@ export default {
         }
     },
     created: function () {
-        socket.on("uiLabels", labels => this.uiLabels = labels);
-        socket.emit("getUILabels", this.lang);
         this.lobbyID = this.$route.params.id;
+
+        socket.on("uiLabels", labels => this.uiLabels = labels);
+        socket.on("gameSettings", (settings) => { console.log(settings) })
+
+        socket.emit("getGameSettings", this.lobbyID)
+        socket.emit("getUILabels", this.lang);
+
     },
     methods: {
         switchLanguage: function () {
@@ -155,7 +160,7 @@ export default {
                 socket.emit("submitPlayerInfo", {
                     name: this.playerName,
                     ships: this.placedShips,
-                    lobbyNum: this.lobbyID,
+                    lobbyID: this.lobbyID,
                     charIndex: this.characterIndex
                 });
             }

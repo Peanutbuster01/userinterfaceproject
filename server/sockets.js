@@ -5,9 +5,18 @@ function sockets(io, socket, data) {
   });
 
   socket.on('createGame', function (d) {
-    data.createGame(d.lobbyID, d.lang)
-    socket.emit('gameCreated', data.getGame(d.lobbyID));
+    data.createGame(d.lobbyID, d.settings)
+    socket.emit('gameCreated', d.lobbyID);
   });
+
+
+
+  socket.on('getGameSettings', function (lobbyID) {
+    socket.emit('gameSettings', data.getGame(lobbyID).settings);
+  });
+
+
+
 
   socket.on('addQuestion', function (d) {
     data.addQuestion(d.lobbyID, { q: d.q, a: d.a });
@@ -38,9 +47,12 @@ function sockets(io, socket, data) {
     io.to(d.lobbyID).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.lobbyID));
   });
 
-  socket.on('submitPlayerInfo', function (d) {
-    data.joinGame(d);
+  socket.on('submitPlayerInfo', function (playerInfo) {
+    data.joinGame(playerInfo);
+    socket.emit('playerJoined')
   });
+
+
 
   // name: this.playerName,
   // ships: this.placedShips,

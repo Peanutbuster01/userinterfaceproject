@@ -40,14 +40,12 @@ Data.prototype.getUILabels = function (lang) {
   return JSON.parse(labels);
 }
 
-Data.prototype.createGame = function (pollId, lang = "en") {
+Data.prototype.createGame = function (pollId, settings) {
   if (!this.pollExists(pollId)) {
     let poll = {};
-    poll.lang = lang;
-    poll.questions = [];
-    poll.answers = [];
     poll.participants = [];
-    poll.currentQuestion = 0;
+    poll.currentQuestion = "";
+    poll.settings = settings;
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
