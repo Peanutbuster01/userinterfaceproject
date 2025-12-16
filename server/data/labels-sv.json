@@ -44,6 +44,9 @@
 
 	"createLobbyInstructions": "Fyll i alla fält för att skapa lobby",
 	"createLobbyButtonReady": "Skapa lobby nu",
-	"createLobbyButtonNotReady": "Väntar på att alla fält ska fyllas i"
+	"createLobbyButtonNotReady": "Väntar på att alla fält ska fyllas i",
+
+	"answerMathQuestion": "Skriv ditt svar här",
+	"send": "Skicka"
 
 }

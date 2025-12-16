@@ -43,5 +43,8 @@
 
 	"createLobbyInstructions": "Fill in all fields to create lobby",
 	"createLobbyButtonReady": "Create lobby now",
-	"createLobbyButtonNotReady": "Waiting for all fields to be filled in"
+	"createLobbyButtonNotReady": "Waiting for all fields to be filled in",
+
+	"answerMathQuestion": "Type your answer here",	
+	"send": "Send"	
 }
