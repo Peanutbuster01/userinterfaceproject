@@ -59,7 +59,6 @@
             <button @click="showPopupBoolean = false" id="okButton">OK</button>
 
         </div>
-
     </div>
 
 
