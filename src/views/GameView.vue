@@ -13,57 +13,69 @@
         <div class="lobbyID">Lobby-ID: </div>
     </ResponsiveNav>
 
-    <h1>{{ uiLabels.joinWelcome }}</h1>
+<div class="pageLayout">
 
-    <div id="container">
-        <div id="board">
-            <div id="overlay">
-                <div v-for="(x, i) in 12" class="square" @click="placeCharacter(i)">
-                    <img class="placedCharacterShip"
-                        :class="[{ 'characterShipBorder': placedShips.findIndex(x => x == i) == selectedCharacter }]"
-                        v-if="placedShips.includes(i)" :src="characters[characterIndex].image">
-                </div>
-            </div>
-            <div>
-                <button id="readyButton" @click="readyToPlay">{{ uiLabels.ready }}</button>
-            </div>
-        </div>
+    <!--vänster sida (boards)-->
+    <div class="leftColumns">
 
-        <div id="player">
-            <div>
-                <label for="name">{{ uiLabels.playerName }}</label>
-                <input type="text" id="name" v-model="playerName" required="required">
-            </div>
-            <div id="chooseCharacter">
-                <button class="characterButton" @click="previousCharacter">←</button>
-                <img class="chosenCharacter" :src="characters[characterIndex].image">
-                <button class="characterButton" @click="nextCharacter">→</button>
-            </div>
-            <div id="ships">
-                <p>
-                    {{ uiLabels.placePlayerInstruction }}
-                </p>
-                <div>
-                    <template v-for="(x, i) in 3">
-                        <img class="characterShip" @click="select" v-if="placedShips[i] == null"
-                            :src="characters[characterIndex].image">
-                    </template>
+        <div id="playerBoard">
+            <div id="board">
+                <div id="overlay">
+                    <div v-for="(x, i) in 12" class="square" @click="placeCharacter(i)">
+                        <img class="placedCharacterShip"
+                            :class="[{ 'characterShipBorder': placedShips.findIndex(x => x == i) == selectedCharacter }]"
+                            v-if="placedShips.includes(i)" :src="characters[characterIndex].image">
+                    </div>
                 </div>
             </div>
         </div>
 
-    </div>
-    <div class="popupBackground" :style="{ display: showPopupBoolean ? 'block' : 'none' }">
-        <div class="popup">
-            <p>{{ uiLabels.notReadyPopup }}</p>
-            <button @click="showPopupBoolean = false" id="okButton">OK</button>
-
+        <div id="OpponentBoard">
+            <div id="board">
+                <div id="overlay">
+                    <div v-for="(x, i) in 12" class="square" @click="placeCharacter(i)">
+                        <img class="placedCharacterShip"
+                            :class="[{ 'characterShipBorder': placedShips.findIndex(x => x == i) == selectedCharacter }]"
+                            v-if="placedShips.includes(i)" :src="characters[characterIndex].image">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!--höger karaktär, fråga, svar-->
+<div class="rightColumn">
+        <div id="playerCharacter">
+            <h2 class="playerName">{{ playerName }}</h2>
+
+            <img
+            class="playerCharacterImage"
+            :src="selectedCharacter.image"
+            :alt="selectedCharacter.name" 
+            />
+        </div>
+    
+
+        <div class="questionBox">
+            <p class="questionText">{{ currentQuestion }}</p>
+        </div>
+
+        <div class="answerBox">
+            <input
+                class="answerInput"
+                type="text"
+                v-model="playerAnswer"
+                :placeholder="uiLabels.answerMathQuestion"  
+                />
+
+                <button class="anserButton" @click="submitAnswer">{{uiLabels.send}}</button>
+        </div>
+    </div>    
+</div>
+
 
 
 </template>
-
 <script>
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
@@ -74,25 +86,33 @@ export default {
     components: {
         ResponsiveNav
     },
+
     data: function () {
         return {
             uiLabels: {},
             lang: localStorage.getItem("lang") || "sv",
             hideNav: true,
-            playerName: "",
-            characters,
-            characterIndex: 0,
             placedShips: [
                 null, null, null,
             ],
-            selectedCharacter: 0,
             showPopupBoolean: false,
+
+            //placeholder tills att socket data kommer in
+            playerName: "MyPlayer",
+            characterIndex: 0,
+            selectedCharacter: 0,
+            selectedCharacterIndex: 1, //byt så index byt ut automatiskt
+            characters: characters,
+
+            currentQuestion: "2+2=?", //plceholder
+            playerAnswer: "",
         }
     },
     created: function () {
         socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.emit("getUILabels", this.lang);
     },
+
     methods: {
         switchLanguage: function () {
             if (this.lang === "en") {
@@ -107,57 +127,37 @@ export default {
         toggleNav: function () {
             this.hideNav = !this.hideNav;
         },
-        previousCharacter: function () {
-            if (this.characterIndex === 0) {
-                this.characterIndex = this.characters.length - 1
-            }
-            else {
-                this.characterIndex--
-            }
 
+        placeCharacter: function (i) {
+            // placeholder tills du implementerar logiken
+            console.log("placeCharacter", i);
         },
-        nextCharacter: function () {
-            if (this.characterIndex === this.characters.length - 1) {
-                this.characterIndex = 0
-            }
-            else {
-                this.characterIndex++
-            }
 
+        submitAnswer: function () {
+            console.log("Svar:", this.playerAnswer);
+            // sen: socket.emit(...) när du kopplar det
         },
-        placeCharacter: function (index) {
-            if (this.placedShips.includes(index)) {
-                this.selectedCharacter = this.placedShips.findIndex(x => x == index)
-            }
-            else {
-                this.placedShips[this.selectedCharacter] = index;
-                if (this.placedShips.includes(null)) {
-                    this.selectedCharacter = this.placedShips.findIndex(x => x == null)
-                }
-                else {
-                    this.selectedCharacter = null;
-                }
 
-            }
-
+        getDifficultySettings: function(level){
+            if (level === "easy") return {min:0, max:10};
+            if (level === "medium") return {min:0, max:20};
+            if (level === "hard") return {min:0, max:50};
+            return {min:0, max:100}; // level nightmare
         },
-        select: function () {
 
+        randomInt: function (min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
         },
-        readyToPlay: function () {
-            console.log(this.playerName)
-            if (this.placedShips.includes(null) || this.playerName.length == 0) {
-                this.showPopupBoolean = true;
-            }
-            else {
-                socket.emit("sendPlayerName", {
-                    name: this.playerName,
-                    ships: this.placedShips
-                });
-            }
 
+        makeAddition: function (settings) {
+            const a = this.randomInt(settings.min, settings.max);
+            const b = this.randomInt(settings.min, settings.max);
+
+            return {
+                question: `${a} + ${b} = ?`,
+                answer: a + b
+            };
         }
-
     }
 }
 </script>
@@ -216,13 +216,6 @@ header {
     transform: scale(0.95);
 }
 
-.placedCharacterShip {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
-}
 
 #player {
     margin: 20px;
@@ -230,71 +223,11 @@ header {
     justify-items: center;
 }
 
-#chooseCharacter {
-    display: flex;
-    align-items: center;
-}
 
 #container {
     display: flex;
     gap: 2rem;
     margin-bottom: 50px;
-}
-
-.chosenCharacter {
-    width: 12rem;
-    height: 12rem;
-    margin: 0.5rem;
-    padding: 0.2rem;
-}
-
-.characterButton {
-    background-color: rgb(235, 77, 177);
-    color: white;
-    padding: 0.5rem;
-    border: none;
-    cursor: pointer;
-    border-radius: 0.25rem;
-    box-shadow: 3px 3px 2px 0px black;
-}
-
-.characterButton:hover {
-    background-color: rgb(159, 50, 119);
-    transform: scale(1.1);
-}
-
-
-
-#ships {
-    margin: 1rem;
-    padding: 1rem;
-}
-
-.characterShip {
-    width: 8rem;
-    height: 8rem;
-    padding: 5px;
-}
-
-.characterShipBorder {
-    border: 5px solid green;
-}
-
-#readyButton {
-    background-color: rgb(0, 177, 0);
-    color: white;
-    font-size: 5ch;
-    padding: 0.5rem;
-    margin-top: 100px;
-    border: none;
-    cursor: pointer;
-    border-radius: 0.25rem;
-    box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.402);
-}
-
-#readyButton:hover {
-    background-color: green;
-    transform: scale(1.1);
 }
 
 .popup {
@@ -321,7 +254,74 @@ header {
     background-color: #00000040;
 }
 
-#okButton {
-    cursor: pointer;
+.leftColumn {
+  display: flex;
+  flex-direction: column;
 }
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem; /* linjerar med boardens margin */
+}
+
+#playerCharacter {
+  margin-top: 2rem; /* matchar boardens margin */
+  min-width: 200px;
+  padding: 1rem;
+  border: 2px solid #962d9a;
+  border-radius: 20px;
+}
+
+.playerName {
+  margin: 0 0 1rem 0;
+  font-size: 1.6rem;
+}
+
+.playerCharacterImage {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  display: block;
+}
+
+.pageLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 3rem;
+}
+
+.questionBox {
+  min-width: 260px;
+  padding: 1rem;
+  border-radius: 12px;
+  background: white;
+  border: 2px solid #962d9a;
+
+}
+
+.answerBox {
+  min-width: 260px;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  
+}
+
+.answerInput {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #962d9a;
+  border-radius: 10px;
+}
+
+.answerBtn {
+  padding: 0.75rem 1rem;
+  border: 2px solid #111;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+}
+
 </style>
