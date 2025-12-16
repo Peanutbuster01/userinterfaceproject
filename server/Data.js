@@ -60,8 +60,9 @@ Data.prototype.getGame = function (pollId) {
 }
 
 Data.prototype.joinGame = function (d) {
-  if (this.pollExists(d.lobbyID)) {
-    this.polls[d.lobbyID].participants.push({ playerName: d.playerName, placedShips: d.placedShips })
+  if (this.pollExists(d.lobbyId)) {
+    this.polls[d.lobbyId].participants.push({ playerName: d.name, placedShips: d.ships, avatarIndex: d.avatarIndex })
+    return this.polls[d.lobbyId].participants.length - 1;
   }
 }
 

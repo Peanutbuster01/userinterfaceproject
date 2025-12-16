@@ -14,13 +14,13 @@
     <h2>{{ uiLabels.pageDescription }}</h2>
   </div>
 
-  <div class="createLobbyID">
-    <h2>{{ uiLabels.createLobbyID }}</h2>
+  <div class="createlobbyId">
+    <h2>{{ uiLabels.createlobbyId }}</h2>
     <!-- Inputfält för lobby ID -->
-    <input type="text" v-model="lobbyID" :placeholder="uiLabels.fourCharLobbyID" maxlength="4" @input="validateLobbyID"
+    <input type="text" v-model="lobbyId" :placeholder="uiLabels.fourCharlobbyId" maxlength="4" @input="validatelobbyId"
       class="lobbyInput">
 
-    <p v-if="lobbyMessage" :class="lobbyID.length === 4 ? 'lobbyApprovedMessage' : 'lobbyErrorMessage'">
+    <p v-if="lobbyMessage" :class="lobbyId.length === 4 ? 'lobbyApprovedMessage' : 'lobbyErrorMessage'">
       {{ lobbyMessage }}
     </p>
   </div>
@@ -140,7 +140,7 @@ export default {
       lang: localStorage.getItem("lang") || "sv",
       selectedOperations: [], //sparar vilka räknesätt som valts av host
       selectedLevel: null,
-      lobbyID: "",
+      lobbyId: "",
       lobbyMessage: "",
     }
   },
@@ -186,7 +186,7 @@ export default {
 
     createGame: function () {
       socket.emit('createGame', {
-        lobbyID: this.lobbyID,
+        lobbyId: this.lobbyId,
         settings: {
           level: this.selectedLevel,
           operations: this.selectedOperations
@@ -196,8 +196,8 @@ export default {
 
     },
 
-    validateLobbyID() {
-      if (this.lobbyID.length === 4) {
+    validatelobbyId() {
+      if (this.lobbyId.length === 4) {
         this.lobbyMessage = this.uiLabels.lobbyApprovedMessage || "Lobby-ID godkänt";
       } else {
         this.lobbyMessage = this.uiLabels.lobbyErrorMessage || "Lobby-ID måste vara 4 tecken";
@@ -208,7 +208,7 @@ export default {
 
   computed: { //använder computed för att systemet ska uppdateras automatiskt när ngt ändras
     createLobbyReady() {
-      return this.lobbyID.length === 4 && //att skriva return är som att skriva return true if, att skrivva && betyder att alla villkor måste vara sanna
+      return this.lobbyId.length === 4 && //att skriva return är som att skriva return true if, att skrivva && betyder att alla villkor måste vara sanna
         this.selectedOperations.length > 0 &&
         this.selectedLevel !== null;
     }
@@ -260,7 +260,7 @@ header {
   grid: 0%;
 }
 
-.lobbyID {
+.lobbyId {
   font-size: 2rem;
   padding-top: 0.5em;
 }
@@ -272,7 +272,7 @@ header {
   margin-bottom: 1rem;
 }
 
-.createLobbyID {
+.createlobbyId {
   border: 1px solid #ddd;
   border-radius: 6px;
   padding: 1rem;

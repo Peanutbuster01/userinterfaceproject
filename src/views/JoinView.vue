@@ -10,7 +10,7 @@
         <button>
             <img v-on:click="switchLanguage" :src="uiLabels.flag" style="width: 60%;">
         </button>
-        <div class="lobbyID">Lobby-ID: {{ lobbyID }} </div>
+        <div class="lobbyId">Lobby-ID: {{ lobbyId }} </div>
     </ResponsiveNav>
 
     <h1>{{ uiLabels.joinWelcome }}</h1>
@@ -18,10 +18,10 @@
     <div id="container">
         <div id="board">
             <div id="overlay">
-                <div v-for="(x, i) in 12" class="square" @click="placeCharacter(i)">
-                    <img class="placedCharacterShip"
-                        :class="[{ 'characterShipBorder': placedShips.findIndex(x => x == i) == selectedCharacter }]"
-                        v-if="placedShips.includes(i)" :src="characters[characterIndex].image">
+                <div v-for="(x, i) in 12" class="square" @click="placeAvatar(i)">
+                    <img class="placedAvatarShip"
+                        :class="[{ 'avatarShipBorder': placedShips.findIndex(x => x == i) == selectedAvatar }]"
+                        v-if="placedShips.includes(i)" :src="avatars[avatarIndex].image">
                 </div>
             </div>
             <div>
@@ -34,10 +34,10 @@
                 <label for="name">{{ uiLabels.playerName }}</label>
                 <input type="text" id="name" v-model="playerName" required="required">
             </div>
-            <div id="chooseCharacter">
-                <button class="characterButton" @click="previousCharacter">←</button>
-                <img class="chosenCharacter" :src="characters[characterIndex].image">
-                <button class="characterButton" @click="nextCharacter">→</button>
+            <div id="chooseAvatar">
+                <button class="avatarButton" @click="previousAvatar">←</button>
+                <img class="chosenAvatar" :src="avatars[avatarIndex].image">
+                <button class="avatarButton" @click="nextAvatar">→</button>
             </div>
             <div id="ships">
                 <p>
@@ -45,8 +45,8 @@
                 </p>
                 <div>
                     <template v-for="(x, i) in 3">
-                        <img class="characterShip" @click="select" v-if="placedShips[i] == null"
-                            :src="characters[characterIndex].image">
+                        <img class="avatarShip" @click="select" v-if="placedShips[i] == null"
+                            :src="avatars[avatarIndex].image">
                     </template>
                 </div>
             </div>
@@ -68,7 +68,7 @@
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
 import ResponsiveNav from '@/components/ResponsiveNav.vue';
-import characters from "../assets/characters.json";
+import avatars from "../assets/avatars.json";
 
 export default {
     components: {
@@ -79,31 +79,36 @@ export default {
             uiLabels: {},
             lang: localStorage.getItem("lang") || "sv",
             hideNav: true,
-            lobbyID: "",
+            lobbyId: "",
+            playerId: 0,
             playerName: "",
-            characters,
-            characterIndex: 0,
+            avatars,
+            avatarIndex: 0,
             placedShips: [
                 null, null, null,
             ],
-            selectedCharacter: 0,
+            selectedAvatar: 0,
             showPopupBoolean: false,
         }
     },
     created: function () {
-        this.lobbyID = this.$route.params.id;
+        this.lobbyId = this.$route.params.id;
 
         socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.on("gameSettings", (settings) => { console.log(settings) })
 
 
-        socket.on("playerJoined", (lobbyId) => {
-            console.log("spelare skapad", lobbyId);
-            this.$router.push({ path: `/game/${lobbyId}` });
+        socket.on("playerJoined", (playerId) => {
+            console.log("spelare skapad", this.lobbyId);
+            this.playerId = playerId;
         });
 
+        socket.on("startGame", () => {
+            this.$router.push({ path: `/game/${this.lobbyId}/${this.playerId}` });
+        })
 
-        socket.emit("getGameSettings", this.lobbyID)
+
+        socket.emit("getGameSettings", this.lobbyId)
         socket.emit("getUILabels", this.lang);
 
     },
@@ -121,35 +126,35 @@ export default {
         toggleNav: function () {
             this.hideNav = !this.hideNav;
         },
-        previousCharacter: function () {
-            if (this.characterIndex === 0) {
-                this.characterIndex = this.characters.length - 1
+        previousAvatar: function () {
+            if (this.avatarIndex === 0) {
+                this.avatarIndex = this.avatars.length - 1
             }
             else {
-                this.characterIndex--
+                this.avatarIndex--
             }
 
         },
-        nextCharacter: function () {
-            if (this.characterIndex === this.characters.length - 1) {
-                this.characterIndex = 0
+        nextAvatar: function () {
+            if (this.avatarIndex === this.avatars.length - 1) {
+                this.avatarIndex = 0
             }
             else {
-                this.characterIndex++
+                this.avatarIndex++
             }
 
         },
-        placeCharacter: function (index) {
+        placeAvatar: function (index) {
             if (this.placedShips.includes(index)) {
-                this.selectedCharacter = this.placedShips.findIndex(x => x == index)
+                this.selectedAvatar = this.placedShips.findIndex(x => x == index)
             }
             else {
-                this.placedShips[this.selectedCharacter] = index;
+                this.placedShips[this.selectedAvatar] = index;
                 if (this.placedShips.includes(null)) {
-                    this.selectedCharacter = this.placedShips.findIndex(x => x == null)
+                    this.selectedAvatar = this.placedShips.findIndex(x => x == null)
                 }
                 else {
-                    this.selectedCharacter = null;
+                    this.selectedAvatar = null;
                 }
 
             }
@@ -167,8 +172,8 @@ export default {
                 socket.emit("submitPlayerInfo", {
                     name: this.playerName,
                     ships: this.placedShips,
-                    lobbyID: this.lobbyID,
-                    charIndex: this.characterIndex
+                    lobbyId: this.lobbyId,
+                    avatarIndex: this.avatarIndex
                 });
             }
         }
@@ -192,7 +197,7 @@ header {
     grid: 0%;
 }
 
-.lobbyID {
+.lobbyId {
     font-size: 2rem;
     padding-top: 0.5em;
 }
@@ -230,7 +235,7 @@ header {
     transform: scale(0.95);
 }
 
-.placedCharacterShip {
+.placedAvatarShip {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -244,7 +249,7 @@ header {
     justify-items: center;
 }
 
-#chooseCharacter {
+#chooseAvatar {
     display: flex;
     align-items: center;
 }
@@ -255,14 +260,14 @@ header {
     margin-bottom: 50px;
 }
 
-.chosenCharacter {
+.chosenAvatar {
     width: 12rem;
     height: 12rem;
     margin: 0.5rem;
     padding: 0.2rem;
 }
 
-.characterButton {
+.avatarButton {
     background-color: rgb(235, 77, 177);
     color: white;
     padding: 0.5rem;
@@ -272,7 +277,7 @@ header {
     box-shadow: 3px 3px 2px 0px black;
 }
 
-.characterButton:hover {
+.avatarButton:hover {
     background-color: rgb(159, 50, 119);
     transform: scale(1.1);
 }
@@ -284,13 +289,13 @@ header {
     padding: 1rem;
 }
 
-.characterShip {
+.avatarShip {
     width: 8rem;
     height: 8rem;
     padding: 5px;
 }
 
-.characterShipBorder {
+.avatarShipBorder {
     border: 5px solid green;
 }
 

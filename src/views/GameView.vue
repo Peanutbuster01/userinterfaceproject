@@ -10,68 +10,59 @@
         <button>
             <img v-on:click="switchLanguage" :src="uiLabels.flag" style="width: 60%;">
         </button>
-        <div class="lobbyID">Lobby-ID: </div>
+        <div class="lobbyID">Lobby-ID: {{ lobbyId }}</div>
     </ResponsiveNav>
 
-<div class="pageLayout">
+    <div class="pageLayout">
 
-    <!--vänster sida (boards)-->
-    <div class="leftColumns">
+        <!--vänster sida (boards)-->
+        <div class="leftColumns">
 
-        <div id="playerBoard">
-            <div id="board">
-                <div id="overlay">
-                    <div v-for="(x, i) in 12" class="square" @click="placeCharacter(i)">
-                        <img class="placedCharacterShip"
-                            :class="[{ 'characterShipBorder': placedShips.findIndex(x => x == i) == selectedCharacter }]"
-                            v-if="placedShips.includes(i)" :src="characters[characterIndex].image">
+            <div id="playerBoard">
+                <div id="board">
+                    <div id="overlay">
+                        <div v-for="(x, i) in 12" class="square">
+                            <img class="placedAvatarShip" v-if="placedShips.includes(i)"
+                                :src="avatars[avatarIndex].image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="OpponentBoard">
+                <div id="board">
+                    <div id="overlay">
+                        <div v-for="(x, i) in 12" class="square" @click="placeAvatar(i)">
+                            <img class="placedAvatarShip"
+                                :class="[{ 'avatarShipBorder': placedShips.findIndex(x => x == i) == selectedAvatar }]"
+                                v-if="placedShips.includes(i)" :src="avatars[avatarIndex].image">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="OpponentBoard">
-            <div id="board">
-                <div id="overlay">
-                    <div v-for="(x, i) in 12" class="square" @click="placeCharacter(i)">
-                        <img class="placedCharacterShip"
-                            :class="[{ 'characterShipBorder': placedShips.findIndex(x => x == i) == selectedCharacter }]"
-                            v-if="placedShips.includes(i)" :src="characters[characterIndex].image">
-                    </div>
-                </div>
+        <!--höger karaktär, fråga, svar-->
+        <div class="rightColumn">
+            <div id="playerAvatar">
+                <h2 class="playerName">{{ playerName }}</h2>
+
+                <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
+            </div>
+
+
+            <div class="questionBox">
+                <p class="questionText">{{ currentQuestion }}</p>
+            </div>
+
+            <div class="answerBox">
+                <input class="answerInput" type="text" v-model="playerAnswer"
+                    :placeholder="uiLabels.answerMathQuestion" />
+
+                <button class="anserButton" @click="submitAnswer">{{ uiLabels.send }}</button>
             </div>
         </div>
     </div>
-
-    <!--höger karaktär, fråga, svar-->
-<div class="rightColumn">
-        <div id="playerCharacter">
-            <h2 class="playerName">{{ playerName }}</h2>
-
-            <img
-            class="playerCharacterImage"
-            :src="selectedCharacter.image"
-            :alt="selectedCharacter.name" 
-            />
-        </div>
-    
-
-        <div class="questionBox">
-            <p class="questionText">{{ currentQuestion }}</p>
-        </div>
-
-        <div class="answerBox">
-            <input
-                class="answerInput"
-                type="text"
-                v-model="playerAnswer"
-                :placeholder="uiLabels.answerMathQuestion"  
-                />
-
-                <button class="anserButton" @click="submitAnswer">{{uiLabels.send}}</button>
-        </div>
-    </div>    
-</div>
 
 
 
@@ -80,7 +71,7 @@
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
 import ResponsiveNav from '@/components/ResponsiveNav.vue';
-import characters from "../assets/characters.json";
+import avatars from "../assets/avatars.json";
 
 export default {
     components: {
@@ -92,25 +83,44 @@ export default {
             uiLabels: {},
             lang: localStorage.getItem("lang") || "sv",
             hideNav: true,
+            lobbyId: "",
+            playerId: 0,
             placedShips: [
                 null, null, null,
             ],
             showPopupBoolean: false,
 
             //placeholder tills att socket data kommer in
-            playerName: "MyPlayer",
-            characterIndex: 0,
-            selectedCharacter: 0,
-            selectedCharacterIndex: 1, //byt så index byt ut automatiskt
-            characters: characters,
+            playerName: "",
+            avatarIndex: 0,
+            selectedAvatar: 0,
+            selectedAvatarIndex: 1, //byt så index byt ut automatiskt
+            avatars: avatars,
 
             currentQuestion: "2+2=?", //plceholder
             playerAnswer: "",
         }
     },
     created: function () {
+        this.lobbyId = this.$route.params.id;
+        this.playerId = Number(this.$route.params.playerId);
+
+
         socket.on("uiLabels", labels => this.uiLabels = labels);
+        socket.on("gameSettings", (settings) => { console.log(settings) });
+        socket.on("playerInfo", (playerInfo) => {
+            console.log("INFO:"); console.log(playerInfo);
+            this.placedShips = playerInfo.placedShips;
+            this.avatarIndex = playerInfo.avatarIndex;
+            this.playerName = playerInfo.playerName;
+            console.log(this.placedShips);
+        });
+
+
+
         socket.emit("getUILabels", this.lang);
+        socket.emit("getGameSettings", this.lobbyId);
+        socket.emit("getPlayerInfo", this.lobbyId, this.playerId);
     },
 
     methods: {
@@ -128,9 +138,9 @@ export default {
             this.hideNav = !this.hideNav;
         },
 
-        placeCharacter: function (i) {
+        placeAvatar: function (i) {
             // placeholder tills du implementerar logiken
-            console.log("placeCharacter", i);
+            console.log("placeAvatar", i);
         },
 
         submitAnswer: function () {
@@ -138,11 +148,11 @@ export default {
             // sen: socket.emit(...) när du kopplar det
         },
 
-        getDifficultySettings: function(level){
-            if (level === "easy") return {min:0, max:10};
-            if (level === "medium") return {min:0, max:20};
-            if (level === "hard") return {min:0, max:50};
-            return {min:0, max:100}; // level nightmare
+        getDifficultySettings: function (level) {
+            if (level === "easy") return { min: 0, max: 10 };
+            if (level === "medium") return { min: 0, max: 20 };
+            if (level === "hard") return { min: 0, max: 50 };
+            return { min: 0, max: 100 }; // level nightmare
         },
 
         randomInt: function (min, max) {
@@ -255,73 +265,83 @@ header {
 }
 
 .leftColumn {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .rightColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-top: 2rem; /* linjerar med boardens margin */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+    /* linjerar med boardens margin */
 }
 
-#playerCharacter {
-  margin-top: 2rem; /* matchar boardens margin */
-  min-width: 200px;
-  padding: 1rem;
-  border: 2px solid #962d9a;
-  border-radius: 20px;
+#playerAvatar {
+    margin-top: 2rem;
+    /* matchar boardens margin */
+    min-width: 200px;
+    padding: 1rem;
+    border: 2px solid #962d9a;
+    border-radius: 20px;
 }
+
+.placedAvatarShip {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
 
 .playerName {
-  margin: 0 0 1rem 0;
-  font-size: 1.6rem;
+    margin: 0 0 1rem 0;
+    font-size: 1.6rem;
 }
 
-.playerCharacterImage {
-  width: 180px;
-  height: 180px;
-  object-fit: contain;
-  display: block;
+.playerAvatarImage {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    display: block;
 }
 
 .pageLayout {
-  display: flex;
-  align-items: flex-start;
-  gap: 3rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
 }
 
 .questionBox {
-  min-width: 260px;
-  padding: 1rem;
-  border-radius: 12px;
-  background: white;
-  border: 2px solid #962d9a;
+    min-width: 260px;
+    padding: 1rem;
+    border-radius: 12px;
+    background: white;
+    border: 2px solid #962d9a;
 
 }
 
 .answerBox {
-  min-width: 260px;
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  
+    min-width: 260px;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+
 }
 
 .answerInput {
-  flex: 1;
-  padding: 0.75rem;
-  border: 2px solid #962d9a;
-  border-radius: 10px;
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #962d9a;
+    border-radius: 10px;
 }
 
 .answerBtn {
-  padding: 0.75rem 1rem;
-  border: 2px solid #111;
-  border-radius: 10px;
-  background: white;
-  cursor: pointer;
+    padding: 0.75rem 1rem;
+    border: 2px solid #111;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
 }
-
 </style>

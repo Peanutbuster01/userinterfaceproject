@@ -50,17 +50,17 @@
 
 
       <div>
-        <input class="gameButtons" type="text" maxlength="4" @input="validateLobbyID" v-model="newPollId"
+        <input class="gameButtons" type="text" maxlength="4" @input="validateLobbyId" v-model="lobbyId"
           :placeholder="uiLabels.fourCharGameID">
 
-        <p v-if="joinMessage" :class="newPollId.length === 4 ? 'joinApprovedMessage' : 'joinErrorMessage'">
+        <p v-if="joinMessage" :class="lobbyId.length === 4 ? 'joinApprovedMessage' : 'joinErrorMessage'">
           {{ joinMessage }}
         </p>
       </div>
 
       <div class="ButtonRow">
         <button class="gameButtons">
-          <router-link class="linkModifier" v-bind:to="'/join/' + newPollId">
+          <router-link class="linkModifier" v-bind:to="'/join/' + lobbyId">
             {{ uiLabels.joinGameButton }}
           </router-link>
         </button>
@@ -84,7 +84,7 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      newLobbyID: "",
+      lobbyId: "",
       joinMessage: "",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true,
@@ -110,8 +110,8 @@ export default {
       this.hideNav = !this.hideNav;
     },
 
-    validateLobbyID() {
-      if (this.newPollId.length === 4) {
+    validateLobbyId() {
+      if (this.lobbyId.length === 4) {
         this.joinMessage = this.uiLabels.joinApprovedMessage || "Spel-ID godkänt";
       } else {
         this.joinMessage = this.uiLabels.joinErrorMessage || "Spel-ID måste vara 4 tecken";
