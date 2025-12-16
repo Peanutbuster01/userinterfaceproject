@@ -33,9 +33,8 @@
                 <div id="board">
                     <div id="overlay">
                         <div v-for="(x, i) in 12" class="square" @click="placeAvatar(i)">
-                            <img class="placedAvatarShip"
-                                :class="[{ 'avatarShipBorder': placedShips.findIndex(x => x == i) == selectedAvatar }]"
-                                v-if="placedShips.includes(i)" :src="avatars[avatarIndex].image">
+                            <img class="placedAvatarShip" v-if="opponentPlacedShips.includes(i)"
+                                :src="avatars[opponentAvatarIndex].image">
                         </div>
                     </div>
                 </div>
@@ -84,16 +83,25 @@ export default {
             lang: localStorage.getItem("lang") || "sv",
             hideNav: true,
             lobbyId: "",
+
+            playerName: "",
+            avatarIndex: 0,
+            selectedAvatar: 0,
             playerId: 0,
             placedShips: [
                 null, null, null,
             ],
             showPopupBoolean: false,
 
+            opponentName: "",
+            opponentAvatarIndex: 0,
+            opponentId: 0,
+            opponentPlacedShips: [
+                null, null, null
+            ],
+
             //placeholder tills att socket data kommer in
-            playerName: "",
-            avatarIndex: 0,
-            selectedAvatar: 0,
+
             selectedAvatarIndex: 1, //byt så index byt ut automatiskt
             avatars: avatars,
 
@@ -108,19 +116,29 @@ export default {
 
         socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.on("gameSettings", (settings) => { console.log(settings) });
-        socket.on("playerInfo", (playerInfo) => {
-            console.log("INFO:"); console.log(playerInfo);
-            this.placedShips = playerInfo.placedShips;
-            this.avatarIndex = playerInfo.avatarIndex;
-            this.playerName = playerInfo.playerName;
-            console.log(this.placedShips);
-        });
+        socket.on("playerInfo", (playerId, playerInfo) => {
+            if (playerId == this.playerId) {
+                console.log("INFO:"); console.log(playerInfo);
+                this.placedShips = playerInfo.placedShips;
+                this.avatarIndex = playerInfo.avatarIndex;
+                this.playerName = playerInfo.playerName;
+                console.log(this.placedShips);
+            }
+            else {
+                console.log("MOTSTÅNDARINFO:"); console.log(playerInfo);
+                this.opponentPlacedShips = playerInfo.placedShips;
+                this.opponentAvatarIndex = playerInfo.avatarIndex;
+                this.opponentName = playerInfo.playerName;
+                console.log(this.opponentName);
+            }
 
+        });
 
 
         socket.emit("getUILabels", this.lang);
         socket.emit("getGameSettings", this.lobbyId);
-        socket.emit("getPlayerInfo", this.lobbyId, this.playerId);
+        socket.emit("getPlayerInfo", this.lobbyId, 0);
+        socket.emit("getPlayerInfo", this.lobbyId, 1);
     },
 
     methods: {

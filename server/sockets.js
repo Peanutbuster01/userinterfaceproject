@@ -33,7 +33,7 @@ function sockets(io, socket, data) {
   socket.on('getPlayerInfo', function (lobbyId, playerId) {
     const playerInfo = data.getGame(lobbyId).participants[playerId];
     console.log(playerInfo)
-    socket.emit("playerInfo", playerInfo);
+    socket.emit("playerInfo", playerId, playerInfo);
   });
 
 
