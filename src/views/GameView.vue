@@ -35,6 +35,8 @@
                     <div id="overlay">
                         <div v-for="(x, i) in 12" :key="'opp-' + i" class="square" @click="shootAtOpponent(i)">
                             <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
+
+
                         </div>
                     </div>
                     <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
