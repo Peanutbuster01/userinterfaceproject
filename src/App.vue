@@ -60,6 +60,8 @@ export default {
 
 <style scoped>
 @import url('https://fonts.cdnfonts.com/css/super-funky');
+@import url('https://fonts.googleapis.com/css2?family=ADLaM+Display&display=swap');
+
 
 .topBar {
   display: grid;
@@ -122,7 +124,9 @@ export default {
   background-color: var(--lavender-base-color);
   border-radius: 0.25rem;
   border: ridge 10px var(--lavender-darker-color);
-  font-family: 'Super Funky', sans-serif;
+  font-family: 'ADLaM Display', sans-serif;
+  box-shadow: 5px 4px 5px var(--pink-darker-color);
+  z-index: 100000;
 
 }
 
