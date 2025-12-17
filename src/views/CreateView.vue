@@ -6,8 +6,7 @@
   </div>
 
   <div class="createlobbyId">
-    <h2>{{ uiLabels.createlobbyId }}</h2>
-    <!-- Inputfält för lobby ID -->
+    <h3>{{ uiLabels.createLobbyId }}</h3>
     <input type="text" v-model="lobbyId" :placeholder="uiLabels.fourCharlobbyId" maxlength="4" @input="validatelobbyId"
       class="lobbyInput">
 
@@ -17,7 +16,7 @@
   </div>
 
   <div class="operations">
-    <h2>{{ uiLabels.chooseOperation }}</h2>
+    <h3>{{ uiLabels.chooseOperation }}</h3>
 
     <div class="addition" style="display: inline-block;">
       <img class="operationIcon"
@@ -68,7 +67,7 @@
   <br />
 
   <div class="level">
-    <h2>{{ uiLabels.level }}</h2>
+    <h3>{{ uiLabels.level }}</h3>
 
     <div class="easy" style="display: inline-block;">
       <img class="operationIcon"
@@ -114,7 +113,7 @@
   <div class="createLobbyButton">
     <p>{{ uiLabels.createLobbyInstructions }}</p>
     <button @click="createGame" :class="createLobbyReady ? 'createLobbyButtonReady' : 'createLobbyButtonNotReady'">
-      {{ createLobbyReady ? uiLabels.createLobbyButtonReady : uiLabels.createLobbyButtonNotReady }}
+      <p>{{ createLobbyReady ? uiLabels.createLobbyButtonReady : uiLabels.createLobbyButtonNotReady }}</p>
     </button>
   </div>
 
@@ -232,6 +231,8 @@ export default {
 
 button {
   cursor: pointer;
+  border: ridge 2px var(--blue-base-color)
+  
 }
 
 .chosen {
