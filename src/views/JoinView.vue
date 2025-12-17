@@ -183,7 +183,7 @@ export default {
 
 <style scoped>
 header {
-    background-color: gray;
+    background-color: var(--header-color);
     width: 100%;
     grid-template-columns: 2em auto;
 }
@@ -208,7 +208,7 @@ header {
     height: 300px;
     min-width: 300px;
     min-height: 300px;
-    border: 12px solid #962d9a;
+    border: 12px solid var(--board-border-color);
     border-radius: 12px;
     margin: 2rem;
 }
@@ -217,7 +217,7 @@ header {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    background-color: rgb(189, 123, 206);
+    background-color: var(--board-background-color);
     width: 100%;
     height: 100%;
     cursor: pointer;
@@ -268,7 +268,7 @@ header {
 }
 
 .avatarButton {
-    background-color: rgb(235, 77, 177);
+    background-color: var(--avatar-button-color);
     color: white;
     padding: 0.5rem;
     border: none;
@@ -278,7 +278,7 @@ header {
 }
 
 .avatarButton:hover {
-    background-color: rgb(159, 50, 119);
+    background-color: var(--avatar-button-hover);
     transform: scale(1.1);
 }
 

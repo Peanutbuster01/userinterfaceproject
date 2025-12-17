@@ -1,6 +1,14 @@
 :root {
   --foreground-color: red;
   --background-color: green;
+  --board-border-color: #962d9a;
+  --board-background-color: rgb(189, 123, 206);
+  --header-color: rgb(215, 61, 130);
+  --square-shadow: rgb(255, 255, 255);
+  --avatar-button-color: rgb(235, 77, 177);
+  --avatar-button-hover: rgb(159, 50, 119);
+  --button-shadow-color: black;
+
 }
 
 body {
