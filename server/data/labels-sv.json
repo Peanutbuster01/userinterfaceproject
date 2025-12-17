@@ -47,6 +47,8 @@
 	"createLobbyButtonNotReady": "Väntar på att alla fält ska fyllas i",
 
 	"answerMathQuestion": "Skriv ditt svar här",
-	"send": "Skicka"
+	"send": "Skicka",
+	"makeAMove": "Du svarade rätt! Välj en ruta att skjuta på.",
+	"waitForOpponent": "Väntar på motståndaren att göra sitt drag..."
 
 }
