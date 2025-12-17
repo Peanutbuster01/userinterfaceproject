@@ -1,6 +1,6 @@
 <template>
 
-   <title>{{ uiLabels.start }}</title>
+   <title>{{ uiLabels.startg }}</title>
 
   <div class="welcomeMessages">
     <h1>{{ uiLabels.welcomeTitle }}</h1>
