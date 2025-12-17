@@ -1,5 +1,7 @@
 <template>
 
+   <title>{{ uiLabels.start }}</title>
+
   <div class="welcomeMessages">
     <h1>{{ uiLabels.welcomeTitle }}</h1>
   </div>
@@ -47,16 +49,14 @@
 
 
 <script>
-import ResponsiveNav from '@/components/ResponsiveNav.vue';
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
 
 export default {
   name: 'StartView',
   props: ["uiLabels"],
-  components: {
-    ResponsiveNav
-  },
+  
+
   data: function () {
     return {
       lobbyId: "",
@@ -67,7 +67,6 @@ export default {
   },
   
   methods: {
-
     validateLobbyId() {
       if (this.lobbyId.length === 4) {
         this.joinMessage = this.uiLabels.joinApprovedMessage || "Spel-ID godkänt";

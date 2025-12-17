@@ -1,13 +1,5 @@
 <template>
-
-  <header class="topBar">
-    <button class="langBtn" :style="{ backgroundImage: `url(${uiLabels.flag})` }" @click="switchLanguage">
-    </button>
-
-    <div class="logo">
-      {{ uiLabels.siteName }}
-    </div>
-  </header>
+  <title>{{ uiLabels.createGame }}</title>
 
   <div class="pageDescription">
     <h2>{{ uiLabels.pageDescription }}</h2>
@@ -128,15 +120,16 @@
 
 </template>
 <script>
-import ResponsiveNav from '@/components/ResponsiveNav.vue';
 import io from 'socket.io-client';
 const socket = io("localhost:3000");
 
 export default {
+  name: 'CreateView',
+  props: ["uiLabels"],
+  
   data: function () {
     return {
       uiLabels: {},
-      lang: localStorage.getItem("lang") || "sv",
       selectedOperations: [], //sparar vilka räknesätt som valts av host
       selectedLevel: null,
       lobbyId: "",
@@ -144,8 +137,6 @@ export default {
     }
   },
   created: function () {
-    socket.on("uiLabels", labels => this.uiLabels = labels);
-    socket.emit("getUILabels", this.lang);
     socket.on('gameCreated', (lobbyId) => {
       console.log("spel skapat", lobbyId)
       this.$router.push({ path: `/join/${lobbyId}` })
@@ -153,16 +144,6 @@ export default {
   },
 
   methods: {
-
-    switchLanguage: function () {
-      if (this.lang === "en") {
-        this.lang = "sv";
-      } else {
-        this.lang = "en";
-      }
-      localStorage.setItem("lang", this.lang);
-      socket.emit("getUILabels", this.lang);
-    },
 
     chooseOperation: function (name) {
       const index = this.selectedOperations.indexOf(name);
@@ -216,64 +197,7 @@ export default {
 
 </script>
 <style scoped>
-.topBar {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-}
-
-header {
-  background-color: gray;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 90px 1fr;
-  align-items: center;
-  padding: 0.5rem 1rem;
-}
-
-.logo {
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  font-size: 2.5rem;
-  color: white;
-  text-align: center;
-}
-
-.langBtn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  height: 2rem;
-  aspect-ratio: 1200 / 750;
-  background-size: contain;
-  margin: 0;
-  padding: 0;
-}
-
-.flag {
-  width: 60px;
-}
-
-header {
-  background-color: gray;
-  width: 100%;
-  grid-template-columns: 2em auto;
-
-}
-
-.logo {
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  font-size: 2.5rem;
-  color: white;
-  padding-top: 0.2em;
-  grid: 0%;
-}
-
-.lobbyId {
-  font-size: 2rem;
-  padding-top: 0.5em;
-}
-
+  
 .pageDescription {
   border: 1px solid #ddd;
   border-radius: 6px;
