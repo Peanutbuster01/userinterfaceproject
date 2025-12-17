@@ -1,6 +1,6 @@
 <template>
 
-   <title>{{ uiLabels.start }}</title>
+  <title>{{ uiLabels.start }}</title>
 
   <div class="welcomeMessages">
     <h1>{{ uiLabels.welcomeTitle }}</h1>
@@ -13,11 +13,9 @@
       <p>{{ uiLabels.createGameInstructions }}</p>
 
       <div class="ButtonRow">
-        <button class="gameButtons">
-          <router-link class="linkModifier" to="/create/">
-            {{ uiLabels.createGameButton }}
-          </router-link>
-        </button>
+        <router-link class="gameButtons" to="/create/">
+          {{ uiLabels.createGameButton }}
+        </router-link>
       </div>
     </section>
 
@@ -36,11 +34,11 @@
       </div>
 
       <div class="ButtonRow">
-        <button class="gameButtons">
-          <router-link class="linkModifier" v-bind:to="'/join/' + lobbyId">
-            {{ uiLabels.joinGameButton }}
-          </router-link>
-        </button>
+
+        <router-link class="gameButtons" v-bind:to="'/join/' + lobbyId">
+          {{ uiLabels.joinGameButton }}
+        </router-link>
+
       </div>
     </section>
   </div>
@@ -55,7 +53,7 @@ const socket = io("localhost:3000");
 export default {
   name: 'StartView',
   props: ["uiLabels"],
-  
+
 
   data: function () {
     return {
@@ -65,7 +63,7 @@ export default {
       showRulesBoolean: false,
     }
   },
-  
+
   methods: {
     validateLobbyId() {
       if (this.lobbyId.length === 4) {
@@ -82,10 +80,11 @@ export default {
 
 
 <style scoped>
+@import url('https://fonts.cdnfonts.com/css/super-funky');
 
 .welcomeMessages {
   border-radius: 6px;
-  margin-top: 5rem;
+  margin-top: 3rem;
   text-align: center;
 }
 
@@ -93,13 +92,13 @@ export default {
   display: flex;
   justify-content: center;
   gap: 4rem;
-  margin-top: 12rem;
+  margin-top: 5rem;
 }
 
 .gamePanel {
-  background: rgb(224, 223, 223);
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  background: var(--light-blue-base-color);
+  border: ridge 5px var(--blue-base-color);
+  border-radius: 0.25rem;
   padding: 1rem;
   width: 320px;
   text-align: center;
@@ -121,17 +120,27 @@ export default {
   text-align: center;
   margin: 0 auto;
   box-sizing: border-box;
+  border: ridge 3px var(--blue-base-color);
+  background-color: var(--light-gray-base-color);
+  color: var(--blue-base-color);
+  font-family: 'Super Funky', sans-serif;
+  text-decoration: none;
+}
+
+.gameButtons:hover {
+  transform: scale(1.1);
+}
+
+::placeholder {
+  font-size: 11px;
+  color: var(--blue-base-color);
+  opacity: 0.7;
 }
 
 .ButtonRow {
   justify-content: center;
   display: flex;
   margin-top: auto;
-}
-
-.linkModifier {
-  text-decoration: none;
-  color: inherit;
 }
 
 .joinErrorMessage {

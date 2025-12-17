@@ -67,6 +67,7 @@ export default {
   display: grid;
   background-color: var(--lavender-base-color);
   width: 100%;
+  box-sizing: border-box;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 0.5rem 1rem;
@@ -104,6 +105,11 @@ export default {
   margin: 0;
   padding: 0;
   border-radius: 0.25rem;
+  border: ridge 2px var(--lavender-darker-color);
+}
+
+.langBtn:hover {
+  transform: scale(1.1);
 }
 
 .flag {
@@ -140,5 +146,9 @@ export default {
   border-radius: 0.25rem;
   border: ridge 3px var(--lavender-darker-color);
   cursor: pointer;
+}
+
+.rulesButton:hover {
+  transform: scale(1.1);
 }
 </style>

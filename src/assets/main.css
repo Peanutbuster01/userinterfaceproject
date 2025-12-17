@@ -1,5 +1,6 @@
 @import './base.css';
 @import url('https://fonts.cdnfonts.com/css/super-funky');
+@import url('https://fonts.googleapis.com/css2?family=ADLaM+Display&display=swap');
 
 #app {
   font-family: Helvetica, Arial, sans-serif;
@@ -7,11 +8,28 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   background-color: var(--pink-base-color);
+  min-height: 100vh;
 }
+
+
 
 h1 {
   font-family: 'Super funky', sans-serif;
   color: var(--light-gray-base-color);
   text-shadow: 4px 4px 2px var(--pink-darker-color);
   letter-spacing: 0.1em;
+}
+
+h6 {
+  font-family: 'Super funky', sans-serif;
+  color: var(--light-gray-base-color);
+  letter-spacing: 0.1em;
+  text-shadow: 4px 4px 2px var(--blue-base-color);
+}
+
+p {
+  font-family: 'ADLaM Display', sans-serif;
+  color: var(--light-gray-base-color);
+  text-shadow: 2px 2px 1px var(--blue-base-color);
+
 }
