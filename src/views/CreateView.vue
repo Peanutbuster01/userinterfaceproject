@@ -1,8 +1,7 @@
 <template>
 
   <header class="topBar">
-    <button class="langBtn" @click="switchLanguage">
-      <img class="flag" :src="uiLabels.flag" alt="language" />
+    <button class="langBtn" :style="{ backgroundImage: `url(${uiLabels.flag})` }" @click="switchLanguage">
     </button>
 
     <div class="logo">
@@ -217,6 +216,11 @@ export default {
 
 </script>
 <style scoped>
+.topBar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+}
+
 header {
   background-color: gray;
   width: 100%;
@@ -238,6 +242,11 @@ header {
   background: transparent;
   border: none;
   cursor: pointer;
+  height: 2rem;
+  aspect-ratio: 1200 / 750;
+  background-size: contain;
+  margin: 0;
+  padding: 0;
 }
 
 .flag {

@@ -23,11 +23,9 @@ function sockets(io, socket, data) {
     const playerId = data.joinGame(playerInfo);
     socket.emit('playerJoined', playerId);
 
-    if (data.getGame(playerInfo.lobbyId).participants.length === 2) {
+    if (data.getGame(playerInfo.lobbyId)?.participants?.length === 2) {
       io.to(playerInfo.lobbyId).emit('startGame');
     }
-
-
   });
 
   socket.on('getPlayerInfo', function (lobbyId, playerId) {
