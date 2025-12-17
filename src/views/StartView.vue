@@ -131,6 +131,11 @@ export default {
   transform: scale(1.1);
 }
 
+input.gameButtons:hover {
+  transform: none;
+}
+
+
 ::placeholder {
   font-size: 11px;
   color: var(--blue-base-color);

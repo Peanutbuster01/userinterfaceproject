@@ -121,7 +121,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50rem;
+  width: 50%;
   white-space: pre-line;
   position: fixed;
 
@@ -150,5 +150,11 @@ export default {
 
 .rulesButton:hover {
   transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+  .logo {
+    font-size: medium;
+  }
 }
 </style>
