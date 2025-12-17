@@ -21,7 +21,7 @@
 
     <div class="addition" style="display: inline-block;">
       <img class="operationIcon"
-        src="https://media.istockphoto.com/id/688550958/sv/vektor/svart-plustecken-positiv-symbol.jpg?s=612x612&w=0&k=20&c=MIncoKsDiH3_rqcyhbU0MDb4chOb53f0pY-Crfqs6c4="
+        src="https://www.pngmart.com/files/21/Addition-PNG-Photos.png"
         alt="addition">
       <br />
 
@@ -32,7 +32,7 @@
 
     <div class="subtraction" style="display: inline-block;">
       <img class="operationIcon"
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlMnfRAhJvsIfA4WXPEb5f0NwbqC_a55QGyw&s"
+        src="https://www.freeiconspng.com/uploads/subtract-icon-png-26.png"
         alt="subtraktion">
       <br />
 
@@ -44,7 +44,7 @@
 
     <div class="multiplication" style="display: inline-block;">
       <img class="operationIcon"
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6MV_7nOc5ByQanA9ipuGv269z3VctZEjBbA&s"
+        src="https://iconape.com/wp-content/png_logo_vector/arrow-7.png"
         alt="multiplikation">
       <br />
 
@@ -56,7 +56,7 @@
 
     <div class="divison" style="display: inline-block;">
       <img class="operationIcon"
-        src="https://media.istockphoto.com/id/1188614861/sv/vektor/dela-ikon-platt-illustration-av-division-dividera-tecken-symbol-vektor.jpg?s=612x612&w=0&k=20&c=ES3UBeS3nxi-AVwS5-lC1siR0Qht5LT6IDo7_2d6N-g="
+        src="https://static.thenounproject.com/png/517809-200.png"
         alt="division">
       <br />
 
@@ -72,7 +72,7 @@
 
     <div class="easy" style="display: inline-block;">
       <img class="operationIcon"
-        src="https://static.vecteezy.com/ti/gratis-vektor/p1/5205736-tecknad-bebiskaraktar-anvander-napp-gratis-vector.jpg"
+        src="https://image.similarpng.com/file/similarpng/original-picture/2021/10/Cartoon-baby-hand-drawn-on-transpsrent-background-PNG.png"
         alt="easy">
       <br />
       <button :class="selectedLevel === 'easy' ? 'chosen' : ''" @click="chooseLevel('easy')">
@@ -82,7 +82,7 @@
 
     <div class="medium" style="display: inline-block;">
       <img class="operationIcon"
-        src="https://img.freepik.com/premium-vektor/sot-liten-pojke-tecknad-tillbaka-till-skolan_991386-44.jpg"
+        src="https://static.vecteezy.com/system/resources/previews/027/728/659/non_2x/cute-little-boy-cartoon-standing-free-png.png"
         alt="medium">
       <br />
       <button :class="selectedLevel === 'medium' ? 'chosen' : ''" @click="chooseLevel('medium')">
@@ -92,7 +92,7 @@
 
     <div class="hard" style="display: inline-block;">
       <img class="operationIcon"
-        src="https://static.vecteezy.com/system/resources/previews/013/697/031/non_2x/blond-strong-man-free-vector.jpg"
+        src="https://cdni.iconscout.com/illustration/premium/thumb/strongman-illustration-svg-download-png-5367726.png"
         alt="hard">
       <br />
       <button :class="selectedLevel === 'hard' ? 'chosen' : ''" @click="chooseLevel('hard')">
@@ -102,7 +102,7 @@
 
     <div class="nightmare" style="display: inline-block;">
       <img class="operationIcon"
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThSWeM6t3h7-tVnr0z8n-lk7ROcqNFGH4vTQ&s"
+        src="https://japaclip.com/en/files/cb01-crying.png"
         alt="nightmare">
       <br />
       <button :class="selectedLevel === 'nightmare' ? 'chosen' : ''" @click="chooseLevel('nightmare')">
