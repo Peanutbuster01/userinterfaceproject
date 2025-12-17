@@ -17,7 +17,6 @@
 
         <!--vänster sida (boards)-->
         <div class="leftColumns">
-
             <div id="playerBoard">
                 <div id="board">
                     <div id="overlay">
@@ -26,17 +25,19 @@
                                 :src="avatars[avatarIndex].image">
                         </div>
                     </div>
+                    <div v-if="canShoot" class="boardLockShoot"></div>
                 </div>
             </div>
+
 
             <div id="OpponentBoard">
                 <div id="board">
                     <div id="overlay">
-                        <div v-for="(x, i) in 12" class="square" @click="placeAvatar(i)">
-                            <img class="placedAvatarShip" v-if="opponentPlacedShips.includes(i)"
-                                :src="avatars[opponentAvatarIndex].image">
+                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square" @click="shootAtOpponent(i)">
+                            <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
                         </div>
                     </div>
+                    <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
                 </div>
             </div>
         </div>
@@ -58,8 +59,24 @@
                 <input class="answerInput" type="text" v-model="playerAnswer"
                     :placeholder="uiLabels.answerMathQuestion" />
 
-                <button class="anserButton" @click="submitAnswer">{{ uiLabels.send }}</button>
+                <button class="answerButton" @click="submitAnswer">{{ uiLabels.send }}</button>
             </div>
+        </div>
+    </div>
+
+
+
+    <div class="popupBackgroundMakeMove" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
+        <div class="popup">
+            <p>{{ uiLabels.makeAMove }}</p>
+            <button @click="confirmShot()" id="okButton">OK</button>
+        </div>
+    </div>
+
+    <div class="popupBackgroundWaitOnComponent" v-if="showPopupBoolean && popupType === 'waitOnComponentPopup'">
+        <div class="popup">
+            <p>{{ uiLabels.yourComponentsTurn }}</p>
+            <button @click="showPopupBoolean = false; popupType = null" id="okButton">OK</button>
         </div>
     </div>
 
@@ -92,6 +109,7 @@ export default {
                 null, null, null,
             ],
             showPopupBoolean: false,
+            popupType: null,
 
             opponentName: "",
             opponentAvatarIndex: 0,
@@ -105,10 +123,17 @@ export default {
             selectedAvatarIndex: 1, //byt så index byt ut automatiskt
             avatars: avatars,
 
-            currentQuestion: "2+2=?", //plceholder
+            currentEquation: null,
+            currentQuestion: "",
             playerAnswer: "",
+
+            canShoot: false,
+            hasShotThisRound: false,
+            selectedShotIndex: null,
+            opponentShots: {},
         }
     },
+
     created: function () {
         this.lobbyId = this.$route.params.id;
         this.playerId = Number(this.$route.params.playerId);
@@ -164,27 +189,149 @@ export default {
         submitAnswer: function () {
             console.log("Svar:", this.playerAnswer);
             // sen: socket.emit(...) när du kopplar det
+            const isCorrect = this.checkAnswer(
+                this.playerAnswer,
+                this.currentEquation);
+
+            if (isCorrect) {
+                this.makeAMove();
+            } else {
+                this.WaitOnComponent();
+            }
+            this.playerAnswer = "";
         },
 
-        getDifficultySettings: function (level) {
-            if (level === "easy") return { min: 0, max: 10 };
-            if (level === "medium") return { min: 0, max: 20 };
-            if (level === "hard") return { min: 0, max: 50 };
-            return { min: 0, max: 100 }; // level nightmare
-        },
 
         randomInt: function (min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
 
-        makeAddition: function (settings) {
-            const a = this.randomInt(settings.min, settings.max);
-            const b = this.randomInt(settings.min, settings.max);
+        makeAddition: function (level) {
+            const a = this.randomInt(level.min, level.max);
+            const b = this.randomInt(level.min, level.max);
 
             return {
                 question: `${a} + ${b} = ?`,
                 answer: a + b
             };
+        },
+
+        makeSubtraction: function (level) {
+            const a = this.randomInt(level.min, level.max);
+            const b = this.randomInt(level.min, level.max);
+
+            return {
+                question: `${a} - ${b} = ?`,
+                answer: a - b
+            };
+
+        },
+
+        makeMultiplication: function (level) {
+            const a = this.randomInt(level.min, level.max);
+            const b = this.randomInt(level.min, level.max);
+
+            return {
+                question: `${a} × ${b} = ?`,
+                answer: a * b
+            };
+        },
+
+        makeDivision: function (level) {
+            const b = this.randomInt(level.min + 1, level.max); // undvik division med 0
+            const answer = this.randomInt(level.min, level.max);
+            const a = b * answer; // se till att det går jämnt ut
+
+            return {
+                question: `${a} ÷ ${b} = ?`,
+                answer: answer
+            };
+        },
+
+        chosenGameSetting: function (chosenGameLevel, chosenGameCalcuationMethods) {
+            let chosenMethods = [];
+            let chosenLevel = { min: 0, max: 0 };
+
+            if (chosenGameLevel === "easy") {
+                chosenLevel = { min: 0, max: 10 };
+            } else if (chosenGameLevel === "medium") {
+                chosenLevel = { min: 0, max: 20 };
+            } else if (chosenGameLevel === "hard") {
+                chosenLevel = { min: 0, max: 50 };
+            } else {
+                chosenLevel = { min: 0, max: 100 }; // level nightmare
+            }
+
+            if (chosenGameCalcuationMethods.includes("addition")) {
+                chosenMethods.push(this.makeAddition);
+            }
+            if (chosenGameCalcuationMethods.includes("subtraction")) {
+                chosenMethods.push(this.makeSubtraction);
+            }
+            if (chosenGameCalcuationMethods.includes("multiplication")) {
+                chosenMethods.push(this.makeMultiplication);
+            }
+            if (chosenGameCalcuationMethods.includes("division")) {
+                chosenMethods.push(this.makeDivision);
+            }
+
+            return {
+                level: chosenLevel,
+                methods: chosenMethods
+            };
+        },
+
+        generateEquation: function (chosenGameSetting) {
+            const methods = chosenGameSetting.methods;
+            const level = chosenGameSetting.level;
+
+            let randomCalculationMethod = methods[Math.floor(Math.random() * methods.length)];
+            let equation = randomCalculationMethod(level);
+            return {
+                currentEquation: equation
+            };
+        },
+
+        checkAnswer: function (playerAnswer, currentEquation) {
+            if (parseInt(playerAnswer) === currentEquation.answer) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        makeAMove: function () {
+            this.popupType = "makeMovePopup";
+            this.showPopupBoolean = true;
+            this.canShoot = true;
+            this.hasShotThisRound = false;
+        },
+
+        WaitOnComponent: function () {
+            this.popupType = "waitOnComponentPopup";
+            this.showPopupBoolean = true;
+            this.canShoot = false;
+        },
+
+        shootAtOpponent: function (squareIndex) {
+            if (!this.canShoot) return;
+            if (this.hasShotThisRound) return;
+            if (this.opponentShots[squareIndex]) return;
+
+            this.selectedShotIndex = squareIndex;
+        },
+
+        confirmShot: function () {
+            if (this.selectedShotIndex === null) return;
+
+            this.showPopupBoolean = false;
+            this.popupType = null;
+
+            this.opponentShots[this.selectedShotIndex] = hit ? "hit" : "miss";
+
+            this.hasShotThisRound = true;
+            this.canShoot = false;
+            this.selectedShotIndex = null;
         }
     }
 }
@@ -272,7 +419,7 @@ header {
 
 }
 
-.popupBackground {
+.popupBackgroundWaitOnComponent {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -282,7 +429,17 @@ header {
     background-color: #00000040;
 }
 
-.leftColumn {
+.popupBackgroundMakeMove {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    background-color: #00000040;
+}
+
+.leftColumns {
     display: flex;
     flex-direction: column;
 }
@@ -355,11 +512,29 @@ header {
     border-radius: 10px;
 }
 
-.answerBtn {
+.answerButton {
     padding: 0.75rem 1rem;
     border: 2px solid #111;
     border-radius: 10px;
     background: white;
     cursor: pointer;
+}
+
+#OpponentBoard #board {
+    position: relative;
+}
+
+.boardLock {
+    position: absolute;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: all;
+}
+
+.boardLockShoot {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 9999;
 }
 </style>
