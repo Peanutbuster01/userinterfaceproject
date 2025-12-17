@@ -1,13 +1,14 @@
 <template>
 
   <header class="topBar">
-    <div>
-    <button class="langBtn" :style="{ backgroundImage: `url(${uiLabels.flag})` }" @click="switchLanguage">
-    </button>
-    <button @click="showRulesBoolean = !showRulesBoolean">
-      {{ uiLabels.rules }}
-    </button>
-  </div>
+    <div class="left">
+      <button class="langBtn" :style="{ backgroundImage: `url(${uiLabels.flag})` }" @click="switchLanguage"> </button>
+
+      <button class="rulesButton" @click="showRulesBoolean = !showRulesBoolean">
+      {{ uiLabels.rules }} </button>
+
+    </div>
+
     <div class="logo">
       {{ uiLabels.siteName }}
     </div>
@@ -64,16 +65,18 @@ methods: {
 
 .topBar {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-}
-
-header {
   background-color: gray;
   width: 100%;
-  display: grid;
-  grid-template-columns: 90px 1fr;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 0.5rem 1rem;
+}
+
+.left {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .logo {
@@ -99,21 +102,6 @@ header {
   width: 60px;
 }
 
-header {
-  background-color: gray;
-  width: 100%;
-  grid-template-columns: 2em auto;
-
-}
-
-.logo {
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  font-size: 2.5rem;
-  color: white;
-  padding-top: 0.2em;
-  grid: 0%;
-}
 .ruleSquare {
   margin: 5% auto;
   top: 50%;
@@ -124,5 +112,8 @@ header {
   background-color: aqua;
   white-space: pre-line;
   position: fixed;
+}
+.rulesButton {
+
 }
 </style>
