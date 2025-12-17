@@ -395,12 +395,11 @@ export default {
     flex-direction: column;
     gap: 2rem;
     margin-top: 2rem;
-    /* linjerar med boardens margin */
+    align-items: center;
 }
 
 #playerAvatar {
     margin-top: 2rem;
-    /* matchar boardens margin */
     min-width: 200px;
     padding: 1rem;
     border: 2px solid #962d9a;
