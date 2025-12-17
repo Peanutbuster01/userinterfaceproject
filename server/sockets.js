@@ -69,8 +69,31 @@ function sockets(io, socket, data) {
     io.to(d.lobbyId).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.lobbyId));
   });
 
+  socket.on("answer", (lobbyId, playerId, answer) => {
+  const game = data.getGame(lobbyId);
+  if (!game) return;
+
+  const correct = (answer === game.currentEquation.answer)
+  
+  if (correct) {
+      io.to(lobbyId).emit("roundWinner", playerId);
+    } else {
+      socket.emit("wrongAnswer");
+    }
+  });
+
+  socket.on("requestNewQuestion", function (lobbyId) {
+  const game = data.getGame(lobbyId);
+  if (!game) return;
+  
+  const equation = data.generateEquation();
+  game.currentEquation = equation;
+
+  io.to(lobbyId).emit("newQuestion", equation);
+});
 
 
+  
 
 
 }

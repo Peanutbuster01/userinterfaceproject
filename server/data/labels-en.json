@@ -41,5 +41,6 @@
 	"answerMathQuestion": "Type your answer here",
 	"send": "Send",
 	"makeAMove": "You answered correctly! Choose a square to shoot at.",
+	"wrongAnswer": "Wrong answer! Try again.",
 	"waitForOpponent": "Waiting for opponent to make their move..."
 }

@@ -127,7 +127,52 @@ Data.prototype.submitAnswer = function (pollId, answer) {
       answers[answer] += 1
     console.log("answers looks like ", answers, typeof answers);
   }
-}
+},
+
+Data.randomInt = function (min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+  },
+
+Data.makeAddition = function (level) {
+  const a = this.randomInt(level.min, level.max);
+  const b = this.randomInt(level.min, level.max);
+
+    return {
+    question: `${a} + ${b} = ?`,
+    answer: a + b
+    };
+  },
+
+  Data.makeSubtraction = function (level) {
+    const a = this.randomInt(level.min, level.max);
+    const b = this.randomInt(level.min, level.max);
+
+    return {
+      question: `${a} - ${b} = ?`,
+      answer: a - b
+    };
+  },
+
+  Data.makeMultiplication = function (level) {
+    const a = this.randomInt(level.min, level.max);
+    const b = this.randomInt(level.min, level.max);
+
+      return {
+        question: `${a} × ${b} = ?`,
+        answer: a * b
+      };
+    },
+
+  Data.makeDivision = function (level) {
+    const b = this.randomInt(level.min + 1, level.max); // undvik division med 0
+    const answer = this.randomInt(level.min, level.max);
+    const a = b * answer; // se till att det går jämnt ut
+
+    return {
+      question: `${a} ÷ ${b} = ?`,
+      answer: answer
+    };
+  };
 
 export { Data };
 

@@ -42,5 +42,6 @@
 	"answerMathQuestion": "Skriv ditt svar här",
 	"send": "Skicka",
 	"makeAMove": "Du svarade rätt! Välj en ruta att skjuta på.",
+	"wrongAnswer": "Fel svar! Försök igen.",
 	"waitForOpponent": "Väntar på motståndaren att göra sitt drag..."
 }

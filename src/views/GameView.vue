@@ -13,58 +13,59 @@
         <div class="lobbyID">Lobby-ID: {{ lobbyId }}</div>
     </ResponsiveNav>
 
-    <div class="pageLayout">
+<div class="pageLayout">
 
-        <!--vänster sida (boards)-->
-        <div class="leftColumns">
-            <div id="playerBoard">
-                <div id="board">
-                    <div id="overlay">
+    <!--vänster sida (boards)-->
+    <div class="leftColumns">
+        <div id="OpponentBoard">
+            <div class="board">
+                <div class="overlay">
+                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square" @click="shootAtOpponent(i)">
+                        <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
+
+
+                        </div>
+                    </div>
+                <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
+            </div>
+        </div>
+    
+        
+        <div id="playerBoard">
+            <div class="board">
+                <div class="overlay">
                         <div v-for="(x, i) in 12" class="square">
                             <img class="placedAvatarShip" v-if="placedShips.includes(i)"
                                 :src="avatars[avatarIndex].image">
                         </div>
                     </div>
-                    <div v-if="canShoot" class="boardLockShoot"></div>
-                </div>
-            </div>
-
-
-            <div id="OpponentBoard">
-                <div id="board">
-                    <div id="overlay">
-                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square" @click="shootAtOpponent(i)">
-                            <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
-
-
-                        </div>
-                    </div>
-                    <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
-                </div>
-            </div>
-        </div>
-
-        <!--höger karaktär, fråga, svar-->
-        <div class="rightColumn">
-            <div id="playerAvatar">
-                <h2 class="playerName">{{ playerName }}</h2>
-
-                <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
-            </div>
-
-
-            <div class="questionBox">
-                <p class="questionText">{{ currentQuestion }}</p>
-            </div>
-
-            <div class="answerBox">
-                <input class="answerInput" type="text" v-model="playerAnswer"
-                    :placeholder="uiLabels.answerMathQuestion" />
-
-                <button class="answerButton" @click="submitAnswer">{{ uiLabels.send }}</button>
+                <div v-if="canShoot" class="boardLockShoot"></div>
             </div>
         </div>
     </div>
+
+
+    <!--hö nger karaktär, fråga, svar-->
+    <div class="rightColumn">
+            <div id="playerAvatar">
+            <h2 class="playerName">{{ playerName }}</h2>
+
+                <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
+        </div>
+    
+
+        <div class="questionBox">
+            <p class="questionText">{{ currentQuestion }}</p>
+        </div>
+
+        <div class="answerBox">
+                <input class="answerInput" type="text" v-model="playerAnswer"
+                    :placeholder="uiLabels.answerMathQuestion" />
+
+                <button class="answerButton" @click="submitAnswerEquation">{{ uiLabels.send }}</button>
+        </div>
+    </div>    
+</div>
 
 
 
@@ -75,10 +76,16 @@
         </div>
     </div>
 
-    <div class="popupBackgroundWaitOnComponent" v-if="showPopupBoolean && popupType === 'waitOnComponentPopup'">
+    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
         <div class="popup">
-            <p>{{ uiLabels.yourComponentsTurn }}</p>
+            <p>{{ uiLabels.wrongAnswer}}</p>
             <button @click="showPopupBoolean = false; popupType = null" id="okButton">OK</button>
+        </div>
+    </div>
+
+    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
+        <div class="popup">
+            <p>{{ uiLabels.waitForOpponent}}</p>
         </div>
     </div>
 
@@ -115,18 +122,17 @@ export default {
 
             opponentName: "",
             opponentAvatarIndex: 0,
-            opponentId: 0,
             opponentPlacedShips: [
                 null, null, null
             ],
 
             //placeholder tills att socket data kommer in
-
-            selectedAvatarIndex: 1, //byt så index byt ut automatiskt
+            
+            selectedAvatarIndex: 1, //byt så indeselectedx byt ut automatiskt
             avatars: avatars,
 
             currentEquation: null,
-            currentQuestion: "",
+            currentQuestion: null,
             playerAnswer: "",
 
             canShoot: false,
@@ -142,7 +148,22 @@ export default {
 
 
         socket.on("uiLabels", labels => this.uiLabels = labels);
-        socket.on("gameSettings", (settings) => { console.log(settings) });
+
+        socket.on("gameSettings", (settings) => {
+            console.log(settings) 
+
+            this.gameSetting = this.chosenGameSetting(
+                settings.level,
+                settings.operations
+            );
+
+            setTimeout(() => {
+                this.generateEquation(this.chosenGameSetting);
+            }, 5000);
+        });
+;
+
+
         socket.on("playerInfo", (playerId, playerInfo) => {
             if (playerId == this.playerId) {
                 console.log("INFO:"); console.log(playerInfo);
@@ -160,6 +181,29 @@ export default {
             }
 
         });
+
+        socket.on("roundWinner", (winnerPlayerId) => {
+            const myPlayerId = this.playerId;
+
+            if (winnerPlayerId === myPlayerId) {
+                this.makeAMove();
+            } else {
+                this.WaitOnOpponent();
+            }
+            });
+
+            socket.on("newQuestion", (equation) => {
+            this.currentEquation = equation;
+            this.currentQuestion = equation.question;
+            this.playerAnswer = "";
+            this.canShoot = false;
+            this.showPopupBoolean = false;   
+        });
+
+        socket.on("startGame", () => {
+            socket.emit("requestNewQuestion", this.lobbyId);
+        });
+
 
 
         socket.emit("getUILabels", this.lang);
@@ -187,153 +231,93 @@ export default {
             // placeholder tills du implementerar logiken
             console.log("placeAvatar", i);
         },
-
-        submitAnswer: function () {
-            console.log("Svar:", this.playerAnswer);
-            // sen: socket.emit(...) när du kopplar det
-            const isCorrect = this.checkAnswer(
-                this.playerAnswer,
-                this.currentEquation);
-
-            if (isCorrect) {
-                this.makeAMove();
-            } else {
-                this.WaitOnComponent();
-            }
+        
+        submitAnswerEquation: function () {
+        socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
             this.playerAnswer = "";
         },
 
+        chosenGameSetting: function (level, operations) {
+        let chosenMethods = [];
+            let levelRange = { min: 0, max: 0 };
 
-        randomInt: function (min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        },
+        if (level === "easy") {
+                levelRange = { min: 0, max: 10 };
+        } else if (level === "medium") {
+                levelRange = { min: 0, max: 20 };
+        } else if (level === "hard") {
+                levelRange = { min: 0, max: 50 };
+        } else {
+                levelRange = { min: 0, max: 100 }; // level nightmare
+        }
 
-        makeAddition: function (level) {
-            const a = this.randomInt(level.min, level.max);
-            const b = this.randomInt(level.min, level.max);
+        if (operations.includes("addition")) {
+            chosenMethods.push(this.makeAddition);
+        }
+        if (operations.includes("subtraction")) {
+            chosenMethods.push(this.makeSubtraction); 
+        }                          
+        if (operations.includes("multiplication")) {
+            chosenMethods.push(this.makeMultiplication);                       
+        }
+        if (operations.includes("division")) {
+            chosenMethods.push(this.makeDivision);  
+        }
 
-            return {
-                question: `${a} + ${b} = ?`,
-                answer: a + b
-            };
-        },
-
-        makeSubtraction: function (level) {
-            const a = this.randomInt(level.min, level.max);
-            const b = this.randomInt(level.min, level.max);
-
-            return {
-                question: `${a} - ${b} = ?`,
-                answer: a - b
-            };
-
-        },
-
-        makeMultiplication: function (level) {
-            const a = this.randomInt(level.min, level.max);
-            const b = this.randomInt(level.min, level.max);
-
-            return {
-                question: `${a} × ${b} = ?`,
-                answer: a * b
-            };
-        },
-
-        makeDivision: function (level) {
-            const b = this.randomInt(level.min + 1, level.max); // undvik division med 0
-            const answer = this.randomInt(level.min, level.max);
-            const a = b * answer; // se till att det går jämnt ut
-
-            return {
-                question: `${a} ÷ ${b} = ?`,
-                answer: answer
-            };
-        },
-
-        chosenGameSetting: function (chosenGameLevel, chosenGameCalcuationMethods) {
-            let chosenMethods = [];
-            let chosenLevel = { min: 0, max: 0 };
-
-            if (chosenGameLevel === "easy") {
-                chosenLevel = { min: 0, max: 10 };
-            } else if (chosenGameLevel === "medium") {
-                chosenLevel = { min: 0, max: 20 };
-            } else if (chosenGameLevel === "hard") {
-                chosenLevel = { min: 0, max: 50 };
-            } else {
-                chosenLevel = { min: 0, max: 100 }; // level nightmare
-            }
-
-            if (chosenGameCalcuationMethods.includes("addition")) {
-                chosenMethods.push(this.makeAddition);
-            }
-            if (chosenGameCalcuationMethods.includes("subtraction")) {
-                chosenMethods.push(this.makeSubtraction);
-            }
-            if (chosenGameCalcuationMethods.includes("multiplication")) {
-                chosenMethods.push(this.makeMultiplication);
-            }
-            if (chosenGameCalcuationMethods.includes("division")) {
-                chosenMethods.push(this.makeDivision);
-            }
-
-            return {
-                level: chosenLevel,
-                methods: chosenMethods
-            };
-        },
-
+        return {
+            level: levelRange,
+            operations: chosenMethods
+        };
+    }, 
+    
         generateEquation: function (chosenGameSetting) {
-            const methods = chosenGameSetting.methods;
-            const level = chosenGameSetting.level;
+        const operations = chosenGameSetting.operations;
+        const levelRange = chosenGameSetting.level;
 
-            let randomCalculationMethod = methods[Math.floor(Math.random() * methods.length)];
-            let equation = randomCalculationMethod(level);
-            return {
-                currentEquation: equation
-            };
-        },
+        let randomCalculationMethod = operations[Math.floor(Math.random() * operations.length)];
+        let equation = randomCalculationMethod(levelRange);
 
-        checkAnswer: function (playerAnswer, currentEquation) {
-            if (parseInt(playerAnswer) === currentEquation.answer) {
-                return true;
-            } else {
-                return false;
-            }
-        },
+        this.currentEquation = equation;
+        this.currentQuestion = equation.question;    
+    },
 
         makeAMove: function () {
-            this.popupType = "makeMovePopup";
-            this.showPopupBoolean = true;
-            this.canShoot = true;
-            this.hasShotThisRound = false;
-        },
+        this.popupType = "makeMovePopup";
+        this.showPopupBoolean = true;
+        this.canShoot = true;
+        this.hasShotThisRound = false;
+    },
 
-        WaitOnComponent: function () {
-            this.popupType = "waitOnComponentPopup";
-            this.showPopupBoolean = true;
-            this.canShoot = false;
-        },
+        WaitOnOpponent: function () {
+        this.popupType = "waitOnOpponentPopup";
+        this.showPopupBoolean = true;
+        this.canShoot = false;
+    },
 
         shootAtOpponent: function (squareIndex) {
-            if (!this.canShoot) return;
-            if (this.hasShotThisRound) return;
-            if (this.opponentShots[squareIndex]) return;
+        if (!this.canShoot) return;
+        if (this.hasShotThisRound) return;
+        if (this.opponentShots[squareIndex]) return;
 
-            this.selectedShotIndex = squareIndex;
-        },
+        this.selectedShotIndex = squareIndex;
+    },
 
         confirmShot: function () {
-            if (this.selectedShotIndex === null) return;
+        if (this.selectedShotIndex === null) return;
 
-            this.showPopupBoolean = false;
-            this.popupType = null;
+        this.showPopupBoolean = false;
+        this.popupType = null;
 
-            this.opponentShots[this.selectedShotIndex] = hit ? "hit" : "miss";
+        this.opponentShots[this.selectedShotIndex] = hit ? "hit" : "miss";
 
-            this.hasShotThisRound = true;
-            this.canShoot = false;
-            this.selectedShotIndex = null;
+        this.hasShotThisRound = true;
+        this.canShoot = false;
+        
+
+        socket.emit("requestNewQuestion", this.lobbyId);
+
+        this.selectedShotIndex = null;
+
         }
     }
 }
@@ -360,7 +344,7 @@ header {
     padding-top: 0.5em;
 }
 
-#board {
+.board {
     top: 1em;
     width: 400px;
     height: 300px;
@@ -371,7 +355,7 @@ header {
     margin: 2rem;
 }
 
-#overlay {
+.overlay {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -421,7 +405,7 @@ header {
 
 }
 
-.popupBackgroundWaitOnComponent {
+.popupBackgroundWaitOnOpponent {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -442,14 +426,14 @@ header {
 }
 
 .leftColumns {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .rightColumn {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
     margin-top: 2rem;
     /* linjerar med boardens margin */
 }
@@ -457,10 +441,10 @@ header {
 #playerAvatar {
     margin-top: 2rem;
     /* matchar boardens margin */
-    min-width: 200px;
-    padding: 1rem;
-    border: 2px solid #962d9a;
-    border-radius: 20px;
+  min-width: 200px;
+  padding: 1rem;
+  border: 2px solid #962d9a;
+  border-radius: 20px;
 }
 
 .placedAvatarShip {
@@ -473,57 +457,57 @@ header {
 
 
 .playerName {
-    margin: 0 0 1rem 0;
-    font-size: 1.6rem;
+  margin: 0 0 1rem 0;
+  font-size: 1.6rem;
 }
 
 .playerAvatarImage {
-    width: 180px;
-    height: 180px;
-    object-fit: contain;
-    display: block;
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  display: block;
 }
 
 .pageLayout {
-    display: flex;
-    align-items: flex-start;
-    gap: 3rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 3rem;
 }
 
 .questionBox {
-    min-width: 260px;
-    padding: 1rem;
-    border-radius: 12px;
-    background: white;
-    border: 2px solid #962d9a;
+  min-width: 260px;
+  padding: 1rem;
+  border-radius: 12px;
+  background: white;
+  border: 2px solid #962d9a;
 
 }
 
 .answerBox {
-    min-width: 260px;
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-
+  min-width: 260px;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  
 }
 
 .answerInput {
-    flex: 1;
-    padding: 0.75rem;
-    border: 2px solid #962d9a;
-    border-radius: 10px;
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #962d9a;
+  border-radius: 10px;
 }
 
 .answerButton {
-    padding: 0.75rem 1rem;
-    border: 2px solid #111;
-    border-radius: 10px;
-    background: white;
-    cursor: pointer;
+  padding: 0.75rem 1rem;
+  border: 2px solid #111;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
 }
 
 #OpponentBoard #board {
-    position: relative;
+  position: relative;
 }
 
 .boardLock {
@@ -539,4 +523,5 @@ header {
     background: rgba(0, 0, 0, 0.15);
     z-index: 9999;
 }
+
 </style>
