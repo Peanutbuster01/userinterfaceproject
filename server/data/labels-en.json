@@ -21,7 +21,7 @@
 	"placePlayerInstruction": "Click on the squares to place your three players!",
 	"ready": "READY",
 	"notReadyPopup": "You need to fill in your name and place all your players to move on!",
-	"createLobbyID": "Create Lobby ID",
+	"createLobbyId": "Create Lobby ID",
 	"chooseOperation": "Choose operation",
 	"addition": "Addition",
 	"subtraction": "Subtraction",

@@ -21,7 +21,7 @@
 	"placePlayerInstruction": "Klicka på rutorna för att placera dina tre spelare!",
 	"ready": "KLAR",
 	"notReadyPopup": "Du måste fylla i ditt namn och placera dina spelare för att gå vidare!",
-	"createLobbyID": "Skapa Lobby ID",
+	"createLobbyId": "Skapa Lobby ID",
 	"chooseOperation": "Välj räknesätt",
 	"addition": "Addition",
 	"subtraction": "Subtraktion",

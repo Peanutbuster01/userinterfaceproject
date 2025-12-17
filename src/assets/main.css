@@ -19,6 +19,25 @@ h1 {
   text-shadow: 4px 4px 2px var(--pink-darker-color);
   letter-spacing: 0.1em;
 }
+h2 {
+  font-family: 'Super funky', sans-serif;
+  color: var(--light-gray-base-color);
+  text-shadow: 4px 4px 2px var(--pink-darker-color);
+  letter-spacing: 0.1em;
+}
+h3 {
+  font-family: 'Super funky', sans-serif;
+  color: var(--light-gray-base-color);
+  text-shadow: 4px 4px 2px var(--pink-darker-color);
+  letter-spacing: 0.1em;
+}
+
+h5 {
+  font-family: 'Super funky', sans-serif;
+  color: var(--blue-base-color);
+  letter-spacing: 0.1em;
+  
+}
 
 h6 {
   font-family: 'Super funky', sans-serif;
