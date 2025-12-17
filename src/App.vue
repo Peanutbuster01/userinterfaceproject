@@ -1,9 +1,128 @@
-<script setup>
-import { RouterView } from 'vue-router'
-</script>
-
 <template>
-  <RouterView />
+
+  <header class="topBar">
+    <div>
+    <button class="langBtn" :style="{ backgroundImage: `url(${uiLabels.flag})` }" @click="switchLanguage">
+    </button>
+    <button @click="showRulesBoolean = !showRulesBoolean">
+      {{ uiLabels.rules }}
+    </button>
+  </div>
+    <div class="logo">
+      {{ uiLabels.siteName }}
+    </div>
+  </header>
+  
+  <div class="ruleSquare" v-if="showRulesBoolean">
+    {{ uiLabels.ruleBody }}
+  </div>
+
+<RouterView v-slot="{ Component }">
+  <component
+    :is="Component"
+    :uiLabels="uiLabels"
+  />
+</RouterView>
+
 </template>
 
-<style></style>
+<script>
+import { RouterView } from 'vue-router'
+import io from 'socket.io-client';
+const socket = io("localhost:3000");
+
+export default {
+  data: function () {
+    return {
+      uiLabels: {},
+      lang: localStorage.getItem("lang") || "sv",
+      hideNav: true,
+      showRulesBoolean: false
+    }
+  },
+created: function () {
+    socket.on("uiLabels", labels => this.uiLabels = labels);
+    socket.emit("getUILabels", this.lang);
+    },
+
+methods: {
+    switchLanguage: function () {
+      if (this.lang === "en") {
+        this.lang = "sv";
+      } else {
+        this.lang = "en";
+      }
+      localStorage.setItem("lang", this.lang);
+      socket.emit("getUILabels", this.lang);
+    }
+  }
+}
+
+</script>
+
+<style scoped>
+
+.topBar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+}
+
+header {
+  background-color: gray;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.logo {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 2.5rem;
+  color: white;
+  text-align: center;
+}
+
+.langBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  height: 2rem;
+  aspect-ratio: 1200 / 750;
+  background-size: contain;
+  margin: 0;
+  padding: 0;
+}
+
+.flag {
+  width: 60px;
+}
+
+header {
+  background-color: gray;
+  width: 100%;
+  grid-template-columns: 2em auto;
+
+}
+
+.logo {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 2.5rem;
+  color: white;
+  padding-top: 0.2em;
+  grid: 0%;
+}
+.ruleSquare {
+  margin: 5% auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: blue;
+  width: 50rem;
+  background-color: aqua;
+  white-space: pre-line;
+  position: fixed;
+}
+</style>
