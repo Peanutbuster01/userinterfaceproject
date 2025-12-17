@@ -9,6 +9,17 @@
   --avatar-button-hover: rgb(159, 50, 119);
   --button-shadow-color: black;
 
+  --pink-base-color: #F7AEF8;
+  --lavender-base-color: #B388EB;
+  --blue-base-color: #8093F1;
+  --light-blue-base-color: #72DDF7;
+  --light-gray-base-color: #F4F4ED;
+
+  --pink-darker-color: #cf6ad1;
+  --lavender-darker-color: #9a67dd;
+
+
+
 }
 
 body {

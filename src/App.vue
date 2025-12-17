@@ -5,7 +5,7 @@
       <button class="langBtn" :style="{ backgroundImage: `url(${uiLabels.flag})` }" @click="switchLanguage"> </button>
 
       <button class="rulesButton" @click="showRulesBoolean = !showRulesBoolean">
-      {{ uiLabels.rules }} </button>
+        {{ uiLabels.rules }} </button>
 
     </div>
 
@@ -13,17 +13,14 @@
       {{ uiLabels.siteName }}
     </div>
   </header>
-  
+
   <div class="ruleSquare" v-if="showRulesBoolean">
     {{ uiLabels.ruleBody }}
   </div>
 
-<RouterView v-slot="{ Component }">
-  <component
-    :is="Component"
-    :uiLabels="uiLabels"
-  />
-</RouterView>
+  <RouterView v-slot="{ Component }">
+    <component :is="Component" :uiLabels="uiLabels" />
+  </RouterView>
 
 </template>
 
@@ -41,12 +38,12 @@ export default {
       showRulesBoolean: false
     }
   },
-created: function () {
+  created: function () {
     socket.on("uiLabels", labels => this.uiLabels = labels);
     socket.emit("getUILabels", this.lang);
-    },
+  },
 
-methods: {
+  methods: {
     switchLanguage: function () {
       if (this.lang === "en") {
         this.lang = "sv";
@@ -62,14 +59,18 @@ methods: {
 </script>
 
 <style scoped>
+@import url('https://fonts.cdnfonts.com/css/super-funky');
 
 .topBar {
   display: grid;
-  background-color: gray;
+  background-color: var(--lavender-base-color);
   width: 100%;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  border: ridge 5px var(--lavender-darker-color);
+  margin-bottom: 10px;
 }
 
 .left {
@@ -83,8 +84,12 @@ methods: {
   text-transform: uppercase;
   letter-spacing: 0.25em;
   font-size: 2.5rem;
-  color: white;
+  color: var(--light-gray-base-color);
   text-align: center;
+  font-family: 'Super Funky', sans-serif;
+  margin-left: 10px;
+  text-shadow: 5px 4px 1px var(--lavender-darker-color);
+
 }
 
 .langBtn {
@@ -96,6 +101,7 @@ methods: {
   background-size: contain;
   margin: 0;
   padding: 0;
+  border-radius: 0.25rem;
 }
 
 .flag {
@@ -107,13 +113,28 @@ methods: {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: blue;
   width: 50rem;
-  background-color: aqua;
   white-space: pre-line;
   position: fixed;
-}
-.rulesButton {
 
+  padding: 20px;
+  color: var(--light-gray-base-color);
+  background-color: var(--lavender-base-color);
+  border-radius: 0.25rem;
+  border: ridge 10px var(--lavender-darker-color);
+  font-family: 'Super Funky', sans-serif;
+
+}
+
+.rulesButton {
+  padding: 5px;
+  margin: 5px;
+  color: var(--lavender-base-color);
+  background-color: var(--light-gray-base-color);
+  font-family: 'Super Funky', sans-serif;
+
+  border-radius: 0.25rem;
+  border: ridge 3px var(--lavender-darker-color);
+  cursor: pointer;
 }
 </style>
