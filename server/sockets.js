@@ -23,8 +23,25 @@ function sockets(io, socket, data) {
     const playerId = data.joinGame(playerInfo);
     socket.emit('playerJoined', playerId);
 
-    if (data.getGame(playerInfo.lobbyId)?.participants?.length === 2) {
-      io.to(playerInfo.lobbyId).emit('startGame');
+    const game = data.getGame(playerInfo.lobbyId);
+
+if (game?.participants?.length === 2) {
+  io.to(playerInfo.lobbyId).emit("startGame");
+
+  // Starta första frågan EN gång när båda är inne
+      if (!game.firstQuestionScheduled) {
+        game.firstQuestionScheduled = true;
+
+        console.log("[server] scheduling first newQuestion for lobby:", playerInfo.lobbyId);
+
+        setTimeout(() => {
+          const equation = data.generateEquation(game.settings);
+          game.currentEquation = equation;
+
+          console.log("[server] emitting newQuestion to lobby:", playerInfo.lobbyId, equation);
+          io.to(playerInfo.lobbyId).emit("newQuestion", equation);
+        }, 5000); 
+      }
     }
   });
 
@@ -33,8 +50,6 @@ function sockets(io, socket, data) {
     console.log(playerInfo)
     socket.emit("playerInfo", playerId, playerInfo);
   });
-
-
 
 
 
@@ -82,18 +97,28 @@ function sockets(io, socket, data) {
     }
   });
 
-  socket.on("requestNewQuestion", function (lobbyId) {
+socket.on("requestNewQuestion", function (lobbyId) {
   const game = data.getGame(lobbyId);
   if (!game) return;
-  
-  const equation = data.generateEquation();
-  game.currentEquation = equation;
 
-  io.to(lobbyId).emit("newQuestion", equation);
+  setTimeout(() => {
+    const equation = data.generateEquation(game.settings);
+    game.currentEquation = equation;
+    io.to(lobbyId).emit("newQuestion", equation);
+  }, 5000);
 });
 
+socket.on("joinLobby", function (lobbyId) {
+  socket.join(lobbyId);
 
-  
+  const game = data.getGame(lobbyId);
+  if (!game) return;
+
+  // Om en fråga redan finns, skicka den direkt till den här klienten
+  if (game.currentEquation) {
+    socket.emit("newQuestion", game.currentEquation);
+  }
+});
 
 
 }

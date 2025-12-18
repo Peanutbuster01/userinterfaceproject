@@ -46,6 +46,10 @@ Data.prototype.createGame = function (pollId, settings) {
     poll.participants = [];
     poll.currentQuestion = "";
     poll.settings = settings;
+
+    poll.currentEquation = null;
+    poll.firstQuestionScheduled = false;
+
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
@@ -65,10 +69,6 @@ Data.prototype.joinGame = function (d) {
     return this.polls[d.lobbyId].participants.length - 1;
   }
 }
-
-
-
-
 
 
 Data.prototype.getParticipants = function (pollId) {
@@ -127,13 +127,13 @@ Data.prototype.submitAnswer = function (pollId, answer) {
       answers[answer] += 1
     console.log("answers looks like ", answers, typeof answers);
   }
-},
+};
 
-Data.randomInt = function (min, max) {
+Data.prototype.randomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-  },
+  };
 
-Data.makeAddition = function (level) {
+Data.prototype.makeAddition = function (level) {
   const a = this.randomInt(level.min, level.max);
   const b = this.randomInt(level.min, level.max);
 
@@ -141,9 +141,9 @@ Data.makeAddition = function (level) {
     question: `${a} + ${b} = ?`,
     answer: a + b
     };
-  },
+  };
 
-  Data.makeSubtraction = function (level) {
+  Data.prototype.makeSubtraction = function (level) {
     const a = this.randomInt(level.min, level.max);
     const b = this.randomInt(level.min, level.max);
 
@@ -151,9 +151,9 @@ Data.makeAddition = function (level) {
       question: `${a} - ${b} = ?`,
       answer: a - b
     };
-  },
+  };
 
-  Data.makeMultiplication = function (level) {
+  Data.prototype.makeMultiplication = function (level) {
     const a = this.randomInt(level.min, level.max);
     const b = this.randomInt(level.min, level.max);
 
@@ -161,9 +161,9 @@ Data.makeAddition = function (level) {
         question: `${a} × ${b} = ?`,
         answer: a * b
       };
-    },
+    };
 
-  Data.makeDivision = function (level) {
+  Data.prototype.makeDivision = function (level) {
     const b = this.randomInt(level.min + 1, level.max); // undvik division med 0
     const answer = this.randomInt(level.min, level.max);
     const a = b * answer; // se till att det går jämnt ut
@@ -173,6 +173,52 @@ Data.makeAddition = function (level) {
       answer: answer
     };
   };
+
+  Data.prototype.chosenGameSetting = function (level, operations) {
+  let chosenMethods = [];
+  let levelRange = { min: 0, max: 0 };
+
+  if (level === "easy") {
+    levelRange = { min: 0, max: 10 };
+  } else if (level === "medium") {
+    levelRange = { min: 0, max: 20 };
+  } else if (level === "hard") {
+    levelRange = { min: 0, max: 50 };
+  } else {
+    levelRange = { min: 0, max: 100 }; // nightmare
+  }
+
+  if (operations.includes("addition")) {
+    chosenMethods.push(this.makeAddition.bind(this));
+  }
+  if (operations.includes("subtraction")) {
+    chosenMethods.push(this.makeSubtraction.bind(this));
+  }
+  if (operations.includes("multiplication")) {
+    chosenMethods.push(this.makeMultiplication.bind(this));
+  }
+  if (operations.includes("division")) {
+    chosenMethods.push(this.makeDivision.bind(this));
+  }
+
+  return {
+    level: levelRange,
+    operations: chosenMethods
+  };
+};
+
+Data.prototype.generateEquation = function (settings) {
+  const chosenGameSetting = this.chosenGameSetting(settings.level, settings.operations);
+
+  const operations = chosenGameSetting.operations;
+  const levelRange = chosenGameSetting.level;
+
+  const randomCalculationMethod = operations[Math.floor(Math.random() * operations.length)];
+  const equation = randomCalculationMethod(levelRange);
+
+  return equation; 
+};
+
 
 export { Data };
 

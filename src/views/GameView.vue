@@ -68,7 +68,6 @@
 </div>
 
 
-
     <div class="popupBackgroundMakeMove" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
         <div class="popup">
             <p>{{ uiLabels.makeAMove }}</p>
@@ -76,7 +75,7 @@
         </div>
     </div>
 
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
+    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
         <div class="popup">
             <p>{{ uiLabels.wrongAnswer}}</p>
             <button @click="showPopupBoolean = false; popupType = null" id="okButton">OK</button>
@@ -145,22 +144,16 @@ export default {
     created: function () {
         this.lobbyId = this.$route.params.id;
         this.playerId = Number(this.$route.params.playerId);
+        socket.emit("joinLobby", this.lobbyId);
+
 
 
         socket.on("uiLabels", labels => this.uiLabels = labels);
 
         socket.on("gameSettings", (settings) => {
-            console.log(settings) 
-
-            this.gameSetting = this.chosenGameSetting(
-                settings.level,
-                settings.operations
-            );
-
-            setTimeout(() => {
-                this.generateEquation(this.chosenGameSetting);
-            }, 5000);
+            console.log("gameSettings:", settings);
         });
+
 ;
 
 
@@ -201,9 +194,14 @@ export default {
         });
 
         socket.on("startGame", () => {
-            socket.emit("requestNewQuestion", this.lobbyId);
+        console.log("[client] startGame received. lobby:", this.lobbyId, "playerId:", this.playerId);
         });
 
+
+        socket.on("wrongAnswer", () => {
+            this.popupType = "wrongAnswerPopup";
+            this.showPopupBoolean = true;
+        });
 
 
         socket.emit("getUILabels", this.lang);
@@ -236,51 +234,7 @@ export default {
         socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
             this.playerAnswer = "";
         },
-
-        chosenGameSetting: function (level, operations) {
-        let chosenMethods = [];
-            let levelRange = { min: 0, max: 0 };
-
-        if (level === "easy") {
-                levelRange = { min: 0, max: 10 };
-        } else if (level === "medium") {
-                levelRange = { min: 0, max: 20 };
-        } else if (level === "hard") {
-                levelRange = { min: 0, max: 50 };
-        } else {
-                levelRange = { min: 0, max: 100 }; // level nightmare
-        }
-
-        if (operations.includes("addition")) {
-            chosenMethods.push(this.makeAddition);
-        }
-        if (operations.includes("subtraction")) {
-            chosenMethods.push(this.makeSubtraction); 
-        }                          
-        if (operations.includes("multiplication")) {
-            chosenMethods.push(this.makeMultiplication);                       
-        }
-        if (operations.includes("division")) {
-            chosenMethods.push(this.makeDivision);  
-        }
-
-        return {
-            level: levelRange,
-            operations: chosenMethods
-        };
-    }, 
-    
-        generateEquation: function (chosenGameSetting) {
-        const operations = chosenGameSetting.operations;
-        const levelRange = chosenGameSetting.level;
-
-        let randomCalculationMethod = operations[Math.floor(Math.random() * operations.length)];
-        let equation = randomCalculationMethod(levelRange);
-
-        this.currentEquation = equation;
-        this.currentQuestion = equation.question;    
-    },
-
+ 
         makeAMove: function () {
         this.popupType = "makeMovePopup";
         this.showPopupBoolean = true;
@@ -308,13 +262,14 @@ export default {
         this.showPopupBoolean = false;
         this.popupType = null;
 
+        const hit = false; // TODO: ersätt med serverresultat
         this.opponentShots[this.selectedShotIndex] = hit ? "hit" : "miss";
 
         this.hasShotThisRound = true;
         this.canShoot = false;
         
 
-        socket.emit("requestNewQuestion", this.lobbyId);
+        //socket.emit("requestNewQuestion", this.lobbyId);
 
         this.selectedShotIndex = null;
 
@@ -345,6 +300,7 @@ header {
 }
 
 .board {
+    position: relative;
     top: 1em;
     width: 400px;
     height: 300px;
@@ -506,9 +462,6 @@ header {
   cursor: pointer;
 }
 
-#OpponentBoard #board {
-  position: relative;
-}
 
 .boardLock {
     position: absolute;
