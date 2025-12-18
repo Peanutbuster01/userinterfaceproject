@@ -1,6 +1,8 @@
 {
 	"siteName": "Mattekriget",
+	"start": "Start",
 	"rules": "Spelregler",
+	"noGameExist": "Ogiltigt spel-id",
 	"flag": "/img/eng.png",
 	"ruleBody": "Spelregler - mattekriget!\n\nMål:\nSpelet går ut på att sänka din motståndares spelare\nEtt matteproblem kommer att presenteras\nDen som först svarar rätt får ett skott mot motståndarens spelare - så se till att vara snabb! 😀\nDen som först slagit ut alla motståndarens spelare vinner\n\nStarta genom att:\nPlacera dina tre spelare taktiskt på din spelplan\nTryck sedan start och vänta på att motståndaren är redo\nMå den bäste matematikern vinna!",
 	"close": "Stäng",
@@ -20,7 +22,7 @@
 	"placePlayerInstruction": "Klicka på rutorna för att placera dina tre spelare!",
 	"ready": "KLAR",
 	"notReadyPopup": "Du måste fylla i ditt namn och placera dina spelare för att gå vidare!",
-	"createLobbyID": "Skapa Lobby ID",
+	"createLobbyId": "Skapa Lobby ID",
 	"chooseOperation": "Välj räknesätt",
 	"addition": "Addition",
 	"subtraction": "Subtraktion",
@@ -42,5 +44,6 @@
 	"answerMathQuestion": "Skriv ditt svar här",
 	"send": "Skicka",
 	"makeAMove": "Du svarade rätt! Välj en ruta att skjuta på.",
-	"waitForOpponent": "Väntar på motståndaren att göra sitt drag..."
+	"waitForOpponent": "Väntar på motståndaren att göra sitt drag...",
+	"play": "Spela"
 }

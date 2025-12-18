@@ -1,29 +1,6 @@
 <template>
-  <header>
-    <div v-bind:class="['hamburger', { 'close': !hideNav }]" v-on:click="toggleNav">
-    </div>
-    <div class="logo">
-      <img src="/img/logo.png">
-      {{ uiLabels.siteName }}
-      <img src="../assets/logo.svg">
-    </div>
-  </header>
 
-  <ResponsiveNav v-bind:hideNav="hideNav">
-    <button v-on:click="switchLanguage">
-      <img :src="uiLabels.flag" style="width: 60%;">
-    </button>
-
-
-    <button @click="showRulesBoolean = !showRulesBoolean">
-      {{ uiLabels.rules }}
-    </button>
-
-  </ResponsiveNav>
-
-  <div class="ruleSquare" v-if="showRulesBoolean">
-    {{ uiLabels.ruleBody }}
-  </div>
+  <title>{{ uiLabels.start }}</title>
 
   <div class="welcomeMessages">
     <h1>{{ uiLabels.welcomeTitle }}</h1>
@@ -36,11 +13,9 @@
       <p>{{ uiLabels.createGameInstructions }}</p>
 
       <div class="ButtonRow">
-        <button class="gameButtons">
-          <router-link class="linkModifier" to="/create/">
-            {{ uiLabels.createGameButton }}
-          </router-link>
-        </button>
+        <router-link class="gameButtons" to="/create/">
+          {{ uiLabels.createGameButton }}
+        </router-link>
       </div>
     </section>
 
@@ -53,163 +28,97 @@
         <input class="gameButtons" type="text" maxlength="4" @input="validateLobbyId" v-model="lobbyId"
           :placeholder="uiLabels.fourCharGameID">
 
-        <p v-if="joinMessage" :class="lobbyId.length === 4 ? 'joinApprovedMessage' : 'joinErrorMessage'">
+        <p v-if="lobbyId.length < 4" class="joinErrorMessage">
           {{ joinMessage }}
         </p>
       </div>
 
       <div class="ButtonRow">
-        <button class="gameButtons">
-          <router-link class="linkModifier" v-bind:to="'/join/' + lobbyId">
-            {{ uiLabels.joinGameButton }}
-          </router-link>
+
+        <button class="gameButtons" @click="checkLobbyId">
+          {{ uiLabels.joinGameButton }}
         </button>
+
       </div>
     </section>
+  </div>
+
+  <div id="noGameExist" v-if="showNoGameExistBoolean">
+    {{ uiLabels.noGameExist }}
+    <button id="okButton" @click="showNoGameExistBoolean = !showNoGameExistBoolean">
+      OK
+    </button>
   </div>
 
 </template>
 
 
 <script>
-import ResponsiveNav from '@/components/ResponsiveNav.vue';
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+const socket = io();
 
 export default {
   name: 'StartView',
-  components: {
-    ResponsiveNav
-  },
+  props: ["uiLabels"],
+
+
   data: function () {
     return {
-      uiLabels: {},
       lobbyId: "",
       joinMessage: "",
-      lang: localStorage.getItem("lang") || "en",
       hideNav: true,
       showRulesBoolean: false,
+      showNoGameExistBoolean: false,
     }
   },
-  created: function () {
-    socket.on("uiLabels", labels => this.uiLabels = labels);
-    socket.emit("getUILabels", this.lang);
-  },
-  methods: {
-    switchLanguage: function () {
-      if (this.lang === "en") {
-        this.lang = "sv"
+  created() {
+    socket.on('lobbyIdResponse', (response) => {
+      if (response == "valid") {
+        this.$router.push({ path: `/join/${this.lobbyId}` })
       }
       else {
-        this.lang = "en"
+        console.log("INTE OK ID")
+        this.showNoGameExistBoolean = true;
       }
-      localStorage.setItem("lang", this.lang);
-      socket.emit("getUILabels", this.lang);
-    },
-    toggleNav: function () {
-      this.hideNav = !this.hideNav;
-    },
+    })
 
+  },
+  methods: {
     validateLobbyId() {
-      if (this.lobbyId.length === 4) {
-        this.joinMessage = this.uiLabels.joinApprovedMessage || "Spel-ID godkänt";
-      } else {
-        this.joinMessage = this.uiLabels.joinErrorMessage || "Spel-ID måste vara 4 tecken";
-      }
-    },
-
+      this.joinMessage = this.uiLabels.joinErrorMessage || "Spel-ID måste vara 4 tecken";
+    }
+    ,
+    checkLobbyId() {
+      socket.emit('tryLobbyId', this.lobbyId)
+    }
   }
 }
+
 
 </script>
 
 
 <style scoped>
-header {
-  background-color: gray;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 2em auto;
-}
-
-.logo {
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  font-size: 2.5rem;
-  color: white;
-  padding-top: 0.2em;
-}
-
-.logo img {
-  height: 2.5rem;
-  vertical-align: bottom;
-  margin-right: 0.5rem;
-}
-
-.hamburger {
-  color: white;
-  width: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  padding: 0.5rem;
-  top: 0;
-  left: 0;
-  height: 2rem;
-  cursor: pointer;
-  font-size: 1.5rem;
-}
-
-@media screen and (max-width:50em) {
-  .logo {
-    font-size: 5vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .hamburger::before {
-    content: "☰";
-  }
-
-  .close::before {
-    content: "✕";
-  }
-
-  .hide {
-    left: -12em;
-  }
-}
+@import url('https://fonts.cdnfonts.com/css/super-funky');
 
 .welcomeMessages {
   border-radius: 6px;
-  margin-top: 5rem;
+  margin-top: 3rem;
   text-align: center;
-}
-
-.ruleSquare {
-  margin: 5% auto;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: blue;
-  width: 50rem;
-  background-color: aqua;
-  white-space: pre-line;
-  position: fixed;
 }
 
 #createJoin {
   display: flex;
   justify-content: center;
-  gap: 4rem;
-  margin-top: 12rem;
+  flex-wrap: wrap;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  margin-top: 5rem;
 }
 
 .gamePanel {
-  background: rgb(224, 223, 223);
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  background: var(--light-blue-base-color);
+  border: ridge 5px var(--blue-base-color);
+  border-radius: 0.25rem;
   padding: 1rem;
   width: 320px;
   text-align: center;
@@ -231,6 +140,33 @@ header {
   text-align: center;
   margin: 0 auto;
   box-sizing: border-box;
+  border: ridge 3px var(--blue-base-color);
+  background-color: var(--light-gray-base-color);
+  color: var(--blue-base-color);
+  font-family: 'Super Funky', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.gameButtons:hover {
+  transform: scale(1.1);
+}
+
+input.gameButtons:hover {
+  transform: none;
+  cursor: text;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+
+::placeholder {
+  font-size: 11px;
+  color: var(--blue-base-color);
+  opacity: 0.7;
 }
 
 .ButtonRow {
@@ -239,16 +175,45 @@ header {
   margin-top: auto;
 }
 
-.linkModifier {
-  text-decoration: none;
-  color: inherit;
-}
-
 .joinErrorMessage {
   color: red;
 }
 
 .joinApprovedMessage {
   color: darkgreen;
+}
+
+#noGameExist {
+  margin: 5% auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20%;
+  white-space: pre-line;
+  position: fixed;
+
+  padding: 20px;
+  color: red;
+  background-color: var(--pink-base-color);
+  border-radius: 0.25rem;
+  border: ridge 10px var(--pink-darker-color);
+  font-family: 'ADLaM Display', sans-serif;
+  box-shadow: 5px 4px 5px var(--pink-darker-color);
+  z-index: 1000000;
+}
+
+#okButton {
+  border: ridge 3px var(--pink-darker-color);
+  border-radius: 0.25rem;
+  color: var(--pink-darker-color);
+  background-color: var(--light-gray-base-color);
+  cursor: pointer;
+  font-family: 'ADLaM Display', sans-serif;
+  padding: 5px;
+  margin: 10px;
+}
+
+#okButton:hover {
+  transform: scale(1.05);
 }
 </style>

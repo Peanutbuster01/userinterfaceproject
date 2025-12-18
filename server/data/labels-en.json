@@ -1,6 +1,8 @@
 {
 	"siteName": "War of Math",
+	"start": "Start",
 	"rules": "Rules",
+	"noGameExist": "Invalid game ID",
 	"flag": "/img/swe.png",
 	"ruleBody": "Gamerules - the math battle!\n\nGoal:\nThe goal of the game is to eliminate all of your opponent's players.\nA math problem will appear on the screen.\nThe first player to answer correctly gets to take a shot at the opponent's players — so be quick! 😀\nThe player who eliminates all of the opponent's players first wins.\n\nStart by:\nPlace your three players strategically on your game board.\nPress start and wait for your opponent to be ready.\nMay the best mathematician win!",
 	"close": "Close",
@@ -11,16 +13,16 @@
 	"joinGame": "Join game",
 	"joinGameInstructions": "Enter game ID from host",
 	"joinGameButton": "Join",
-	"fourCharGameID": "state 4 characters",
-	"joinErrorMessage": "game ID must be 4 characters",
-	"joinApprovedMessage": "game ID is valid",
+	"fourCharGameID": "State 4 characters",
+	"joinErrorMessage": "Game ID must be 4 characters",
+	"joinApprovedMessage": "Game ID is valid",
 	"join": "Join",
 	"joinWelcome": "Choose character and place your ships!",
 	"playerName": "Name: ",
 	"placePlayerInstruction": "Click on the squares to place your three players!",
 	"ready": "READY",
 	"notReadyPopup": "You need to fill in your name and place all your players to move on!",
-	"createLobbyID": "Create Lobby ID",
+	"createLobbyId": "Create Lobby ID",
 	"chooseOperation": "Choose operation",
 	"addition": "Addition",
 	"subtraction": "Subtraction",
@@ -41,5 +43,6 @@
 	"answerMathQuestion": "Type your answer here",
 	"send": "Send",
 	"makeAMove": "You answered correctly! Choose a square to shoot at.",
-	"waitForOpponent": "Waiting for opponent to make their move..."
+	"waitForOpponent": "Waiting for opponent to make their move...",
+	"play": "Spela"
 }

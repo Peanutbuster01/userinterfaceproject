@@ -1,17 +1,6 @@
 <template>
-    <title>{{ uiLabels.join }}</title>
-    <header>
-        <div class="logo">
-            {{ uiLabels.siteName }}
-        </div>
-    </header>
-
-    <ResponsiveNav v-bind:hideNav="hideNav">
-        <button>
-            <img v-on:click="switchLanguage" :src="uiLabels.flag" style="width: 60%;">
-        </button>
-        <div class="lobbyID">Lobby-ID: {{ lobbyId }}</div>
-    </ResponsiveNav>
+    <title>{{ uiLabels.play }}</title>
+    <p>Lobby-ID: {{ lobbyId }}</p>
 
     <div class="pageLayout">
 
@@ -87,19 +76,15 @@
 </template>
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
-import ResponsiveNav from '@/components/ResponsiveNav.vue';
+const socket = io();
 import avatars from "../assets/avatars.json";
 
 export default {
-    components: {
-        ResponsiveNav
-    },
+    name: 'StartView',
+    props: ["uiLabels"],
 
     data: function () {
         return {
-            uiLabels: {},
-            lang: localStorage.getItem("lang") || "sv",
             hideNav: true,
             lobbyId: "",
 
@@ -140,8 +125,6 @@ export default {
         this.lobbyId = this.$route.params.id;
         this.playerId = Number(this.$route.params.playerId);
 
-
-        socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.on("gameSettings", (settings) => { console.log(settings) });
         socket.on("playerInfo", (playerId, playerInfo) => {
             if (playerId == this.playerId) {
@@ -162,35 +145,19 @@ export default {
         });
 
 
-        socket.emit("getUILabels", this.lang);
         socket.emit("getGameSettings", this.lobbyId);
         socket.emit("getPlayerInfo", this.lobbyId, 0);
         socket.emit("getPlayerInfo", this.lobbyId, 1);
     },
 
     methods: {
-        switchLanguage: function () {
-            if (this.lang === "en") {
-                this.lang = "sv"
-            }
-            else {
-                this.lang = "en"
-            }
-            localStorage.setItem("lang", this.lang);
-            socket.emit("getUILabels", this.lang);
-        },
-        toggleNav: function () {
-            this.hideNav = !this.hideNav;
-        },
 
         placeAvatar: function (i) {
-            // placeholder tills du implementerar logiken
             console.log("placeAvatar", i);
         },
 
         submitAnswer: function () {
             console.log("Svar:", this.playerAnswer);
-            // sen: socket.emit(...) när du kopplar det
             const isCorrect = this.checkAnswer(
                 this.playerAnswer,
                 this.currentEquation);
@@ -340,26 +307,6 @@ export default {
 </script>
 
 <style scoped>
-header {
-    background-color: gray;
-    width: 100%;
-    grid-template-columns: 2em auto;
-}
-
-.logo {
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
-    font-size: 2.5rem;
-    color: white;
-    padding-top: 0.2em;
-    grid: 0%;
-}
-
-.lobbyID {
-    font-size: 2rem;
-    padding-top: 0.5em;
-}
-
 #board {
     top: 1em;
     width: 400px;
@@ -451,12 +398,11 @@ header {
     flex-direction: column;
     gap: 2rem;
     margin-top: 2rem;
-    /* linjerar med boardens margin */
+    align-items: center;
 }
 
 #playerAvatar {
     margin-top: 2rem;
-    /* matchar boardens margin */
     min-width: 200px;
     padding: 1rem;
     border: 2px solid #962d9a;

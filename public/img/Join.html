@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)http://localhost:5173/join/1111 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="module" src="./Join_files/client"></script>
+
+    
+    <link rel="icon" href="http://localhost:5173/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style type="text/css" data-vite-dev-id="C:/Users/inaer/GitProjects/userinterfaceproject/src/assets/main.css">:root {
+  --foreground-color: red;
+  --background-color: green;
+  --board-border-color: #962d9a;
+  --board-background-color: rgb(189, 123, 206);
+  --header-color: rgb(215, 61, 130);
+  --square-shadow: rgb(255, 255, 255);
+  --avatar-button-color: rgb(235, 77, 177);
+  --avatar-button-hover: rgb(159, 50, 119);
+  --button-shadow-color: black;
+
+
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  font-family: Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+}</style><style type="text/css" data-vite-dev-id="C:/Users/inaer/GitProjects/userinterfaceproject/src/components/ResponsiveNav.vue?vue&amp;type=style&amp;index=0&amp;scoped=b1098c5d&amp;lang.css">
+nav[data-v-b1098c5d] {
+    background-color: lightgray;
+    width:100%;
+    height: 4em;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 10em);
+}
+nav a[data-v-b1098c5d-s] {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: gray;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid gray;
+}
+@media screen and (max-width:50em) {
+nav[data-v-b1098c5d] {
+    position: absolute;
+    height:100vh;
+    top: 3em;
+    left: 0;
+    width:12em;
+    display: grid;
+    grid-template-rows: repeat(auto-fit, 2em);
+    transition: 0.5s;
+}
+nav a[data-v-b1098c5d-s] {
+    justify-content: left;
+    padding-left: 1em;
+}
+.hide[data-v-b1098c5d] {
+    left:-12em;
+}
+}
+</style><style type="text/css" data-vite-dev-id="C:/Users/inaer/GitProjects/userinterfaceproject/src/views/StartView.vue?vue&amp;type=style&amp;index=0&amp;scoped=a980f8fd&amp;lang.css">
+header[data-v-a980f8fd] {
+  background-color: gray;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2em auto;
+}
+.logo[data-v-a980f8fd] {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 2.5rem;
+  color: white;
+  padding-top: 0.2em;
+}
+.logo img[data-v-a980f8fd] {
+  height: 2.5rem;
+  vertical-align: bottom;
+  margin-right: 0.5rem;
+}
+.hamburger[data-v-a980f8fd] {
+  color: white;
+  width: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding: 0.5rem;
+  top: 0;
+  left: 0;
+  height: 2rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+@media screen and (max-width:50em) {
+.logo[data-v-a980f8fd] {
+    font-size: 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hamburger[data-v-a980f8fd]::before {
+    content: "☰";
+}
+.close[data-v-a980f8fd]::before {
+    content: "✕";
+}
+.hide[data-v-a980f8fd] {
+    left: -12em;
+}
+}
+.welcomeMessages[data-v-a980f8fd] {
+  border-radius: 6px;
+  margin-top: 5rem;
+  text-align: center;
+}
+.ruleSquare[data-v-a980f8fd] {
+  margin: 5% auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: blue;
+  width: 50rem;
+  background-color: aqua;
+  white-space: pre-line;
+  position: fixed;
+}
+#createJoin[data-v-a980f8fd] {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin-top: 12rem;
+}
+.gamePanel[data-v-a980f8fd] {
+  background: rgb(224, 223, 223);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  width: 320px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.gameSubtitles[data-v-a980f8fd] {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+.gameButtons[data-v-a980f8fd] {
+  padding: 12px 15px;
+  font-size: 15px;
+  width: 19ch;
+  text-align: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+.ButtonRow[data-v-a980f8fd] {
+  justify-content: center;
+  display: flex;
+  margin-top: auto;
+}
+.linkModifier[data-v-a980f8fd] {
+  text-decoration: none;
+  color: inherit;
+}
+.joinErrorMessage[data-v-a980f8fd] {
+  color: red;
+}
+.joinApprovedMessage[data-v-a980f8fd] {
+  color: darkgreen;
+}
+</style><style type="text/css" data-vite-dev-id="C:/Users/inaer/GitProjects/userinterfaceproject/src/views/CreateView.vue?vue&amp;type=style&amp;index=0&amp;scoped=7d656dc7&amp;lang.css">
+.topBar[data-v-7d656dc7] {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+}
+header[data-v-7d656dc7] {
+  background-color: gray;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+.logo[data-v-7d656dc7] {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 2.5rem;
+  color: white;
+  text-align: center;
+}
+.langBtn[data-v-7d656dc7] {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  height: 2rem;
+  aspect-ratio: 1200 / 750;
+  background-size: contain;
+  margin: 0;
+  padding: 0;
+}
+.flag[data-v-7d656dc7] {
+  width: 60px;
+}
+header[data-v-7d656dc7] {
+  background-color: gray;
+  width: 100%;
+  grid-template-columns: 2em auto;
+}
+.logo[data-v-7d656dc7] {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 2.5rem;
+  color: white;
+  padding-top: 0.2em;
+  grid: 0%;
+}
+.lobbyId[data-v-7d656dc7] {
+  font-size: 2rem;
+  padding-top: 0.5em;
+}
+.pageDescription[data-v-7d656dc7] {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.createlobbyId[data-v-7d656dc7] {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.operations[data-v-7d656dc7] {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 5px;
+}
+.operationIcon[data-v-7d656dc7] {
+  width: 110px;
+  padding: 50px;
+  margin-bottom: 5px;
+}
+.level[data-v-7d656dc7] {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+}
+button[data-v-7d656dc7] {
+  cursor: pointer;
+}
+.chosen[data-v-7d656dc7] {
+  background-color: lightgreen;
+}
+.lobbyErrorMessage[data-v-7d656dc7] {
+  color: red;
+}
+.lobbyApprovedMessage[data-v-7d656dc7] {
+  color: darkgreen;
+}
+.createLobbyButton[data-v-7d656dc7] {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+}
+.createLobbyButtonReady[data-v-7d656dc7] {
+  background-color: lightgreen;
+}
+.createLobbyButtonNotReady[data-v-7d656dc7] {
+  background-color: lightcoral;
+}
+</style><style type="text/css" data-vite-dev-id="C:/Users/inaer/GitProjects/userinterfaceproject/src/views/JoinView.vue?vue&amp;type=style&amp;index=0&amp;scoped=c81cd345&amp;lang.css">
+header[data-v-c81cd345] {
+    background-color: var(--header-color);
+    width: 100%;
+    grid-template-columns: 2em auto;
+}
+.logo[data-v-c81cd345] {
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 2.5rem;
+    color: white;
+    padding-top: 0.2em;
+    grid: 0%;
+}
+.lobbyId[data-v-c81cd345] {
+    font-size: 2rem;
+    padding-top: 0.5em;
+}
+#board[data-v-c81cd345] {
+    top: 1em;
+    width: 400px;
+    height: 300px;
+    min-width: 300px;
+    min-height: 300px;
+    border: 12px solid var(--board-border-color);
+    border-radius: 12px;
+    margin: 2rem;
+}
+#overlay[data-v-c81cd345] {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    background-color: var(--board-background-color);
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    gap: 5px;
+}
+.square[data-v-c81cd345] {
+    z-index: 50;
+    box-shadow: inset 0 0 4px rgb(255, 255, 255);
+    position: relative;
+    overflow: hidden;
+}
+.square[data-v-c81cd345]:hover {
+    transform: scale(0.95);
+}
+.placedAvatarShip[data-v-c81cd345] {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+#player[data-v-c81cd345] {
+    margin: 20px;
+    padding: 50px;
+    justify-items: center;
+}
+#chooseAvatar[data-v-c81cd345] {
+    display: flex;
+    align-items: center;
+}
+#container[data-v-c81cd345] {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 50px;
+}
+.chosenAvatar[data-v-c81cd345] {
+    width: 12rem;
+    height: 12rem;
+    margin: 0.5rem;
+    padding: 0.2rem;
+}
+.avatarButton[data-v-c81cd345] {
+    background-color: var(--avatar-button-color);
+    color: white;
+    padding: 0.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    box-shadow: 3px 3px 2px 0px black;
+}
+.avatarButton[data-v-c81cd345]:hover {
+    background-color: var(--avatar-button-hover);
+    transform: scale(1.1);
+}
+#ships[data-v-c81cd345] {
+    margin: 1rem;
+    padding: 1rem;
+}
+.avatarShip[data-v-c81cd345] {
+    width: 8rem;
+    height: 8rem;
+    padding: 5px;
+}
+.avatarShipBorder[data-v-c81cd345] {
+    border: 5px solid green;
+}
+#readyButton[data-v-c81cd345] {
+    background-color: rgb(0, 177, 0);
+    color: white;
+    font-size: 5ch;
+    padding: 0.5rem;
+    margin-top: 100px;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.402);
+}
+#readyButton[data-v-c81cd345]:hover {
+    background-color: green;
+    transform: scale(1.1);
+}
+.popup[data-v-c81cd345] {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(235, 77, 177);
+    color: white;
+    border-radius: 0.25rem;
+    border: double 10px rgb(159, 50, 119);
+    padding: 30px;
+    max-width: 40%;
+}
+.popupBackground[data-v-c81cd345] {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    background-color: #00000040;
+}
+#okButton[data-v-c81cd345] {
+    cursor: pointer;
+}
+</style></head>
+  <body>
+    <div id="app" data-v-app=""><title data-v-c81cd345="">Join</title><header data-v-c81cd345=""><div data-v-c81cd345="" class="logo">War of Math</div></header><nav data-v-b1098c5d="" data-v-c81cd345="" class="hide"><button data-v-c81cd345="" data-v-b1098c5d-s=""><img data-v-c81cd345="" data-v-b1098c5d-s="" src="./Join_files/swe.png" style="width: 60%;"></button><div data-v-c81cd345="" data-v-b1098c5d-s="" class="lobbyId">Lobby-ID: 1111</div></nav><h1 data-v-c81cd345="">Choose character and place your ships!</h1><div data-v-c81cd345="" id="container"><div data-v-c81cd345="" id="board"><div data-v-c81cd345="" id="overlay"><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div><div data-v-c81cd345="" class="square"><!--v-if--></div></div><div data-v-c81cd345=""><button data-v-c81cd345="" id="readyButton">READY</button></div></div><div data-v-c81cd345="" id="player"><div data-v-c81cd345=""><label data-v-c81cd345="" for="name">Name: </label><input data-v-c81cd345="" type="text" id="name" required=""></div><div data-v-c81cd345="" id="chooseAvatar"><button data-v-c81cd345="" class="avatarButton">←</button><img data-v-c81cd345="" class="chosenAvatar" src="./Join_files/catCharacter.jpg"><button data-v-c81cd345="" class="avatarButton">→</button></div><div data-v-c81cd345="" id="ships"><p data-v-c81cd345="">Click on the squares to place your three players!</p><div data-v-c81cd345=""><img data-v-c81cd345="" class="avatarShip" src="./Join_files/catCharacter.jpg"><img data-v-c81cd345="" class="avatarShip" src="./Join_files/catCharacter.jpg"><img data-v-c81cd345="" class="avatarShip" src="./Join_files/catCharacter.jpg"></div></div></div></div><div data-v-c81cd345="" class="popupBackground" style="display: none;"><div data-v-c81cd345="" class="popup"><p data-v-c81cd345="">You need to fill in your name and place all your players to move on!</p><button data-v-c81cd345="" id="okButton">OK</button></div></div></div>
+    <script type="module" src="./Join_files/main.js.nedladdning"></script>
+  
+
+</body></html>

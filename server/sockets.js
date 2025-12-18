@@ -36,6 +36,26 @@ function sockets(io, socket, data) {
 
 
 
+  socket.on('tryLobbyId', function (lobbyId) {
+    const game = data.getGame(lobbyId);
+    console.log("CHECK ID: " + lobbyId);
+    console.log(game);
+    if (game === null) {
+      socket.emit("lobbyIdResponse", "invalid");
+
+    } else if (game.participants.length >= 2) {
+      console.log("CHECK ID");
+      console.log(game);
+      socket.emit("lobbyIdResponse", "full");
+
+    } else {
+      console.log("CHECK ID");
+      console.log(game);
+      socket.emit("lobbyIdResponse", "valid");
+    }
+
+
+  });
 
 
 

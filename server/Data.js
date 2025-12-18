@@ -56,7 +56,7 @@ Data.prototype.getGame = function (pollId) {
   if (this.pollExists(pollId)) {
     return this.polls[pollId];
   }
-  return {};
+  return null;
 }
 
 Data.prototype.joinGame = function (d) {

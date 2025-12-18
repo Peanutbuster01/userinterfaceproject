@@ -1,18 +1,6 @@
 <template>
     <title>{{ uiLabels.join }}</title>
-    <header>
-        <div class="logo">
-            {{ uiLabels.siteName }}
-        </div>
-    </header>
-
-    <ResponsiveNav v-bind:hideNav="hideNav">
-        <button>
-            <img v-on:click="switchLanguage" :src="uiLabels.flag" style="width: 60%;">
-        </button>
-        <div class="lobbyId">Lobby-ID: {{ lobbyId }} </div>
-    </ResponsiveNav>
-
+    <p>Lobby-ID: {{ lobbyId }}</p>
     <h1>{{ uiLabels.joinWelcome }}</h1>
 
     <div id="container">
@@ -66,18 +54,16 @@
 
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
-import ResponsiveNav from '@/components/ResponsiveNav.vue';
+const socket = io();
 import avatars from "../assets/avatars.json";
 
 export default {
-    components: {
-        ResponsiveNav
-    },
+    name: 'joinView',
+    props: ["uiLabels"],
+
     data: function () {
         return {
             uiLabels: {},
-            lang: localStorage.getItem("lang") || "sv",
             hideNav: true,
             lobbyId: "",
             playerId: 0,
@@ -94,7 +80,6 @@ export default {
     created: function () {
         this.lobbyId = this.$route.params.id;
 
-        socket.on("uiLabels", labels => this.uiLabels = labels);
         socket.on("gameSettings", (settings) => { console.log(settings) })
 
 
@@ -113,19 +98,6 @@ export default {
 
     },
     methods: {
-        switchLanguage: function () {
-            if (this.lang === "en") {
-                this.lang = "sv"
-            }
-            else {
-                this.lang = "en"
-            }
-            localStorage.setItem("lang", this.lang);
-            socket.emit("getUILabels", this.lang);
-        },
-        toggleNav: function () {
-            this.hideNav = !this.hideNav;
-        },
         previousAvatar: function () {
             if (this.avatarIndex === 0) {
                 this.avatarIndex = this.avatars.length - 1
@@ -182,33 +154,13 @@ export default {
 </script>
 
 <style scoped>
-header {
-    background-color: gray;
-    width: 100%;
-    grid-template-columns: 2em auto;
-}
-
-.logo {
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
-    font-size: 2.5rem;
-    color: white;
-    padding-top: 0.2em;
-    grid: 0%;
-}
-
-.lobbyId {
-    font-size: 2rem;
-    padding-top: 0.5em;
-}
-
 #board {
     top: 1em;
     width: 400px;
     height: 300px;
     min-width: 300px;
     min-height: 300px;
-    border: 12px solid #962d9a;
+    border: 12px solid var(--board-border-color);
     border-radius: 12px;
     margin: 2rem;
 }
@@ -217,7 +169,7 @@ header {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    background-color: rgb(189, 123, 206);
+    background-color: var(--board-background-color);
     width: 100%;
     height: 100%;
     cursor: pointer;
@@ -268,7 +220,7 @@ header {
 }
 
 .avatarButton {
-    background-color: rgb(235, 77, 177);
+    background-color: var(--avatar-button-color);
     color: white;
     padding: 0.5rem;
     border: none;
@@ -278,10 +230,9 @@ header {
 }
 
 .avatarButton:hover {
-    background-color: rgb(159, 50, 119);
+    background-color: var(--avatar-button-hover);
     transform: scale(1.1);
 }
-
 
 
 #ships {
