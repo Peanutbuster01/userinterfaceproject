@@ -74,8 +74,6 @@ export default {
   border-radius: 0.25rem;
   border: ridge 5px var(--lavender-darker-color);
   margin-bottom: 10px;
-
-
 }
 
 @media (max-width: 600px) {
@@ -95,14 +93,12 @@ export default {
 
 .logo {
   text-transform: uppercase;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.2em;
   font-size: clamp(2rem, 6vw, 3.5rem);
   color: var(--light-gray-base-color);
   text-align: center;
   font-family: 'Super Funky', sans-serif;
-  margin-left: 10px;
   text-shadow: 5px 4px 1px var(--lavender-darker-color);
-
 }
 
 .langBtn {
