@@ -6,41 +6,40 @@
 
         <!--vänster sida (boards)-->
         <div class="leftColumns">
+            <div id="OpponentBoard">
+                <div class="board">
+                    <div class="overlay">
+                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
+                            :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
+                            <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
+                        </div>
+                    </div>
+                    <div v-if="canShoot && !hasShotThisRound" class="canShootOnBoard"></div>
+                    <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
+
+                </div>
+            </div>
+
             <div id="playerBoard">
-                <div id="board">
-                    <div id="overlay">
+                <div class="board">
+                    <div class="overlay">
                         <div v-for="(x, i) in 12" class="square">
                             <img class="placedAvatarShip" v-if="placedShips.includes(i)"
                                 :src="avatars[avatarIndex].image">
                         </div>
                     </div>
-                    <div v-if="canShoot" class="boardLockShoot"></div>
-                </div>
-            </div>
-
-
-            <div id="OpponentBoard">
-                <div id="board">
-                    <div id="overlay">
-                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square" @click="shootAtOpponent(i)">
-                            <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
-
-
-                        </div>
-                    </div>
-                    <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
+                    <div v-if="canShoot || hasShotThisRound" class="boardLock"></div>
                 </div>
             </div>
         </div>
 
-        <!--höger karaktär, fråga, svar-->
+
+        <!--hö nger karaktär, fråga, svar-->
         <div class="rightColumn">
             <div id="playerAvatar">
                 <h2 class="playerName">{{ playerName }}</h2>
-
                 <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
             </div>
-
 
             <div class="questionBox">
                 <p class="questionText">{{ currentQuestion }}</p>
@@ -50,28 +49,31 @@
                 <input class="answerInput" type="text" v-model="playerAnswer"
                     :placeholder="uiLabels.answerMathQuestion" />
 
-                <button class="answerButton" @click="submitAnswer">{{ uiLabels.send }}</button>
+                <button class="answerButton" @click="submitAnswerEquation">{{ uiLabels.send }}</button>
             </div>
         </div>
     </div>
-
-
 
     <div class="popupBackgroundMakeMove" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
         <div class="popup">
             <p>{{ uiLabels.makeAMove }}</p>
             <button @click="confirmShot()" id="okButton">OK</button>
+
         </div>
     </div>
 
-    <div class="popupBackgroundWaitOnComponent" v-if="showPopupBoolean && popupType === 'waitOnComponentPopup'">
+    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
         <div class="popup">
-            <p>{{ uiLabels.yourComponentsTurn }}</p>
+            <p>{{ uiLabels.wrongAnswer }}</p>
             <button @click="showPopupBoolean = false; popupType = null" id="okButton">OK</button>
         </div>
     </div>
 
-
+    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
+        <div class="popup">
+            <p>{{ uiLabels.waitForOpponent }}</p>
+        </div>
+    </div>
 
 </template>
 <script>
@@ -100,18 +102,17 @@ export default {
 
             opponentName: "",
             opponentAvatarIndex: 0,
-            opponentId: 0,
             opponentPlacedShips: [
                 null, null, null
             ],
 
             //placeholder tills att socket data kommer in
 
-            selectedAvatarIndex: 1, //byt så index byt ut automatiskt
+            selectedAvatarIndex: 1, //byt så indeselectedx byt ut automatiskt
             avatars: avatars,
 
             currentEquation: null,
-            currentQuestion: "",
+            currentQuestion: null,
             playerAnswer: "",
 
             canShoot: false,
@@ -124,8 +125,13 @@ export default {
     created: function () {
         this.lobbyId = this.$route.params.id;
         this.playerId = Number(this.$route.params.playerId);
+        socket.emit("joinLobby", this.lobbyId);
 
-        socket.on("gameSettings", (settings) => { console.log(settings) });
+        socket.on("gameSettings", (settings) => {
+            console.log("gameSettings:", settings);
+        });
+
+        ;
         socket.on("playerInfo", (playerId, playerInfo) => {
             if (playerId == this.playerId) {
                 console.log("INFO:"); console.log(playerInfo);
@@ -141,10 +147,42 @@ export default {
                 this.opponentName = playerInfo.playerName;
                 console.log(this.opponentName);
             }
+        });
 
+        socket.on("roundWinner", (winnerPlayerId) => {
+            const myPlayerId = this.playerId;
+
+            if (winnerPlayerId === myPlayerId) {
+                this.makeAMove();
+            } else {
+                this.WaitOnOpponent();
+            }
         });
 
 
+        socket.on("newQuestion", (equation) => {
+            this.currentEquation = equation;
+            this.currentQuestion = equation.question;
+            this.playerAnswer = "";
+            this.canShoot = false;
+            this.showPopupBoolean = false;
+        });
+
+        socket.on("startGame", () => {
+            console.log("[client] startGame received. lobby:", this.lobbyId, "playerId:", this.playerId);
+        });
+
+        socket.on("shotResult", () => {
+            console.log("[GameView] shotResult received:");
+        });
+
+
+        socket.on("wrongAnswer", () => {
+            this.popupType = "wrongAnswerPopup";
+            this.showPopupBoolean = true;
+        });
+
+        socket.emit("getUILabels", this.lang);
         socket.emit("getGameSettings", this.lobbyId);
         socket.emit("getPlayerInfo", this.lobbyId, 0);
         socket.emit("getPlayerInfo", this.lobbyId, 1);
@@ -156,117 +194,9 @@ export default {
             console.log("placeAvatar", i);
         },
 
-        submitAnswer: function () {
-            console.log("Svar:", this.playerAnswer);
-            const isCorrect = this.checkAnswer(
-                this.playerAnswer,
-                this.currentEquation);
-
-            if (isCorrect) {
-                this.makeAMove();
-            } else {
-                this.WaitOnComponent();
-            }
+        submitAnswerEquation: function () {
+            socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
             this.playerAnswer = "";
-        },
-
-
-        randomInt: function (min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        },
-
-        makeAddition: function (level) {
-            const a = this.randomInt(level.min, level.max);
-            const b = this.randomInt(level.min, level.max);
-
-            return {
-                question: `${a} + ${b} = ?`,
-                answer: a + b
-            };
-        },
-
-        makeSubtraction: function (level) {
-            const a = this.randomInt(level.min, level.max);
-            const b = this.randomInt(level.min, level.max);
-
-            return {
-                question: `${a} - ${b} = ?`,
-                answer: a - b
-            };
-
-        },
-
-        makeMultiplication: function (level) {
-            const a = this.randomInt(level.min, level.max);
-            const b = this.randomInt(level.min, level.max);
-
-            return {
-                question: `${a} × ${b} = ?`,
-                answer: a * b
-            };
-        },
-
-        makeDivision: function (level) {
-            const b = this.randomInt(level.min + 1, level.max); // undvik division med 0
-            const answer = this.randomInt(level.min, level.max);
-            const a = b * answer; // se till att det går jämnt ut
-
-            return {
-                question: `${a} ÷ ${b} = ?`,
-                answer: answer
-            };
-        },
-
-        chosenGameSetting: function (chosenGameLevel, chosenGameCalcuationMethods) {
-            let chosenMethods = [];
-            let chosenLevel = { min: 0, max: 0 };
-
-            if (chosenGameLevel === "easy") {
-                chosenLevel = { min: 0, max: 10 };
-            } else if (chosenGameLevel === "medium") {
-                chosenLevel = { min: 0, max: 20 };
-            } else if (chosenGameLevel === "hard") {
-                chosenLevel = { min: 0, max: 50 };
-            } else {
-                chosenLevel = { min: 0, max: 100 }; // level nightmare
-            }
-
-            if (chosenGameCalcuationMethods.includes("addition")) {
-                chosenMethods.push(this.makeAddition);
-            }
-            if (chosenGameCalcuationMethods.includes("subtraction")) {
-                chosenMethods.push(this.makeSubtraction);
-            }
-            if (chosenGameCalcuationMethods.includes("multiplication")) {
-                chosenMethods.push(this.makeMultiplication);
-            }
-            if (chosenGameCalcuationMethods.includes("division")) {
-                chosenMethods.push(this.makeDivision);
-            }
-
-            return {
-                level: chosenLevel,
-                methods: chosenMethods
-            };
-        },
-
-        generateEquation: function (chosenGameSetting) {
-            const methods = chosenGameSetting.methods;
-            const level = chosenGameSetting.level;
-
-            let randomCalculationMethod = methods[Math.floor(Math.random() * methods.length)];
-            let equation = randomCalculationMethod(level);
-            return {
-                currentEquation: equation
-            };
-        },
-
-        checkAnswer: function (playerAnswer, currentEquation) {
-            if (parseInt(playerAnswer) === currentEquation.answer) {
-                return true;
-            } else {
-                return false;
-            }
         },
 
         makeAMove: function () {
@@ -274,10 +204,11 @@ export default {
             this.showPopupBoolean = true;
             this.canShoot = true;
             this.hasShotThisRound = false;
+            this.selectedShotIndex = null;
         },
 
-        WaitOnComponent: function () {
-            this.popupType = "waitOnComponentPopup";
+        WaitOnOpponent: function () {
+            this.popupType = "waitOnOpponentPopup";
             this.showPopupBoolean = true;
             this.canShoot = false;
         },
@@ -285,29 +216,36 @@ export default {
         shootAtOpponent: function (squareIndex) {
             if (!this.canShoot) return;
             if (this.hasShotThisRound) return;
-            if (this.opponentShots[squareIndex]) return;
 
             this.selectedShotIndex = squareIndex;
+            console.log("Selected shot at index:", squareIndex);
         },
 
         confirmShot: function () {
             if (this.selectedShotIndex === null) return;
 
-            this.showPopupBoolean = false;
-            this.popupType = null;
-
-            this.opponentShots[this.selectedShotIndex] = hit ? "hit" : "miss";
+            socket.emit("shoot", {
+                lobbyId: this.lobbyId,
+                playerId: this.playerId,
+                shootIndex: this.selectedShotIndex
+            });
 
             this.hasShotThisRound = true;
             this.canShoot = false;
             this.selectedShotIndex = null;
+
+            this.showPopupBoolean = false;
+            this.popupType = null;
+
         }
+
     }
 }
 </script>
 
 <style scoped>
-#board {
+.board {
+    position: relative;
     top: 1em;
     width: 400px;
     height: 300px;
@@ -318,7 +256,7 @@ export default {
     margin: 2rem;
 }
 
-#overlay {
+.overlay {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -368,7 +306,7 @@ export default {
 
 }
 
-.popupBackgroundWaitOnComponent {
+.popupBackgroundWaitOnOpponent {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -385,7 +323,11 @@ export default {
     top: 0;
     left: 0;
     z-index: 10000;
-    background-color: #00000040;
+    pointer-events: none;
+}
+
+.popupBackgroundMakeMove .popup {
+    pointer-events: auto;
 }
 
 .leftColumns {
@@ -403,6 +345,11 @@ export default {
 
 #playerAvatar {
     margin-top: 2rem;
+    min-width: 200px;
+    padding: 1rem;
+    border: 2px solid #962d9a;
+    border-radius: 20px;
+    /* matchar boardens margin */
     min-width: 200px;
     padding: 1rem;
     border: 2px solid #962d9a;
@@ -468,21 +415,28 @@ export default {
     cursor: pointer;
 }
 
-#OpponentBoard #board {
-    position: relative;
-}
 
 .boardLock {
     position: absolute;
     inset: 0;
     z-index: 9999;
-    pointer-events: all;
+    pointer-events: auto;
+    /* blockera klick */
+
+
 }
 
-.boardLockShoot {
+.canShootOnBoard {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.15);
     z-index: 9999;
+    outline: 12px solid #3a9a2d;
+    outline-offset: 0;
+    pointer-events: none;
+}
+
+.selectedShot {
+    outline: 4px solid #ff0000;
+    outline-offset: -4px;
 }
 </style>
