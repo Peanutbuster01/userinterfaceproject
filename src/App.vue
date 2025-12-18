@@ -27,7 +27,7 @@
 <script>
 import { RouterView } from 'vue-router'
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+const socket = io();
 
 export default {
   data: function () {
@@ -74,6 +74,16 @@ export default {
   border-radius: 0.25rem;
   border: ridge 5px var(--lavender-darker-color);
   margin-bottom: 10px;
+
+
+}
+
+@media (max-width: 600px) {
+  .topBar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 }
 
 .left {
@@ -86,7 +96,7 @@ export default {
 .logo {
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 6vw, 3.5rem);
   color: var(--light-gray-base-color);
   text-align: center;
   font-family: 'Super Funky', sans-serif;
@@ -150,11 +160,5 @@ export default {
 
 .rulesButton:hover {
   transform: scale(1.1);
-}
-
-@media (max-width: 600px) {
-  .logo {
-    font-size: medium;
-  }
 }
 </style>

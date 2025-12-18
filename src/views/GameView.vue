@@ -1,5 +1,6 @@
 <template>
     <title>{{ uiLabels.play }}</title>
+    <p>Lobby-ID: {{ lobbyId }}</p>
 
     <div class="pageLayout">
 
@@ -73,7 +74,7 @@
 </template>
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+const socket = io();
 import avatars from "../assets/avatars.json";
 
 export default {

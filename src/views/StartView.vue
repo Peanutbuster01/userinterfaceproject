@@ -47,9 +47,6 @@
 
 
 <script>
-import io from 'socket.io-client';
-const socket = io("localhost:3000");
-
 export default {
   name: 'StartView',
   props: ["uiLabels"],
@@ -91,7 +88,8 @@ export default {
 #createJoin {
   display: flex;
   justify-content: center;
-  gap: 4rem;
+  flex-wrap: wrap;
+  gap: clamp(1.5rem, 5vw, 4rem);
   margin-top: 5rem;
 }
 

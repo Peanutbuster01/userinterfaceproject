@@ -1,6 +1,6 @@
 <template>
     <title>{{ uiLabels.join }}</title>
-
+    <p>Lobby-ID: {{ lobbyId }}</p>
     <h1>{{ uiLabels.joinWelcome }}</h1>
 
     <div id="container">
@@ -54,7 +54,7 @@
 
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+const socket = io();
 import avatars from "../assets/avatars.json";
 
 export default {
@@ -154,7 +154,6 @@ export default {
 </script>
 
 <style scoped>
-
 #board {
     top: 1em;
     width: 400px;

@@ -19,9 +19,7 @@
     <h3>{{ uiLabels.chooseOperation }}</h3>
 
     <div class="addition" style="display: inline-block;">
-      <img class="operationIcon"
-        src="https://www.pngmart.com/files/21/Addition-PNG-Photos.png"
-        alt="addition">
+      <img class="operationIcon" src="https://www.pngmart.com/files/21/Addition-PNG-Photos.png" alt="addition">
       <br />
 
       <button :class="selectedOperations.includes('addition') ? 'chosen' : ''" @click="chooseOperation('addition')">
@@ -30,9 +28,7 @@
     </div>
 
     <div class="subtraction" style="display: inline-block;">
-      <img class="operationIcon"
-        src="https://www.freeiconspng.com/uploads/subtract-icon-png-26.png"
-        alt="subtraktion">
+      <img class="operationIcon" src="https://www.freeiconspng.com/uploads/subtract-icon-png-26.png" alt="subtraktion">
       <br />
 
       <button :class="selectedOperations.includes('subtraction') ? 'chosen' : ''"
@@ -42,9 +38,7 @@
     </div>
 
     <div class="multiplication" style="display: inline-block;">
-      <img class="operationIcon"
-        src="https://iconape.com/wp-content/png_logo_vector/arrow-7.png"
-        alt="multiplikation">
+      <img class="operationIcon" src="https://iconape.com/wp-content/png_logo_vector/arrow-7.png" alt="multiplikation">
       <br />
 
       <button :class="selectedOperations.includes('multiplication') ? 'chosen' : ''"
@@ -54,9 +48,7 @@
     </div>
 
     <div class="divison" style="display: inline-block;">
-      <img class="operationIcon"
-        src="https://static.thenounproject.com/png/517809-200.png"
-        alt="division">
+      <img class="operationIcon" src="https://static.thenounproject.com/png/517809-200.png" alt="division">
       <br />
 
       <button :class="selectedOperations.includes('division') ? 'chosen' : ''" @click="chooseOperation('division')">
@@ -100,9 +92,7 @@
     </div>
 
     <div class="nightmare" style="display: inline-block;">
-      <img class="operationIcon"
-        src="https://japaclip.com/en/files/cb01-crying.png"
-        alt="nightmare">
+      <img class="operationIcon" src="https://japaclip.com/en/files/cb01-crying.png" alt="nightmare">
       <br />
       <button :class="selectedLevel === 'nightmare' ? 'chosen' : ''" @click="chooseLevel('nightmare')">
         {{ uiLabels.nightmare }}
@@ -120,12 +110,12 @@
 </template>
 <script>
 import io from 'socket.io-client';
-const socket = io("localhost:3000");
+const socket = io();
 
 export default {
   name: 'CreateView',
   props: ["uiLabels"],
-  
+
   data: function () {
     return {
       uiLabels: {},
@@ -196,7 +186,6 @@ export default {
 
 </script>
 <style scoped>
-  
 .pageDescription {
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -232,7 +221,6 @@ export default {
 button {
   cursor: pointer;
   border: ridge 2px var(--blue-base-color)
-  
 }
 
 .chosen {
