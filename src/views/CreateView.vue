@@ -298,12 +298,22 @@ button:hover {
   background-color: lightgreen;
   padding: 10px 5px;
   width: 60%;
-
 }
 
 .createLobbyButtonNotReady {
   background-color: lightcoral;
   padding: 10px 5px;
   width: 70%;
+}
+
+@media(min-width: 600px) {
+
+  .createLobbyButtonNotReady {
+    width: 30%;
+  }
+
+  .createLobbyButtonReady {
+    width: 15%;
+  }
 }
 </style>
