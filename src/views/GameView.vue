@@ -20,17 +20,16 @@
         <div id="OpponentBoard">
             <div class="board">
                 <div class="overlay">
-                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square" @click="shootAtOpponent(i)">
+                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square" :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
                         <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
-
-
                         </div>
                     </div>
+                <div v-if="canShoot && !hasShotThisRound" class="canShootOnBoard"></div>
                 <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
+
             </div>
         </div>
     
-        
         <div id="playerBoard">
             <div class="board">
                 <div class="overlay">
@@ -39,7 +38,7 @@
                                 :src="avatars[avatarIndex].image">
                         </div>
                     </div>
-                <div v-if="canShoot" class="boardLockShoot"></div>
+                <div v-if="canShoot || hasShotThisRound" class="boardLock"></div>
             </div>
         </div>
     </div>
@@ -49,11 +48,9 @@
     <div class="rightColumn">
             <div id="playerAvatar">
             <h2 class="playerName">{{ playerName }}</h2>
-
                 <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
         </div>
     
-
         <div class="questionBox">
             <p class="questionText">{{ currentQuestion }}</p>
         </div>
@@ -67,11 +64,11 @@
     </div>    
 </div>
 
-
     <div class="popupBackgroundMakeMove" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
         <div class="popup">
             <p>{{ uiLabels.makeAMove }}</p>
             <button @click="confirmShot()" id="okButton">OK</button>
+            
         </div>
     </div>
 
@@ -87,8 +84,6 @@
             <p>{{ uiLabels.waitForOpponent}}</p>
         </div>
     </div>
-
-
 
 </template>
 <script>
@@ -146,8 +141,6 @@ export default {
         this.playerId = Number(this.$route.params.playerId);
         socket.emit("joinLobby", this.lobbyId);
 
-
-
         socket.on("uiLabels", labels => this.uiLabels = labels);
 
         socket.on("gameSettings", (settings) => {
@@ -155,8 +148,6 @@ export default {
         });
 
 ;
-
-
         socket.on("playerInfo", (playerId, playerInfo) => {
             if (playerId == this.playerId) {
                 console.log("INFO:"); console.log(playerInfo);
@@ -172,7 +163,6 @@ export default {
                 this.opponentName = playerInfo.playerName;
                 console.log(this.opponentName);
             }
-
         });
 
         socket.on("roundWinner", (winnerPlayerId) => {
@@ -202,7 +192,6 @@ export default {
             this.popupType = "wrongAnswerPopup";
             this.showPopupBoolean = true;
         });
-
 
         socket.emit("getUILabels", this.lang);
         socket.emit("getGameSettings", this.lobbyId);
@@ -240,6 +229,7 @@ export default {
         this.showPopupBoolean = true;
         this.canShoot = true;
         this.hasShotThisRound = false;
+        this.selectedShotIndex = null;
     },
 
         WaitOnOpponent: function () {
@@ -251,7 +241,6 @@ export default {
         shootAtOpponent: function (squareIndex) {
         if (!this.canShoot) return;
         if (this.hasShotThisRound) return;
-        if (this.opponentShots[squareIndex]) return;
 
         this.selectedShotIndex = squareIndex;
     },
@@ -259,19 +248,15 @@ export default {
         confirmShot: function () {
         if (this.selectedShotIndex === null) return;
 
-        this.showPopupBoolean = false;
-        this.popupType = null;
-
         const hit = false; // TODO: ersätt med serverresultat
         this.opponentShots[this.selectedShotIndex] = hit ? "hit" : "miss";
 
         this.hasShotThisRound = true;
         this.canShoot = false;
-        
-
-        //socket.emit("requestNewQuestion", this.lobbyId);
-
         this.selectedShotIndex = null;
+
+        this.showPopupBoolean = false;
+        this.popupType = null;
 
         }
     }
@@ -378,7 +363,7 @@ header {
     top: 0;
     left: 0;
     z-index: 10000;
-    background-color: #00000040;
+    pointer-events: none;
 }
 
 .leftColumns {
@@ -467,14 +452,26 @@ header {
     position: absolute;
     inset: 0;
     z-index: 9999;
-    pointer-events: all;
+    pointer-events: auto; /* blockera klick */
+
+
 }
 
-.boardLockShoot {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.15);
-    z-index: 9999;
+.canShootOnBoard {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  outline: 12px solid #3a9a2d;
+  outline-offset: 0;
+  pointer-events: none;
 }
+
+.selectedShot {
+    outline: 4px solid #ff0000;
+    outline-offset: -4px;
+}
+
+
+
 
 </style>

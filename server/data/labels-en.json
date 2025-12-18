@@ -40,7 +40,7 @@
 	"createLobbyButtonNotReady": "Waiting for all fields to be filled in",
 	"answerMathQuestion": "Type your answer here",
 	"send": "Send",
-	"makeAMove": "You answered correctly! Choose a square to shoot at.",
+	"makeAMove": "You answered correctly! Choose a square to shoot at. Then press OK to confirm your shot.",
 	"wrongAnswer": "Wrong answer! Try again.",
 	"waitForOpponent": "Waiting for opponent to make their move..."
 }
