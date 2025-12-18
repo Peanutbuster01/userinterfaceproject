@@ -174,6 +174,7 @@ export default {
                 this.WaitOnOpponent();
             }
             });
+            
 
             socket.on("newQuestion", (equation) => {
             this.currentEquation = equation;
@@ -267,6 +268,7 @@ export default {
         this.popupType = null;
 
         }
+
     }
 }
 </script>

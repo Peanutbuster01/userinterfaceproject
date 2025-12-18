@@ -94,16 +94,16 @@ if (game?.participants?.length === 2) {
     }
   });
 
-socket.on("requestNewQuestion", function (lobbyId) {
-  const game = data.getGame(lobbyId);
-  if (!game) return;
+//socket.on("requestNewQuestion", function (lobbyId) {
+//  const game = data.getGame(lobbyId);
+ // if (!game) return;
 
-  setTimeout(() => {
-    const equation = data.generateEquation(game.settings);
-    game.currentEquation = equation;
-    io.to(lobbyId).emit("newQuestion", equation);
-  }, 5000);
-});
+ // setTimeout(() => {
+  //  const equation = data.generateEquation(game.settings);
+  //  game.currentEquation = equation;
+ //   io.to(lobbyId).emit("newQuestion", equation);
+//  }, 5000);
+//});
 
 socket.on("joinLobby", function (lobbyId) {
   socket.join(lobbyId);
@@ -120,6 +120,7 @@ socket.on("joinLobby", function (lobbyId) {
 socket.on("shoot", ({ lobbyId, playerId, shootIndex }) => {
 
   const game = data.getGame(lobbyId);
+  if (!game) return;
 
   if (!game.shots) game.shots = { 0: {}, 1: {} };
   if (!game.shots[0]) game.shots[0] = {};
@@ -154,12 +155,32 @@ socket.on("shoot", ({ lobbyId, playerId, shootIndex }) => {
     scores: game.scores,
     winner
   });
+
+  if (winner !== null) return;
+
+  // Guard: schemalägg bara en ny fråga per skott/round
+  if (game.nextQuestionScheduled) return;
+  game.nextQuestionScheduled = true;
+
+  setTimeout(() => {
+    const equation = data.generateEquation(game.settings);
+    game.currentEquation = equation;
+
+    io.to(lobbyId).emit("newQuestion", equation);
+
+    // Släpp guard när frågan skickats
+    game.nextQuestionScheduled = false;
+  }, 5000); 
+
+
   
 });  
 
-
-
-
+socket.on("newRound", function (lobbyId, confirmShot) {
+  const game = data.getGame(lobbyId);
+  if (!game) return;
+  // TODO
+});
 }
 
 export { sockets };
