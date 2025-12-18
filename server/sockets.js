@@ -51,10 +51,7 @@ if (game?.participants?.length === 2) {
     socket.emit("playerInfo", playerId, playerInfo);
   });
 
-
-
-
-
+  
   socket.on('addQuestion', function (d) {
     data.addQuestion(d.lobbyId, { q: d.q, a: d.a });
     socket.emit('questionUpdate', data.activateQuestion(d.lobbyId));
@@ -119,6 +116,48 @@ socket.on("joinLobby", function (lobbyId) {
     socket.emit("newQuestion", game.currentEquation);
   }
 });
+
+socket.on("shoot", ({ lobbyId, playerId, shootIndex }) => {
+
+  const game = data.getGame(lobbyId);
+
+  if (!game.shots) game.shots = { 0: {}, 1: {} };
+  if (!game.shots[0]) game.shots[0] = {};
+  if (!game.shots[1]) game.shots[1] = {};
+
+  if (!game.scores) game.scores = [0, 0];
+  if (game.scores[0] == null) game.scores[0] = 0;
+  if (game.scores[1] == null) game.scores[1] = 0;
+
+  const opponentId = (playerId === 0) ? 1 : 0;
+  const opponent = game.participants[opponentId];
+
+  const opponentShips = opponent?.placedShips || [];
+  const hit = opponentShips.includes(shootIndex);
+
+  // Spara skottresultat
+  game.shots[playerId][shootIndex] = hit ? "hit" : "miss";
+
+  // Uppdatera score
+  if (hit) game.scores[playerId] += 1;
+
+  const winner = (game.scores[playerId] >= 3) ? playerId : null;
+
+  console.log("[server] emitting shotResult:", { lobbyId, playerId, shootIndex, hit, scores: game.scores });
+
+  // Skicka till båda spelare i lobbyn
+  io.to(lobbyId).emit("shotResult", {
+    shooterId: playerId,
+    shootIndex,
+    hit,
+    shots: game.shots,
+    scores: game.scores,
+    winner
+  });
+  
+});  
+
+
 
 
 }

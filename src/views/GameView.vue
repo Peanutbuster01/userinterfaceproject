@@ -187,6 +187,10 @@ export default {
         console.log("[client] startGame received. lobby:", this.lobbyId, "playerId:", this.playerId);
         });
 
+        socket.on("shotResult", () => {
+             console.log("[GameView] shotResult received:");
+        });
+
 
         socket.on("wrongAnswer", () => {
             this.popupType = "wrongAnswerPopup";
@@ -243,13 +247,17 @@ export default {
         if (this.hasShotThisRound) return;
 
         this.selectedShotIndex = squareIndex;
+        console.log("Selected shot at index:", squareIndex);
     },
 
         confirmShot: function () {
         if (this.selectedShotIndex === null) return;
-
-        const hit = false; // TODO: ersätt med serverresultat
-        this.opponentShots[this.selectedShotIndex] = hit ? "hit" : "miss";
+        
+        socket.emit("shoot", {
+            lobbyId: this.lobbyId,
+            playerId: this.playerId,
+            shootIndex: this.selectedShotIndex
+        });
 
         this.hasShotThisRound = true;
         this.canShoot = false;
@@ -364,6 +372,10 @@ header {
     left: 0;
     z-index: 10000;
     pointer-events: none;
+}
+
+.popupBackgroundMakeMove .popup {
+    pointer-events: auto;
 }
 
 .leftColumns {
