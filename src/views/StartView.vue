@@ -28,25 +28,35 @@
         <input class="gameButtons" type="text" maxlength="4" @input="validateLobbyId" v-model="lobbyId"
           :placeholder="uiLabels.fourCharGameID">
 
-        <p v-if="joinMessage" :class="lobbyId.length === 4 ? 'joinApprovedMessage' : 'joinErrorMessage'">
+        <p v-if="lobbyId.length < 4" class="joinErrorMessage">
           {{ joinMessage }}
         </p>
       </div>
 
       <div class="ButtonRow">
 
-        <router-link class="gameButtons" v-bind:to="'/join/' + lobbyId">
+        <button class="gameButtons" @click="checkLobbyId">
           {{ uiLabels.joinGameButton }}
-        </router-link>
+        </button>
 
       </div>
     </section>
+  </div>
+
+  <div id="noGameExist" v-if="showNoGameExistBoolean">
+    {{ uiLabels.noGameExist }}
+    <button id="okButton" @click="showNoGameExistBoolean = !showNoGameExistBoolean">
+      OK
+    </button>
   </div>
 
 </template>
 
 
 <script>
+import io from 'socket.io-client';
+const socket = io();
+
 export default {
   name: 'StartView',
   props: ["uiLabels"],
@@ -58,20 +68,32 @@ export default {
       joinMessage: "",
       hideNav: true,
       showRulesBoolean: false,
+      showNoGameExistBoolean: false,
     }
   },
+  created() {
+    socket.on('lobbyIdResponse', (response) => {
+      if (response == "valid") {
+        this.$router.push({ path: `/join/${this.lobbyId}` })
+      }
+      else {
+        console.log("INTE OK ID")
+        this.showNoGameExistBoolean = true;
+      }
+    })
 
+  },
   methods: {
     validateLobbyId() {
-      if (this.lobbyId.length === 4) {
-        this.joinMessage = this.uiLabels.joinApprovedMessage || "Spel-ID godkänt";
-      } else {
-        this.joinMessage = this.uiLabels.joinErrorMessage || "Spel-ID måste vara 4 tecken";
-      }
-    },
-
+      this.joinMessage = this.uiLabels.joinErrorMessage || "Spel-ID måste vara 4 tecken";
+    }
+    ,
+    checkLobbyId() {
+      socket.emit('tryLobbyId', this.lobbyId)
+    }
   }
 }
+
 
 </script>
 
@@ -123,6 +145,7 @@ export default {
   color: var(--blue-base-color);
   font-family: 'Super Funky', sans-serif;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .gameButtons:hover {
@@ -131,6 +154,12 @@ export default {
 
 input.gameButtons:hover {
   transform: none;
+  cursor: text;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
 }
 
 
@@ -152,5 +181,39 @@ input.gameButtons:hover {
 
 .joinApprovedMessage {
   color: darkgreen;
+}
+
+#noGameExist {
+  margin: 5% auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20%;
+  white-space: pre-line;
+  position: fixed;
+
+  padding: 20px;
+  color: red;
+  background-color: var(--pink-base-color);
+  border-radius: 0.25rem;
+  border: ridge 10px var(--pink-darker-color);
+  font-family: 'ADLaM Display', sans-serif;
+  box-shadow: 5px 4px 5px var(--pink-darker-color);
+  z-index: 1000000;
+}
+
+#okButton {
+  border: ridge 3px var(--pink-darker-color);
+  border-radius: 0.25rem;
+  color: var(--pink-darker-color);
+  background-color: var(--light-gray-base-color);
+  cursor: pointer;
+  font-family: 'ADLaM Display', sans-serif;
+  padding: 5px;
+  margin: 10px;
+}
+
+#okButton:hover {
+  transform: scale(1.05);
 }
 </style>
