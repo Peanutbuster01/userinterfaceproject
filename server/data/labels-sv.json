@@ -46,5 +46,8 @@
 	"makeAMove": "Du svarade rätt! Välj en ruta att skjuta på. Tryck sedan på OK för att bekräfta ditt skott.",
 	"wrongAnswer": "Fel svar! Försök igen.",
 	"waitForOpponent": "Väntar på motståndaren att göra sitt drag...",
-	"play": "Spela"
+	"play": "Spela",
+	"gameOver": "Du förlorade",
+	"youWon": "Du vann!"
+	
 }

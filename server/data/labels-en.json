@@ -45,5 +45,7 @@
 	"makeAMove": "You answered correctly! Choose a square to shoot at. Then press OK to confirm your shot.",
 	"wrongAnswer": "Wrong answer! Try again.",
 	"waitForOpponent": "Waiting for opponent to make their move...",
-	"play": "Spela"
+	"play": "Play",
+	"gameOver": "Game over",
+	"Won": "You won!"
 }

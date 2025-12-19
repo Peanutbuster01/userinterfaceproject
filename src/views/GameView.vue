@@ -9,9 +9,19 @@
             <div id="OpponentBoard">
                 <div class="board">
                     <div class="overlay">
-                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
-                            :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
-                            <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
+                        <div v-for="(x, i) in 12" 
+                        :key="'opp-' + i" 
+                        class="square"
+                        :class="{ selectedShot: selectedShotIndex === i }" 
+                        @click="shootAtOpponent(i)"
+                        >
+
+                        <img
+                        v-if="opponentShots[i] === 'hit'"
+                        class="HitShot"
+                        :src="avatars[opponentAvatarIndex].image"
+                        />
+                        <span v-else-if="opponentShots[i] === 'miss'"class="missShot"></span>
                         </div>
                     </div>
                     <div v-if="canShoot && !hasShotThisRound" class="canShootOnBoard"></div>
@@ -28,7 +38,7 @@
                                 :src="avatars[avatarIndex].image">
                         </div>
                     </div>
-                    <div v-if="canShoot || hasShotThisRound" class="boardLock"></div>
+                    <div v-if="canShoot || hasShotThisRound" class="boardLock"> </div>
                 </div>
             </div>
         </div>
@@ -42,7 +52,10 @@
             </div>
 
             <div class="questionBox">
-                <p class="questionText">{{ currentQuestion }}</p>
+                <p class="questionText" 
+                :class="{ hiddenQuestion: waitingForNextQuestion }"
+                >
+                {{ currentQuestion }}</p>
             </div>
 
             <div class="answerBox">
@@ -72,6 +85,13 @@
     <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
         <div class="popup">
             <p>{{ uiLabels.waitForOpponent }}</p>
+        </div>
+    </div>
+
+    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'gameOverPopup'"> 
+        <div class ="popup">
+            <p v-if="winnerId === playerId">{{uiLabels.youWon}}</p>
+            <p v-else>{{uiLabels.gameOver}}</p>
         </div>
     </div>
 
@@ -119,6 +139,10 @@ export default {
             hasShotThisRound: false,
             selectedShotIndex: null,
             opponentShots: {},
+            waitingForNextQuestion: false,
+
+            gameOver: false,
+            winnerId: null,
         }
     },
 
@@ -159,26 +183,50 @@ export default {
             }
         });
 
+        socket.on("closePopups", () => {
+            if (this.gameOver) return
+            this.showPopupBoolean = false;
+            this.popupType = null;
+            this.playerAnswer = "";
+        }); 
 
         socket.on("newQuestion", (equation) => {
+            this.waitingForNextQuestion = false;
             this.currentEquation = equation;
             this.currentQuestion = equation.question;
-            this.playerAnswer = "";
-            this.canShoot = false;
-            this.showPopupBoolean = false;
         });
 
         socket.on("startGame", () => {
             console.log("[client] startGame received. lobby:", this.lobbyId, "playerId:", this.playerId);
         });
 
-        socket.on("shotResult", () => {
+        socket.on("shotResult", ({shooterId, shootIndex, hit}) => {
+            if (shooterId !== this.playerId) return 
+                const result = hit ? "hit" : "miss";
+                this.opponentShots = {
+                    ...this.opponentShots,
+                    [shootIndex]: result
+                };
+
             console.log("[GameView] shotResult received:");
         });
 
 
         socket.on("wrongAnswer", () => {
             this.popupType = "wrongAnswerPopup";
+            this.showPopupBoolean = true;
+        });
+
+        socket.on("waitingForNextQuestion", () => {
+            this.waitingForNextQuestion = true;
+        });
+
+        socket.on("gameOver", ({ winnerId }) => {
+            this.gameOver = true;
+            this.winnerId = winnerId;
+            this.canShoot = false;
+            this.hasShotThisRound = true;
+            this.popupType = "gameOverPopup";
             this.showPopupBoolean = true;
         });
 
@@ -238,6 +286,10 @@ export default {
             this.popupType = null;
 
         }
+
+
+
+
 
     }
 }
@@ -439,4 +491,33 @@ export default {
     outline: 4px solid #ff0000;
     outline-offset: -4px;
 }
+
+.hiddenQuestion {
+    visibility: hidden;
+}
+
+.missShot {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(139, 136, 136, 0.7);
+}
+
+.HitShot {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.WinPopup {
+    background-color: green;
+}
+
+.LosePopup {
+    background-color: red;
+}
+
+
+
 </style>

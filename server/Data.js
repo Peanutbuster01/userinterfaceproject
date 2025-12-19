@@ -220,6 +220,7 @@ Data.prototype.generateEquation = function (settings) {
 };
 
 
+
 export { Data };
 
 
