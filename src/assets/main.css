@@ -24,6 +24,7 @@ h2 {
   color: var(--light-gray-base-color);
   text-shadow: 4px 4px 2px var(--pink-darker-color);
   letter-spacing: 0.1em;
+  padding: 3px;
 }
 
 @media(max-width: 600px) {
@@ -60,4 +61,19 @@ p {
   color: var(--light-gray-base-color);
   text-shadow: 2px 2px 1px var(--blue-base-color);
 
+}
+
+
+.okButton {
+  border: ridge 3px;
+  border-radius: 0.25rem;
+  background-color: var(--light-gray-base-color);
+  cursor: pointer;
+  font-family: 'ADLaM Display', sans-serif;
+  padding: 5px;
+  margin: 10px;
+}
+
+.okButton:hover {
+  transform: scale(1.05);
 }

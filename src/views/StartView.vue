@@ -45,7 +45,7 @@
 
   <div id="noGameExist" v-if="showNoGameExistBoolean">
     {{ uiLabels.noGameExist }}
-    <button id="okButton" @click="showNoGameExistBoolean = !showNoGameExistBoolean">
+    <button class="okButton" @click="showNoGameExistBoolean = !showNoGameExistBoolean">
       OK
     </button>
   </div>
@@ -76,6 +76,11 @@ export default {
       if (response == "valid") {
         this.$router.push({ path: `/join/${this.lobbyId}` })
       }
+      else if
+        (response == "full") {
+        console.log("FULLT")
+      }
+
       else {
         console.log("INTE OK ID")
         this.showNoGameExistBoolean = true;
@@ -112,7 +117,7 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
   gap: clamp(1.5rem, 5vw, 4rem);
-  margin-top: 5rem;
+  margin-top: 3rem;
 }
 
 .gamePanel {
@@ -179,10 +184,6 @@ input:focus {
   color: red;
 }
 
-.joinApprovedMessage {
-  color: darkgreen;
-}
-
 #noGameExist {
   margin: 5% auto;
   top: 50%;
@@ -202,18 +203,8 @@ input:focus {
   z-index: 1000000;
 }
 
-#okButton {
-  border: ridge 3px var(--pink-darker-color);
-  border-radius: 0.25rem;
+.okButton {
+  border-color: var(--pink-darker-color);
   color: var(--pink-darker-color);
-  background-color: var(--light-gray-base-color);
-  cursor: pointer;
-  font-family: 'ADLaM Display', sans-serif;
-  padding: 5px;
-  margin: 10px;
-}
-
-#okButton:hover {
-  transform: scale(1.05);
 }
 </style>

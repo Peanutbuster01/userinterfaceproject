@@ -1,21 +1,10 @@
 <template>
     <title>{{ uiLabels.join }}</title>
-    <p>Lobby-ID: {{ lobbyId }}</p>
-    <h1>{{ uiLabels.joinWelcome }}</h1>
+    <h3>Lobby-ID: {{ lobbyId }}</h3>
+    <h2>{{ uiLabels.joinWelcome }}</h2>
 
     <div id="container">
-        <div id="board">
-            <div id="overlay">
-                <div v-for="(x, i) in 12" class="square" @click="placeAvatar(i)">
-                    <img class="placedAvatarShip"
-                        :class="[{ 'avatarShipBorder': placedShips.findIndex(x => x == i) == selectedAvatar }]"
-                        v-if="placedShips.includes(i)" :src="avatars[avatarIndex].image">
-                </div>
-            </div>
-            <div>
-                <button id="readyButton" @click="readyToPlay">{{ uiLabels.ready }}</button>
-            </div>
-        </div>
+
 
         <div id="player">
             <div>
@@ -28,10 +17,10 @@
                 <button class="avatarButton" @click="nextAvatar">→</button>
             </div>
             <div id="ships">
-                <p>
+                <h5>
                     {{ uiLabels.placePlayerInstruction }}
-                </p>
-                <div>
+                </h5>
+                <div id="avatarContainer">
                     <template v-for="(x, i) in 3">
                         <img class="avatarShip" @click="select" v-if="placedShips[i] == null"
                             :src="avatars[avatarIndex].image">
@@ -40,14 +29,37 @@
             </div>
         </div>
 
+        <div id="boardAndButton">
+            <div id="board">
+                <div id="overlay">
+                    <div v-for="(x, i) in 12" class="square" @click="placeAvatar(i)">
+                        <img class="placedAvatarShip"
+                            :class="[{ 'avatarShipBorder': placedShips.findIndex(x => x == i) == selectedAvatar }]"
+                            v-if="placedShips.includes(i)" :src="avatars[avatarIndex].image">
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <button id="readyButton" @click="readyToPlay">{{ uiLabels.ready }}</button>
+            </div>
+        </div>
+
     </div>
     <div class="popupBackground" :style="{ display: showPopupBoolean ? 'block' : 'none' }">
         <div class="popup">
             <p>{{ uiLabels.notReadyPopup }}</p>
-            <button @click="showPopupBoolean = false" id="okButton">OK</button>
+            <button @click="showPopupBoolean = false" class="okButton">OK</button>
         </div>
-
     </div>
+
+    <div class="popupBackground" :style="{ display: waitingForOpponentBoolean ? 'block' : 'none' }">
+        <div class="popup">
+            <p>{{ uiLabels.waitingForOpponent }}</p>
+        </div>
+    </div>
+
+
 
 
 </template>
@@ -75,6 +87,7 @@ export default {
             ],
             selectedAvatar: 0,
             showPopupBoolean: false,
+            waitingForOpponentBoolean: false,
         }
     },
     created: function () {
@@ -147,6 +160,7 @@ export default {
                     lobbyId: this.lobbyId,
                     avatarIndex: this.avatarIndex
                 });
+                this.waitingForOpponentBoolean = true;
             }
         }
     }
@@ -154,22 +168,45 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.cdnfonts.com/css/super-funky');
+@import url('https://fonts.googleapis.com/css2?family=ADLaM+Display&display=swap');
+
+#container {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+#player,
+#boardAndButton {
+    min-width: 0;
+}
+
+
+#boardAndButton {
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
 #board {
     top: 1em;
-    width: 400px;
-    height: 300px;
-    min-width: 300px;
-    min-height: 300px;
-    border: 12px solid var(--board-border-color);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    aspect-ratio: 4 / 3;
+    border: 12px ridge var(--blue-base-color);
     border-radius: 12px;
-    margin: 2rem;
 }
 
 #overlay {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    background-color: var(--board-background-color);
+    background-color: var(--light-blue-base-color);
     width: 100%;
     height: 100%;
     cursor: pointer;
@@ -196,20 +233,34 @@ export default {
 }
 
 #player {
-    margin: 20px;
-    padding: 50px;
+    padding: 30px;
     justify-items: center;
+    width: 100%;
+    max-width: 380px;
 }
 
 #chooseAvatar {
     display: flex;
     align-items: center;
+    padding: 20px;
 }
 
-#container {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 50px;
+
+
+#name {
+    padding: 10px;
+    border-radius: 0.25rem;
+    border: ridge 4px var(--pink-darker-color);
+    font-family: 'Super Funky', sans-serif;
+    color: var(--pink-darker-color);
+    letter-spacing: 0.1em;
+}
+
+label {
+    font-family: 'ADLaM Display', sans-serif;
+    font-size: 24px;
+    color: var(--light-gray-base-color);
+    text-shadow: 2px 2px 1px var(--pink-darker-color);
 }
 
 .chosenAvatar {
@@ -220,51 +271,63 @@ export default {
 }
 
 .avatarButton {
-    background-color: var(--avatar-button-color);
-    color: white;
+    background-color: var(--light-blue-base-color);
+    color: var(--light-gray-base-color);
     padding: 0.5rem;
-    border: none;
+    border: ridge 2px var(--blue-base-color);
     cursor: pointer;
     border-radius: 0.25rem;
-    box-shadow: 3px 3px 2px 0px black;
+    box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }
 
 .avatarButton:hover {
-    background-color: var(--avatar-button-hover);
+    background-color: var(--blue-base-color);
     transform: scale(1.1);
 }
 
 
 #ships {
-    margin: 1rem;
-    padding: 1rem;
+    padding-bottom: 20px;
 }
 
 .avatarShip {
-    width: 8rem;
-    height: 8rem;
     padding: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    aspect-ratio: 1 / 1;
 }
 
+#avatarContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+}
+
+
 .avatarShipBorder {
-    border: 5px solid green;
+    border: 5px solid var(--green-darker-color);
 }
 
 #readyButton {
-    background-color: rgb(0, 177, 0);
-    color: white;
+    background-color: var(--green-base-color);
+    font-family: 'Super funky', sans-serif;
+    color: var(--light-gray-base-color);
+    letter-spacing: 0.1em;
     font-size: 5ch;
     padding: 0.5rem;
-    margin-top: 100px;
-    border: none;
+    margin: 40px;
+    border: ridge 5px var(--green-darker-color);
     cursor: pointer;
     border-radius: 0.25rem;
-    box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.402);
+    box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }
 
 #readyButton:hover {
-    background-color: green;
-    transform: scale(1.1);
+    background-color: var(--green-darker-color);
+    transform: scale(1.05);
 }
 
 .popup {
@@ -272,14 +335,15 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgb(235, 77, 177);
-    color: white;
+    background-color: var(--lavender-base-color);
+    color: var(--light-gray-base-color);
+    text-shadow: 2px 2px 2px var(--lavender-darker-color);
     border-radius: 0.25rem;
-    border: double 10px rgb(159, 50, 119);
+    border: ridge 10px var(--lavender-darker-color);
     padding: 30px;
     max-width: 40%;
-
 }
+
 
 .popupBackground {
     position: fixed;
@@ -291,7 +355,16 @@ export default {
     background-color: #00000040;
 }
 
-#okButton {
-    cursor: pointer;
+.okButton {
+    border-color: var(--lavender-darker-color);
+    color: var(--lavender-darker-color);
+}
+
+p {
+    text-shadow: 2px 2px 1px var(--lavender-darker-color);
+}
+
+h5 {
+    text-shadow: 2px 2px 1px var(--pink-darker-color);
 }
 </style>

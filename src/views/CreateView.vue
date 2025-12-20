@@ -176,9 +176,9 @@ export default {
 
     validatelobbyId() {
       if (this.lobbyId.length === 4) {
-        this.lobbyMessage = this.uiLabels.lobbyApprovedMessage || "Lobby-ID godkänt";
+        this.lobbyMessage = this.uiLabels.lobbyApprovedMessage || "Spel-ID godkänt";
       } else {
-        this.lobbyMessage = this.uiLabels.lobbyErrorMessage || "Lobby-ID måste vara 4 tecken";
+        this.lobbyMessage = this.uiLabels.lobbyErrorMessage || "Spel-ID måste vara 4 tecken";
       }
     },
 
@@ -282,7 +282,7 @@ button:hover {
 }
 
 .chosen {
-  background-color: lightgreen;
+  background-color: var(--green-base-color);
 }
 
 .lobbyErrorMessage {
