@@ -10,6 +10,7 @@
 	"createGame": "Create game",
 	"createGameInstructions": "Create a new game",
 	"createGameButton": "Create",
+	"gameId": "Game-ID:",
 	"joinGame": "Join game",
 	"joinGameInstructions": "Enter game ID from host",
 	"joinGameButton": "Join",

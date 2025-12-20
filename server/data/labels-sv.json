@@ -10,6 +10,7 @@
 	"createGame": "Skapa spel",
 	"createGameInstructions": "Skapa ett nytt spel",
 	"createGameButton": "Skapa",
+	"gameId": "Spel-ID:",
 	"joinGame": "Gå med spel",
 	"joinGameInstructions": "Skriv in spel-ID från host",
 	"joinGameButton": "Gå med",

@@ -1,6 +1,6 @@
 <template>
     <title>{{ uiLabels.join }}</title>
-    <h3>Lobby-ID: {{ lobbyId }}</h3>
+    <h3>{{ uiLabels.gameId }} {{ lobbyId }}</h3>
     <h2>{{ uiLabels.joinWelcome }}</h2>
 
     <div id="container">
