@@ -78,7 +78,7 @@ export default {
       }
       else if
         (response == "full") {
-        console.log("FULLT")
+        this.$router.push({path: `/observe/${this.lobbyId}`})
       }
 
       else {

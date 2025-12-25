@@ -32,6 +32,12 @@ const router = createRouter({
       path: '/game/:id/:playerId',
       name: 'GameView',
       component: () => import('../views/GameView.vue')
+    },
+    
+    {
+      path: '/observe/:id',
+      name: 'ObserverView',
+      component: () => import('../views/ObserverView.vue')
     }
 
 
