@@ -48,5 +48,5 @@
 	"waitForOpponent": "Waiting for opponent to make their move...",
 	"play": "Play",
 	"gameOver": "Game over",
-	"Won": "You won!"
+	"youWon": "You won!"
 }
