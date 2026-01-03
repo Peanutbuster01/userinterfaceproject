@@ -48,5 +48,7 @@
 	"wrongAnswer": "Fel svar! Försök igen.",
 	"waitForOpponent": "Väntar på motståndaren att göra sitt drag...",
 	"play": "Spela",
+	"gameOver": "Du förlorade",
+	"youWon": "Du vann!",
 	"waitingForOpponent": "Väntar på motståndaren..."
 }

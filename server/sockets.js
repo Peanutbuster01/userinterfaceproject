@@ -109,6 +109,7 @@ function sockets(io, socket, data) {
   socket.on("answer", (lobbyId, playerId, answer) => {
     const game = data.getGame(lobbyId);
     if (!game) return;
+    if (game.gameOver) return;
 
     const correct = (answer === game.currentEquation.answer)
 
@@ -146,6 +147,7 @@ function sockets(io, socket, data) {
 
     const game = data.getGame(lobbyId);
     if (!game) return;
+    if (game.gameOver) return;
 
     if (!game.shots) game.shots = { 0: {}, 1: {} };
     if (!game.shots[0]) game.shots[0] = {};
@@ -161,12 +163,9 @@ function sockets(io, socket, data) {
     const opponentShips = opponent?.placedShips || [];
     const hit = opponentShips.includes(shootIndex);
 
-    // Spara skottresultat
+
     game.shots[playerId][shootIndex] = hit ? "hit" : "miss";
-
-    // Uppdatera score
     if (hit) game.scores[playerId] += 1;
-
     const winner = (game.scores[playerId] >= 3) ? playerId : null;
 
     console.log("[server] emitting shotResult:", { lobbyId, playerId, shootIndex, hit, scores: game.scores });
@@ -178,16 +177,33 @@ function sockets(io, socket, data) {
       hit,
       shots: game.shots,
       scores: game.scores,
-      winner
-    });
+      winner,
+  });
 
-    if (winner !== null) return;
+  if (winner !== null) {
+  game.gameOver = true;
+
+  io.to(lobbyId).emit("gameOver", {
+    winnerId: winner,
+    scores: game.scores
+  });
+
+  return; 
+}
+    io.to(lobbyId).emit("closePopups");
+    io.to(lobbyId).emit("waitingForNextQuestion");
 
     // Guard: schemalägg bara en ny fråga per skott/round
     if (game.nextQuestionScheduled) return;
     game.nextQuestionScheduled = true;
-
+    
     setTimeout(() => {
+
+      if (game.gameOver) {       
+      game.nextQuestionScheduled = false;
+      return;
+      }
+
       const equation = data.generateEquation(game.settings);
       game.currentEquation = equation;
 
@@ -206,6 +222,8 @@ function sockets(io, socket, data) {
     if (!game) return;
     // TODO
   });
+
+
 }
 
 export { sockets };
