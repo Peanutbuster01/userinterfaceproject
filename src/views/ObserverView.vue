@@ -1,5 +1,5 @@
 <template>
-    <title>{{ uiLabels.play }}</title>
+    <title>{{uiLabels.observe}}</title>
     <p>Lobby-ID: {{ lobbyId }}</p>
 
     <div class="pageLayout">
@@ -14,8 +14,7 @@
                             <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
                         </div>
                     </div>
-                    <div v-if="canShoot && !hasShotThisRound" class="canShootOnBoard"></div>
-                    <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
+                    <div class="boardLock"></div>
 
                 </div>
             </div>
@@ -37,8 +36,7 @@
         <!--hö nger karaktär, fråga, svar-->
         <div class="rightColumn">
             <div id="playerAvatar">
-                <h2 class="playerName">{{ playerName }}</h2>
-                <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
+                <h2 class="playerName">You are observing</h2>
             </div>
 
             <div class="questionBox">
@@ -87,7 +85,8 @@ export default {
             playerName: "",
             avatarIndex: 0,
             selectedAvatar: 0,
-            playerId: 0,
+            player1Id: 0,
+            player2Id: 0,
             placedShips: [
                 null, null, null,
             ],
@@ -117,7 +116,6 @@ export default {
     },
     created: function () {
         this.lobbyId = this.$route.params.id;
-        this.playerId = Number(this.$route.params.playerId);
         socket.emit("joinLobby", this.lobbyId);
 
         socket.on("gameSettings", (settings) => {
@@ -125,8 +123,8 @@ export default {
         });
 
         ;
-        socket.on("playerInfo", (playerId, playerInfo) => {
-            if (playerId == this.playerId) {
+        socket.on("playerInfo", (player1Id, playerInfo) => {
+            if (playerId == this.player1Id) {
                 console.log("INFO:"); console.log(playerInfo);
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
@@ -182,3 +180,181 @@ export default {
     }
 }
 </script>
+
+<style>
+.board {
+    position: relative;
+    top: 1em;
+    width: 400px;
+    height: 300px;
+    min-width: 300px;
+    min-height: 300px;
+    border: 12px solid #962d9a;
+    border-radius: 12px;
+    margin: 2rem;
+}
+
+.overlay {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    background-color: rgb(189, 123, 206);
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.square {
+    z-index: 50;
+    box-shadow: inset 0 0 4px rgb(255, 255, 255);
+    position: relative;
+    overflow: hidden;
+}
+
+#player {
+    margin: 20px;
+    padding: 50px;
+    justify-items: center;
+}
+
+
+#container {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 50px;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(235, 77, 177);
+    color: white;
+    border-radius: 0.25rem;
+    border: double 10px rgb(159, 50, 119);
+    padding: 30px;
+    max-width: 40%;
+
+}
+
+.popupBackgroundWaitOnOpponent {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    background-color: #00000040;
+}
+
+.popupBackgroundMakeMove {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.popupBackgroundMakeMove .popup {
+    pointer-events: auto;
+}
+
+.leftColumns {
+    display: flex;
+    flex-direction: column;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+    align-items: center;
+}
+
+#playerAvatar {
+    margin-top: 2rem;
+    min-width: 200px;
+    padding: 1rem;
+    border: 2px solid #962d9a;
+    border-radius: 20px;
+    /* matchar boardens margin */
+    min-width: 200px;
+    padding: 1rem;
+    border: 2px solid #962d9a;
+    border-radius: 20px;
+}
+
+.placedAvatarShip {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+
+.playerName {
+    margin: 0 0 1rem 0;
+    font-size: 1.6rem;
+}
+
+.playerAvatarImage {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    display: block;
+}
+
+.pageLayout {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+}
+
+.questionBox {
+    min-width: 260px;
+    padding: 1rem;
+    border-radius: 12px;
+    background: white;
+    border: 2px solid #962d9a;
+
+}
+
+.answerBox {
+    min-width: 260px;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+
+}
+
+.answerInput {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #962d9a;
+    border-radius: 10px;
+}
+
+.answerButton {
+    padding: 0.75rem 1rem;
+    border: 2px solid #111;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+}
+
+.boardLock {
+    position: absolute;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: auto;
+    /* blockera klick */
+
+
+}
+</style>
