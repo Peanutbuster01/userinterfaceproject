@@ -75,8 +75,6 @@ function sockets(io, socket, data) {
   });
 
 
-
-
   socket.on('addQuestion', function (d) {
     data.addQuestion(d.lobbyId, { q: d.q, a: d.a });
     socket.emit('questionUpdate', data.activateQuestion(d.lobbyId));
@@ -178,30 +176,30 @@ function sockets(io, socket, data) {
       shots: game.shots,
       scores: game.scores,
       winner,
-  });
+    });
 
-  if (winner !== null) {
-  game.gameOver = true;
+    if (winner !== null) {
+      game.gameOver = true;
 
-  io.to(lobbyId).emit("gameOver", {
-    winnerId: winner,
-    scores: game.scores
-  });
+      io.to(lobbyId).emit("gameOver", {
+        winnerId: winner,
+        scores: game.scores
+      });
 
-  return; 
-}
+      return;
+    }
     io.to(lobbyId).emit("closePopups");
     io.to(lobbyId).emit("waitingForNextQuestion");
 
     // Guard: schemalägg bara en ny fråga per skott/round
     if (game.nextQuestionScheduled) return;
     game.nextQuestionScheduled = true;
-    
+
     setTimeout(() => {
 
-      if (game.gameOver) {       
-      game.nextQuestionScheduled = false;
-      return;
+      if (game.gameOver) {
+        game.nextQuestionScheduled = false;
+        return;
       }
 
       const equation = data.generateEquation(game.settings);

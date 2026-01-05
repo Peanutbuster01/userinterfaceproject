@@ -53,19 +53,17 @@
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
         <div class="popup">
             <p>{{ uiLabels.makeAMove }}</p>
-            <div id="OpponentBoard">
-                <div class="board">
-                    <div class="overlay">
-                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
-                            :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
+            <div class="board">
+                <div class="overlay">
+                    <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
+                        :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
 
-                            <img v-if="opponentShots[i] === 'hit'" class="HitShot"
-                                :src="avatars[opponentAvatarIndex].image" />
-                            <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
-                        </div>
+                        <img v-if="opponentShots[i] === 'hit'" class="HitShot"
+                            :src="avatars[opponentAvatarIndex].image" />
+                        <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
                     </div>
-                    <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
                 </div>
+                <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
             </div>
             <button @click="confirmShot()" class="okButton">OK</button>
 
@@ -89,8 +87,10 @@
         <div class="popup">
             <p v-if="winnerId === playerId">{{ uiLabels.youWon }}</p>
             <p v-else>{{ uiLabels.gameOver }}</p>
-            <button>{{ uiLabels.restartGame }}</button>
-            <button>{{ uiLabels.returnToStart }}</button>
+            <button class="okButton">{{ uiLabels.restartGame }}</button>
+            <button class="okButton" @click="() => {
+                this.$router.push({ path: `/` });
+            }">{{ uiLabels.returnToStart }}</button>
         </div>
     </div>
 
@@ -285,7 +285,7 @@ export default {
             this.showPopupBoolean = false;
             this.popupType = null;
 
-        }
+        },
 
 
 
@@ -482,6 +482,7 @@ export default {
 .okButton {
     border-color: var(--lavender-darker-color);
     color: var(--lavender-darker-color);
+    margin-top: 40px;
 }
 
 .boardLock {
