@@ -30,6 +30,7 @@
 
                         <img v-if="opponentShots[i] === 'hit'" class="HitShot"
                             :src="avatars[opponentAvatarIndex].image" />
+                        <img v-if="opponentShots[i] === 'hit'" class="HitShot" src="/img/cross.png" />
                         <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
                     </div>
                 </div>
@@ -60,6 +61,7 @@
 
                         <img v-if="opponentShots[i] === 'hit'" class="HitShot"
                             :src="avatars[opponentAvatarIndex].image" />
+                        <img v-if="opponentShots[i] === 'hit'" class="HitShot" src="/img/cross.png" />
                         <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
                     </div>
                 </div>
@@ -514,6 +516,9 @@ export default {
     height: 100%;
     object-fit: contain;
     display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .WinPopup {
