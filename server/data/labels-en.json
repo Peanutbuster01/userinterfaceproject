@@ -49,5 +49,7 @@
 	"waitingForOpponent": "Waiting for opponent",
 	"play": "Play",
 	"gameOver": "Game over",
-	"youWon": "You won!"
+	"youWon": "You won!",
+	"restartGame": "Restart",
+	"returnToStart": "Return to start page"
 }

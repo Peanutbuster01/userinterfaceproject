@@ -75,7 +75,7 @@
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
         <div class="popup">
             <p>{{ uiLabels.wrongAnswer }}</p>
-            <button @click="showPopupBoolean = false; popupType = null" id="okButton">OK</button>
+            <button @click="showPopupBoolean = false; popupType = null" class="okButton">OK</button>
         </div>
     </div>
 
@@ -89,6 +89,8 @@
         <div class="popup">
             <p v-if="winnerId === playerId">{{ uiLabels.youWon }}</p>
             <p v-else>{{ uiLabels.gameOver }}</p>
+            <button>{{ uiLabels.restartGame }}</button>
+            <button>{{ uiLabels.returnToStart }}</button>
         </div>
     </div>
 
@@ -296,7 +298,6 @@ export default {
 <style scoped>
 .board {
     position: relative;
-    margin: 2rem;
     top: 1em;
     width: 100%;
     max-width: 400px;
@@ -353,7 +354,8 @@ export default {
     border-radius: 0.25rem;
     border: ridge 10px var(--lavender-darker-color);
     padding: 30px;
-    max-width: 40%;
+    width: 70%;
+    max-width: 400px;
 }
 
 .popupBackground {
@@ -369,27 +371,27 @@ export default {
 .rightColumn {
     display: flex;
     flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
 }
 
 .leftColumn {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    margin: 2rem;
     align-items: center;
 }
 
 #playerAvatar {
-    margin-top: 2rem;
+    border: ridge 3px var(--pink-darker-color);
+    border-radius: 0.25rem;
     min-width: 200px;
-    padding: 1rem;
-    border: 2px solid #962d9a;
-    border-radius: 20px;
-    /* matchar boardens margin */
-    min-width: 200px;
-    padding: 1rem;
-    border: 2px solid #962d9a;
-    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
 .placedAvatarShip {
@@ -415,8 +417,10 @@ export default {
 
 .pageLayout {
     display: flex;
-    align-items: flex-start;
-    gap: 3rem;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
 }
 
 .questionBox {
