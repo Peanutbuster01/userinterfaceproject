@@ -49,5 +49,6 @@
 	"waitForOpponent": "Väntar på motståndaren att göra sitt drag...",
 	"play": "Spela",
 	"waitingForOpponent": "Väntar på motståndaren...",
-	"observe": "Kolla"
+	"observe": "Kolla",
+	"observeMessage": "Du åskådar"
 }

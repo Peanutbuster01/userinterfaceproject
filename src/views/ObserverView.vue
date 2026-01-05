@@ -35,7 +35,7 @@
         <!--hö nger karaktär, fråga, svar-->
         <div class="rightColumn">
             <div id="playerAvatar">
-                <h2 class="playerName">You are observing</h2>
+                <h2 class="playerName">{{uiLabels.observeMessage}}</h2>
             </div>
 
             <div class="questionBox">
@@ -68,6 +68,10 @@
 </template>
 
 <script>
+    import io from 'socket.io-client';
+    const socket = io();
+    import avatars from "../assets/avatars.json";
+
 export default {
     name: 'observeView',
     props: ["uiLabels"],
@@ -80,7 +84,7 @@ export default {
             playerName: "",
             avatarIndex: 0,
             selectedAvatar: 0,
-            playerId: 0,
+            player1Id: 0,
             placedShips: [
                 null, null, null,
             ],
@@ -95,8 +99,6 @@ export default {
 
             //placeholder tills att socket data kommer in
 
-            selectedAvatarIndex: 1, //byt så indeselectedx byt ut automatiskt
-            avatars: avatars,
 
             currentEquation: null,
             currentQuestion: null,
@@ -120,7 +122,7 @@ export default {
 
         ;
         socket.on("playerInfo", (playerId, playerInfo) => {
-            if (playerId == this.playerId) {
+            if (playerId == this.player1Id) {
                 console.log("INFO:"); console.log(playerInfo);
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
@@ -176,56 +178,6 @@ export default {
     },
 
     methods: {
-
-        placeAvatar: function (i) {
-            console.log("placeAvatar", i);
-        },
-
-        submitAnswerEquation: function () {
-            socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
-            this.playerAnswer = "";
-        },
-
-        makeAMove: function () {
-            this.popupType = "makeMovePopup";
-            this.showPopupBoolean = true;
-            this.canShoot = true;
-            this.hasShotThisRound = false;
-            this.selectedShotIndex = null;
-        },
-
-        WaitOnOpponent: function () {
-            this.popupType = "waitOnOpponentPopup";
-            this.showPopupBoolean = true;
-            this.canShoot = false;
-        },
-
-        shootAtOpponent: function (squareIndex) {
-            if (!this.canShoot) return;
-            if (this.hasShotThisRound) return;
-
-            this.selectedShotIndex = squareIndex;
-            console.log("Selected shot at index:", squareIndex);
-        },
-
-        confirmShot: function () {
-            if (this.selectedShotIndex === null) return;
-
-            socket.emit("shoot", {
-                lobbyId: this.lobbyId,
-                playerId: this.playerId,
-                shootIndex: this.selectedShotIndex
-            });
-
-            this.hasShotThisRound = true;
-            this.canShoot = false;
-            this.selectedShotIndex = null;
-
-            this.showPopupBoolean = false;
-            this.popupType = null;
-
-        }
-
     }
 }
 </script>
@@ -372,29 +324,6 @@ export default {
     background: white;
     border: 2px solid #962d9a;
 
-}
-
-.answerBox {
-    min-width: 260px;
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-
-}
-
-.answerInput {
-    flex: 1;
-    padding: 0.75rem;
-    border: 2px solid #962d9a;
-    border-radius: 10px;
-}
-
-.answerButton {
-    padding: 0.75rem 1rem;
-    border: 2px solid #111;
-    border-radius: 10px;
-    background: white;
-    cursor: pointer;
 }
 
 .boardLock {
