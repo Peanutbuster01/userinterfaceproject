@@ -23,6 +23,36 @@
         </div>
 
         <div class="rightColumn">
+            <div class="board">
+                <div class="overlay">
+                    <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
+                        :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
+
+                        <img v-if="opponentShots[i] === 'hit'" class="HitShot"
+                            :src="avatars[opponentAvatarIndex].image" />
+                        <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
+                    </div>
+                </div>
+                <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
+            </div>
+
+
+            <div class="board">
+                <div class="overlay">
+                    <div v-for="(x, i) in 12" class="square">
+                        <img class="placedAvatarShip" v-if="placedShips.includes(i)" :src="avatars[avatarIndex].image">
+                    </div>
+                </div>
+                <div v-if="canShoot || hasShotThisRound" class="boardLock"> </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
+        <div class="popup">
+            <p>{{ uiLabels.makeAMove }}</p>
             <div id="OpponentBoard">
                 <div class="board">
                     <div class="overlay">
@@ -34,49 +64,28 @@
                             <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
                         </div>
                     </div>
-                    <div v-if="canShoot && !hasShotThisRound" class="canShootOnBoard"></div>
                     <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
-
                 </div>
             </div>
-
-            <div id="playerBoard">
-                <div class="board">
-                    <div class="overlay">
-                        <div v-for="(x, i) in 12" class="square">
-                            <img class="placedAvatarShip" v-if="placedShips.includes(i)"
-                                :src="avatars[avatarIndex].image">
-                        </div>
-                    </div>
-                    <div v-if="canShoot || hasShotThisRound" class="boardLock"> </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="popupBackgroundMakeMove" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
-        <div class="popup">
-            <p>{{ uiLabels.makeAMove }}</p>
             <button @click="confirmShot()" class="okButton">OK</button>
 
         </div>
     </div>
 
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
         <div class="popup">
             <p>{{ uiLabels.wrongAnswer }}</p>
             <button @click="showPopupBoolean = false; popupType = null" id="okButton">OK</button>
         </div>
     </div>
 
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
         <div class="popup">
             <p>{{ uiLabels.waitForOpponent }}</p>
         </div>
     </div>
 
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'gameOverPopup'">
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'gameOverPopup'">
         <div class="popup">
             <p v-if="winnerId === playerId">{{ uiLabels.youWon }}</p>
             <p v-else>{{ uiLabels.gameOver }}</p>
@@ -259,7 +268,7 @@ export default {
         },
 
         confirmShot: function () {
-            if (this.selectedShotIndex === null) return;
+            if (this.selectedShotIndex === null || this.opponentShots[this.selectedShotIndex] !== undefined) return;
 
             socket.emit("shoot", {
                 lobbyId: this.lobbyId,
@@ -286,6 +295,7 @@ export default {
 
 <style scoped>
 .board {
+    position: relative;
     margin: 2rem;
     top: 1em;
     width: 100%;
@@ -314,7 +324,10 @@ export default {
     overflow: hidden;
 }
 
-
+.square:hover {
+    transform: scale(0.95);
+    cursor: pointer;
+}
 
 #player {
     margin: 20px;
@@ -343,7 +356,7 @@ export default {
     max-width: 40%;
 }
 
-.popupBackgroundWaitOnOpponent {
+.popupBackground {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -351,20 +364,6 @@ export default {
     left: 0;
     z-index: 10000;
     background-color: #00000040;
-}
-
-.popupBackgroundMakeMove {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    pointer-events: none;
-}
-
-.popupBackgroundMakeMove .popup {
-    pointer-events: auto;
 }
 
 .rightColumn {
@@ -430,7 +429,7 @@ export default {
 
 
 .questionText {
-    font-family: 'Super Funky', sans-serif;
+    font-family: 'ADLaM Display';
     color: var(--pink-darker-color);
     letter-spacing: 0.1em;
     text-shadow: none;
@@ -451,6 +450,8 @@ export default {
     padding: 10px;
     border-radius: 0.25rem;
     border: ridge 4px var(--pink-darker-color);
+    font-family: 'ADLaM Display';
+    color: var(--pink-darker-color);
 }
 
 .answerButton {
@@ -474,6 +475,10 @@ export default {
 
 }
 
+.okButton {
+    border-color: var(--lavender-darker-color);
+    color: var(--lavender-darker-color);
+}
 
 .boardLock {
     position: absolute;
@@ -481,15 +486,6 @@ export default {
     z-index: 9999;
     pointer-events: auto;
     /* blockera klick */
-}
-
-.canShootOnBoard {
-    position: absolute;
-    inset: 0;
-    z-index: 9999;
-    outline: 12px solid #3a9a2d;
-    outline-offset: 0;
-    pointer-events: none;
 }
 
 .selectedShot {
