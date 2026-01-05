@@ -47,5 +47,6 @@
 	"wrongAnswer": "Wrong answer! Try again.",
 	"waitForOpponent": "Waiting for opponent to make their move...",
 	"play": "Spela",
-	"waitingForOpponent": "Waiting for opponent..."
+	"waitingForOpponent": "Waiting for opponent...",
+	"observe": "Observe"
 }

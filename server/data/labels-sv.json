@@ -48,5 +48,6 @@
 	"wrongAnswer": "Fel svar! Försök igen.",
 	"waitForOpponent": "Väntar på motståndaren att göra sitt drag...",
 	"play": "Spela",
-	"waitingForOpponent": "Väntar på motståndaren..."
+	"waitingForOpponent": "Väntar på motståndaren...",
+	"observe": "Kolla"
 }

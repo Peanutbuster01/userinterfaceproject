@@ -3,7 +3,6 @@
     <p>Lobby-ID: {{ lobbyId }}</p>
 
     <div class="pageLayout">
-
         <!--vänster sida (boards)-->
         <div class="leftColumns">
             <div id="OpponentBoard">
@@ -42,13 +41,6 @@
             <div class="questionBox">
                 <p class="questionText">{{ currentQuestion }}</p>
             </div>
-
-            <div class="answerBox">
-                <input class="answerInput" type="text" v-model="playerAnswer"
-                    :placeholder="uiLabels.answerMathQuestion" />
-
-                <button class="answerButton" @click="submitAnswerEquation">{{ uiLabels.send }}</button>
-            </div>
         </div>
     </div>
 
@@ -77,6 +69,9 @@
 
 <script>
 export default {
+    name: 'observeView',
+    props: ["uiLabels"],
+
     data: function () {
         return {
             hideNav: true,
@@ -85,8 +80,7 @@ export default {
             playerName: "",
             avatarIndex: 0,
             selectedAvatar: 0,
-            player1Id: 0,
-            player2Id: 0,
+            playerId: 0,
             placedShips: [
                 null, null, null,
             ],
@@ -114,8 +108,10 @@ export default {
             opponentShots: {},
         }
     },
+
     created: function () {
         this.lobbyId = this.$route.params.id;
+        this.playerId = Number(this.$route.params.playerId);
         socket.emit("joinLobby", this.lobbyId);
 
         socket.on("gameSettings", (settings) => {
@@ -123,8 +119,8 @@ export default {
         });
 
         ;
-        socket.on("playerInfo", (player1Id, playerInfo) => {
-            if (playerId == this.player1Id) {
+        socket.on("playerInfo", (playerId, playerInfo) => {
+            if (playerId == this.playerId) {
                 console.log("INFO:"); console.log(playerInfo);
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
@@ -177,6 +173,59 @@ export default {
         socket.emit("getGameSettings", this.lobbyId);
         socket.emit("getPlayerInfo", this.lobbyId, 0);
         socket.emit("getPlayerInfo", this.lobbyId, 1);
+    },
+
+    methods: {
+
+        placeAvatar: function (i) {
+            console.log("placeAvatar", i);
+        },
+
+        submitAnswerEquation: function () {
+            socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
+            this.playerAnswer = "";
+        },
+
+        makeAMove: function () {
+            this.popupType = "makeMovePopup";
+            this.showPopupBoolean = true;
+            this.canShoot = true;
+            this.hasShotThisRound = false;
+            this.selectedShotIndex = null;
+        },
+
+        WaitOnOpponent: function () {
+            this.popupType = "waitOnOpponentPopup";
+            this.showPopupBoolean = true;
+            this.canShoot = false;
+        },
+
+        shootAtOpponent: function (squareIndex) {
+            if (!this.canShoot) return;
+            if (this.hasShotThisRound) return;
+
+            this.selectedShotIndex = squareIndex;
+            console.log("Selected shot at index:", squareIndex);
+        },
+
+        confirmShot: function () {
+            if (this.selectedShotIndex === null) return;
+
+            socket.emit("shoot", {
+                lobbyId: this.lobbyId,
+                playerId: this.playerId,
+                shootIndex: this.selectedShotIndex
+            });
+
+            this.hasShotThisRound = true;
+            this.canShoot = false;
+            this.selectedShotIndex = null;
+
+            this.showPopupBoolean = false;
+            this.popupType = null;
+
+        }
+
     }
 }
 </script>
