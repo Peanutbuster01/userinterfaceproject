@@ -1,27 +1,37 @@
 <template>
     <title>{{ uiLabels.play }}</title>
-    <p>Lobby-ID: {{ lobbyId }}</p>
+    <h3>{{ uiLabels.gameId }} {{ lobbyId }}</h3>
 
     <div class="pageLayout">
+        <div class="leftColumn">
+            <div id="playerAvatar">
+                <h2 class="playerName">{{ playerName }}</h2>
+                <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
+            </div>
 
-        <!--vänster sida (boards)-->
-        <div class="leftColumns">
+            <div class="questionBox">
+                <p class="questionText" :class="{ hiddenQuestion: waitingForNextQuestion }">
+                    {{ currentQuestion }}</p>
+            </div>
+
+            <div class="answerBox">
+                <input class="answerInput" type="text" v-model="playerAnswer" @keypress.enter="submitAnswerEquation"
+                    :placeholder="uiLabels.answerMathQuestion" />
+
+                <button class="answerButton" @click="submitAnswerEquation">{{ uiLabels.send }}</button>
+            </div>
+        </div>
+
+        <div class="rightColumn">
             <div id="OpponentBoard">
                 <div class="board">
                     <div class="overlay">
-                        <div v-for="(x, i) in 12" 
-                        :key="'opp-' + i" 
-                        class="square"
-                        :class="{ selectedShot: selectedShotIndex === i }" 
-                        @click="shootAtOpponent(i)"
-                        >
+                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
+                            :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
 
-                        <img
-                        v-if="opponentShots[i] === 'hit'"
-                        class="HitShot"
-                        :src="avatars[opponentAvatarIndex].image"
-                        />
-                        <span v-else-if="opponentShots[i] === 'miss'"class="missShot"></span>
+                            <img v-if="opponentShots[i] === 'hit'" class="HitShot"
+                                :src="avatars[opponentAvatarIndex].image" />
+                            <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
                         </div>
                     </div>
                     <div v-if="canShoot && !hasShotThisRound" class="canShootOnBoard"></div>
@@ -43,34 +53,12 @@
             </div>
         </div>
 
-
-        <!--hö nger karaktär, fråga, svar-->
-        <div class="rightColumn">
-            <div id="playerAvatar">
-                <h2 class="playerName">{{ playerName }}</h2>
-                <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
-            </div>
-
-            <div class="questionBox">
-                <p class="questionText" 
-                :class="{ hiddenQuestion: waitingForNextQuestion }"
-                >
-                {{ currentQuestion }}</p>
-            </div>
-
-            <div class="answerBox">
-                <input class="answerInput" type="text" v-model="playerAnswer"
-                    :placeholder="uiLabels.answerMathQuestion" />
-
-                <button class="answerButton" @click="submitAnswerEquation">{{ uiLabels.send }}</button>
-            </div>
-        </div>
     </div>
 
     <div class="popupBackgroundMakeMove" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
         <div class="popup">
             <p>{{ uiLabels.makeAMove }}</p>
-            <button @click="confirmShot()" id="okButton">OK</button>
+            <button @click="confirmShot()" class="okButton">OK</button>
 
         </div>
     </div>
@@ -88,10 +76,10 @@
         </div>
     </div>
 
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'gameOverPopup'"> 
-        <div class ="popup">
-            <p v-if="winnerId === playerId">{{uiLabels.youWon}}</p>
-            <p v-else>{{uiLabels.gameOver}}</p>
+    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'gameOverPopup'">
+        <div class="popup">
+            <p v-if="winnerId === playerId">{{ uiLabels.youWon }}</p>
+            <p v-else>{{ uiLabels.gameOver }}</p>
         </div>
     </div>
 
@@ -188,7 +176,7 @@ export default {
             this.showPopupBoolean = false;
             this.popupType = null;
             this.playerAnswer = "";
-        }); 
+        });
 
         socket.on("newQuestion", (equation) => {
             this.waitingForNextQuestion = false;
@@ -200,13 +188,13 @@ export default {
             console.log("[client] startGame received. lobby:", this.lobbyId, "playerId:", this.playerId);
         });
 
-        socket.on("shotResult", ({shooterId, shootIndex, hit}) => {
-            if (shooterId !== this.playerId) return 
-                const result = hit ? "hit" : "miss";
-                this.opponentShots = {
-                    ...this.opponentShots,
-                    [shootIndex]: result
-                };
+        socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
+            if (shooterId !== this.playerId) return
+            const result = hit ? "hit" : "miss";
+            this.opponentShots = {
+                ...this.opponentShots,
+                [shootIndex]: result
+            };
 
             console.log("[GameView] shotResult received:");
         });
@@ -241,6 +229,7 @@ export default {
         placeAvatar: function (i) {
             console.log("placeAvatar", i);
         },
+
 
         submitAnswerEquation: function () {
             socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
@@ -297,26 +286,25 @@ export default {
 
 <style scoped>
 .board {
-    position: relative;
-    top: 1em;
-    width: 400px;
-    height: 300px;
-    min-width: 300px;
-    min-height: 300px;
-    border: 12px solid #962d9a;
-    border-radius: 12px;
     margin: 2rem;
+    top: 1em;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    aspect-ratio: 4 / 3;
+    border: 12px ridge var(--blue-base-color);
+    border-radius: 12px;
 }
 
 .overlay {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    background-color: rgb(189, 123, 206);
+    background-color: var(--light-blue-base-color);
     width: 100%;
     height: 100%;
-    cursor: pointer;
     gap: 5px;
+
 }
 
 .square {
@@ -326,9 +314,6 @@ export default {
     overflow: hidden;
 }
 
-.square:hover {
-    transform: scale(0.95);
-}
 
 
 #player {
@@ -349,13 +334,13 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgb(235, 77, 177);
-    color: white;
+    background-color: var(--lavender-base-color);
+    color: var(--light-gray-base-color);
+    text-shadow: 2px 2px 2px var(--lavender-darker-color);
     border-radius: 0.25rem;
-    border: double 10px rgb(159, 50, 119);
+    border: ridge 10px var(--lavender-darker-color);
     padding: 30px;
     max-width: 40%;
-
 }
 
 .popupBackgroundWaitOnOpponent {
@@ -382,16 +367,16 @@ export default {
     pointer-events: auto;
 }
 
-.leftColumns {
+.rightColumn {
     display: flex;
     flex-direction: column;
 }
 
-.rightColumn {
+.leftColumn {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    margin-top: 2rem;
+    margin: 2rem;
     align-items: center;
 }
 
@@ -436,12 +421,20 @@ export default {
 }
 
 .questionBox {
-    min-width: 260px;
-    padding: 1rem;
-    border-radius: 12px;
-    background: white;
-    border: 2px solid #962d9a;
+    min-width: 150px;
+    background: var(--light-gray-base-color);
+    padding: 10px;
+    border-radius: 0.25rem;
+    border: ridge 4px var(--pink-darker-color);
+}
 
+
+.questionText {
+    font-family: 'Super Funky', sans-serif;
+    color: var(--pink-darker-color);
+    letter-spacing: 0.1em;
+    text-shadow: none;
+    margin: 0;
 }
 
 .answerBox {
@@ -454,17 +447,31 @@ export default {
 
 .answerInput {
     flex: 1;
-    padding: 0.75rem;
-    border: 2px solid #962d9a;
-    border-radius: 10px;
+    background: var(--light-gray-base-color);
+    padding: 10px;
+    border-radius: 0.25rem;
+    border: ridge 4px var(--pink-darker-color);
 }
 
 .answerButton {
-    padding: 0.75rem 1rem;
-    border: 2px solid #111;
-    border-radius: 10px;
-    background: white;
+    border: ridge 3px var(--pink-darker-color);
+    border-radius: 0.25rem;
+    background-color: var(--light-gray-base-color);
     cursor: pointer;
+    font-family: 'ADLaM Display', sans-serif;
+    color: var(--pink-darker-color);
+    padding: 5px;
+    margin: 10px;
+}
+
+.answerButton:hover {
+    transform: scale(1.05);
+}
+
+::placeholder {
+    color: var(--pink-base-color);
+    font-family: 'ADLaM Display', sans-serif;
+
 }
 
 
@@ -474,8 +481,6 @@ export default {
     z-index: 9999;
     pointer-events: auto;
     /* blockera klick */
-
-
 }
 
 .canShootOnBoard {
@@ -517,7 +522,4 @@ export default {
 .LosePopup {
     background-color: red;
 }
-
-
-
 </style>
