@@ -106,7 +106,6 @@
         <div class="popup">
             <p v-if="winnerId === playerId">{{ uiLabels.youWon }}</p>
             <p v-else>{{ uiLabels.gameOver }}</p>
-            <button class="okButton">{{ uiLabels.restartGame }}</button>
             <button class="okButton" @click="() => {
                 this.$router.push({ path: `/` });
             }">{{ uiLabels.returnToStart }}</button>
@@ -327,7 +326,7 @@ export default {
     background-color: var(--light-blue-base-color);
     pointer-events: none;
 
-    animation: forwards 4s vsScreenAnimation;
+    /*animation: forwards 4s vsScreenAnimation;*/
 }
 
 
@@ -362,9 +361,13 @@ h1 {
     justify-items: center;
     overflow: hidden;
     border: 18px ridge var(--blue-base-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .vsPlayer img {
+    flex-grow: 1;
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
