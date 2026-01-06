@@ -326,7 +326,7 @@ export default {
     background-color: var(--light-blue-base-color);
     pointer-events: none;
 
-    /*animation: forwards 4s vsScreenAnimation;*/
+    animation: forwards 4s vsScreenAnimation;
 }
 
 
