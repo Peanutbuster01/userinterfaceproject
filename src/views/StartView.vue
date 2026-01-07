@@ -26,7 +26,7 @@
 
       <div>
         <input class="gameButtons" type="text" maxlength="4" @input="validateLobbyId" v-model="lobbyId"
-          :placeholder="uiLabels.fourCharGameID">
+          :placeholder="uiLabels.fourCharGameID" @keypress.enter="checkLobbyId">
 
         <p v-if="lobbyId.length < 4" class="joinErrorMessage">
           {{ joinMessage }}

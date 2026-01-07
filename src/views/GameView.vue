@@ -43,7 +43,8 @@
             <div class="board opponentBoard">
                 <div class="overlay">
                     <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
-                        :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
+                        :class="{ selectedShot: selectedShotIndex === i && opponentShots[selectedShotIndex] === undefined }"
+                        @click="shootAtOpponent(i)">
 
                         <img v-if="opponentShots[i] === 'hit'" class="HitShot"
                             :src="avatars[opponentAvatarIndex].image" />
@@ -71,10 +72,11 @@
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
         <div class="popup">
             <p>{{ uiLabels.makeAMove }}</p>
-            <div class="board">
+            <div class="board opponentBoard">
                 <div class="overlay">
                     <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
-                        :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
+                        :class="[{ selectedShot: selectedShotIndex === i && opponentShots[selectedShotIndex] === undefined }, { unselectable: opponentShots[i] != undefined }]"
+                        @click="shootAtOpponent(i)">
 
                         <img v-if="opponentShots[i] === 'hit'" class="HitShot"
                             :src="avatars[opponentAvatarIndex].image" />
@@ -282,6 +284,7 @@ export default {
         shootAtOpponent: function (squareIndex) {
             if (!this.canShoot) return;
             if (this.hasShotThisRound) return;
+            if (this.opponentShots[squareIndex] !== undefined) return;
 
             this.selectedShotIndex = squareIndex;
             console.log("Selected shot at index:", squareIndex);
@@ -450,7 +453,7 @@ h1 {
     overflow: hidden;
 }
 
-.square:hover {
+.square:not(.unselectable):hover {
     transform: scale(0.95);
     cursor: pointer;
 }
