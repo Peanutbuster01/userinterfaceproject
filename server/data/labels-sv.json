@@ -51,5 +51,7 @@
 	"gameOver": "Du förlorade",
 	"youWon": "Du vann!",
 	"waitingForOpponent": "Väntar på motståndaren...",
-	"returnToStart": "Återvänd till startsidan"
+	"returnToStart": "Återvänd till startsidan",
+	"opponentsBoard": "Motståndarens bräde",
+	"yourBoard": "Ditt bräde"
 }

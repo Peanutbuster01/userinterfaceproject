@@ -30,16 +30,11 @@
         </div>
 
         <div id="boardAndButton">
-            <div id="board">
-                <div id="overlay">
-                    <div v-for="(x, i) in 12" class="square" @click="placeAvatar(i)">
-                        <img class="placedAvatarShip"
-                            :class="[{ 'avatarShipBorder': placedShips.findIndex(x => x == i) == selectedAvatar }]"
-                            v-if="placedShips.includes(i)" :src="avatars[avatarIndex].image">
-                    </div>
-                </div>
 
-            </div>
+            <GameBoard :avatarIndex="avatarIndex" :placedShips="placedShips" :is-board-locked="false"
+                :is-opponent="false" @squareClicked="(i) => placeAvatar(i)" :shots="{}"
+                :selectedShotIndex="selectedAvatar == null ? -1 : placedShips[selectedAvatar]" />
+
             <div>
                 <button id="readyButton" @click="readyToPlay">{{ uiLabels.ready }}</button>
             </div>
@@ -68,10 +63,12 @@
 import io from 'socket.io-client';
 const socket = io();
 import avatars from "../assets/avatars.json";
+import GameBoard from '../components/GameBoard.vue';
 
 export default {
     name: 'joinView',
     props: ["uiLabels"],
+    components: { GameBoard },
 
     data: function () {
         return {

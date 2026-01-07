@@ -6,13 +6,10 @@
         <div class="vsPlayer">
             <h1 style="text-shadow: 4px 4px 2px var(--blue-base-color);">{{ playerName }}</h1>
             <img :src="avatars[avatarIndex].image"></img>
-
         </div>
-
         <div class="vsPlayer">
             <h1 style="text-shadow: 4px 4px 2px var(--lavender-darker-color);">{{ opponentName }}</h1>
             <img :src="avatars[opponentAvatarIndex].image"></img>
-
         </div>
         <h1 id="vs">
             VS
@@ -40,31 +37,17 @@
         </div>
 
         <div class="rightColumn">
-            <div class="board opponentBoard">
-                <div class="overlay">
-                    <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
-                        :class="{ selectedShot: selectedShotIndex === i && opponentShots[selectedShotIndex] === undefined }"
-                        @click="shootAtOpponent(i)">
-
-                        <img v-if="opponentShots[i] === 'hit'" class="HitShot"
-                            :src="avatars[opponentAvatarIndex].image" />
-                        <img v-if="opponentShots[i] === 'hit'" class="HitShot" src="/img/cross.png" />
-                        <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
-                    </div>
-                </div>
-                <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
+            <div>
+                <h3 class="boardLabel">{{ uiLabels.opponentsBoard }}</h3>
+                <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
+                    :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
+                    :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
             </div>
-
-
-            <div class="board">
-                <div class="overlay">
-                    <div v-for="(x, i) in 12" class="square">
-                        <img class="placedAvatarShip" v-if="placedShips.includes(i)" :src="avatars[avatarIndex].image">
-                    </div>
-                </div>
-                <div class="boardLock"> </div>
+            <div>
+                <h3 class="boardLabel">{{ uiLabels.yourBoard }}</h3>
+                <GameBoard :isOpponent="false" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
+                    :placedShips="placedShips" />
             </div>
-
         </div>
 
     </div>
@@ -72,22 +55,10 @@
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
         <div class="popup">
             <p>{{ uiLabels.makeAMove }}</p>
-            <div class="board opponentBoard">
-                <div class="overlay">
-                    <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
-                        :class="[{ selectedShot: selectedShotIndex === i && opponentShots[selectedShotIndex] === undefined }, { unselectable: opponentShots[i] != undefined }]"
-                        @click="shootAtOpponent(i)">
-
-                        <img v-if="opponentShots[i] === 'hit'" class="HitShot"
-                            :src="avatars[opponentAvatarIndex].image" />
-                        <img v-if="opponentShots[i] === 'hit'" class="HitShot" src="/img/cross.png" />
-                        <span v-else-if="opponentShots[i] === 'miss'" class="missShot"></span>
-                    </div>
-                </div>
-                <div v-if="!canShoot || hasShotThisRound" class="boardLock"></div>
-            </div>
+            <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
+                :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
+                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
             <button @click="confirmShot()" class="okButton">OK</button>
-
         </div>
     </div>
 
@@ -119,11 +90,12 @@
 import io from 'socket.io-client';
 const socket = io();
 import avatars from "../assets/avatars.json";
+import GameBoard from '../components/GameBoard.vue';
 
 export default {
     name: 'StartView',
     props: ["uiLabels"],
-
+    components: { GameBoard },
     data: function () {
         return {
             hideNav: true,
@@ -158,6 +130,7 @@ export default {
             hasShotThisRound: false,
             selectedShotIndex: null,
             opponentShots: {},
+            playerShots: {},
             waitingForNextQuestion: false,
 
             gameOver: false,
@@ -220,13 +193,19 @@ export default {
         });
 
         socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
-            if (shooterId !== this.playerId) return
             const result = hit ? "hit" : "miss";
-            this.opponentShots = {
-                ...this.opponentShots,
-                [shootIndex]: result
-            };
-
+            if (shooterId !== this.playerId) {
+                this.opponentShots = {
+                    ...this.opponentShots,
+                    [shootIndex]: result
+                };
+            }
+            else {
+                this.playerShots = {
+                    ...this.playerShots,
+                    [shootIndex]: result
+                };
+            }
             console.log("[GameView] shotResult received:");
         });
 
@@ -284,14 +263,14 @@ export default {
         shootAtOpponent: function (squareIndex) {
             if (!this.canShoot) return;
             if (this.hasShotThisRound) return;
-            if (this.opponentShots[squareIndex] !== undefined) return;
+            if (this.playerShots[squareIndex] !== undefined) return;
 
             this.selectedShotIndex = squareIndex;
             console.log("Selected shot at index:", squareIndex);
         },
 
         confirmShot: function () {
-            if (this.selectedShotIndex === null || this.opponentShots[this.selectedShotIndex] !== undefined) return;
+            if (this.selectedShotIndex === null || this.playerShots[this.selectedShotIndex] !== undefined) return;
 
             socket.emit("shoot", {
                 lobbyId: this.lobbyId,
@@ -307,10 +286,6 @@ export default {
             this.popupType = null;
 
         },
-
-
-
-
 
     }
 }
@@ -337,6 +312,7 @@ export default {
     #vsScreen {
         grid-template-columns: 1fr;
     }
+
 }
 
 @keyframes vsScreenAnimation {
@@ -357,6 +333,10 @@ export default {
 
 h1 {
     font-size: 6vw;
+}
+
+p {
+    text-shadow: 2px 2px 1px var(--lavender-darker-color);
 }
 
 .vsPlayer {
@@ -416,46 +396,8 @@ h1 {
     }
 }
 
-.board {
-    position: relative;
-    top: 1em;
-    width: 100%;
-    max-width: 400px;
-    box-sizing: border-box;
-    aspect-ratio: 4 / 3;
-    border: 12px ridge var(--blue-base-color);
-    border-radius: 12px;
-}
-
-.opponentBoard {
-    border-color: var(--lavender-darker-color);
-}
-
-.opponentBoard .overlay {
-    background-color: var(--lavender-base-color);
-}
-
-.overlay {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    background-color: var(--light-blue-base-color);
-    width: 100%;
-    height: 100%;
-    gap: 5px;
-
-}
-
-.square {
-    z-index: 50;
-    box-shadow: inset 0 0 4px rgb(255, 255, 255);
-    position: relative;
-    overflow: hidden;
-}
-
-.square:not(.unselectable):hover {
-    transform: scale(0.95);
-    cursor: pointer;
+.boardLabel {
+    margin-top: 0;
 }
 
 #player {
@@ -502,7 +444,7 @@ h1 {
     gap: 2rem;
     width: 100%;
     max-width: 400px;
-    padding: 20px;
+    padding-bottom: 20px;
 }
 
 .leftColumn {
@@ -522,15 +464,6 @@ h1 {
     padding: 20px;
 }
 
-.placedAvatarShip {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
-}
-
-
 .playerName {
     margin: 0 0 1rem 0;
     font-size: 1.6rem;
@@ -547,7 +480,7 @@ h1 {
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 2rem;
     margin-top: 2rem;
 }
 
@@ -613,38 +546,8 @@ h1 {
     margin-top: 40px;
 }
 
-.boardLock {
-    position: absolute;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: auto;
-    /* blockera klick */
-}
-
-.selectedShot {
-    outline: 4px solid #ff0000;
-    outline-offset: -4px;
-}
-
 .hiddenQuestion {
     visibility: hidden;
-}
-
-.missShot {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(139, 136, 136, 0.7);
-}
-
-.HitShot {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 
 .WinPopup {

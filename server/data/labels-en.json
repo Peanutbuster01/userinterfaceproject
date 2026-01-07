@@ -50,5 +50,7 @@
 	"play": "Play",
 	"gameOver": "Game over",
 	"youWon": "You won!",
-	"returnToStart": "Return to start page"
+	"returnToStart": "Return to start page",
+	"opponentsBoard": "Opponents board",
+	"yourBoard": "Your board"
 }
