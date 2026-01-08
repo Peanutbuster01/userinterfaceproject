@@ -1,81 +1,89 @@
 <template>
-    <title>{{uiLabels.observe}}</title>
-    <p>Lobby-ID: {{ lobbyId }}</p>
+    <title>{{ uiLabels.observe }}</title>
+    <h3>{{ uiLabels.gameId }} {{ lobbyId }}</h3>
+
+    <div id="vsScreen">
+        <div class="vsPlayer">
+            <h1 style="text-shadow: 4px 4px 2px var(--blue-base-color);">{{ playerName }}</h1>
+            <img :src="avatars[avatarIndex].image"></img>
+        </div>
+        <div class="vsPlayer">
+            <h1 style="text-shadow: 4px 4px 2px var(--lavender-darker-color);">{{ opponentName }}</h1>
+            <img :src="avatars[opponentAvatarIndex].image"></img>
+        </div>
+        <h1 id="vs">
+            VS
+        </h1>
+    </div>
 
     <div class="pageLayout">
-        <!--vänster sida (boards)-->
-        <div class="leftColumns">
-            <div id="OpponentBoard">
-                <div class="board">
-                    <div class="overlay">
-                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
-                            :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
-                            <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
-                        </div>
-                    </div>
-                    <div class="boardLock"></div>
-
-                </div>
-            </div>
-
-            <div id="playerBoard">
-                <div class="board">
-                    <div class="overlay">
-                        <div v-for="(x, i) in 12" class="square">
-                            <img class="placedAvatarShip" v-if="placedShips.includes(i)"
-                                :src="avatars[avatarIndex].image">
-                        </div>
-                    </div>
-                    <div v-if="canShoot || hasShotThisRound" class="boardLock"></div>
-                </div>
-            </div>
-        </div>
-
-
-        <!--hö nger karaktär, fråga, svar-->
-        <div class="rightColumn">
+        <div class="leftColumn">
             <div id="playerAvatar">
-                <h2 class="playerName">{{uiLabels.observeMessage}}</h2>
+                <h2 class="playerName">{{ uiLabels.observeMessage }}</h2>
             </div>
 
             <div class="questionBox">
-                <p class="questionText">{{ currentQuestion }}</p>
+                <p class="questionText" :class="{ hiddenQuestion: waitingForNextQuestion }">
+                    {{ currentQuestion }}</p>
+            </div>
+            <button class="okButton" @click="() => {
+                this.$router.push({ path: `/` });
+            }">{{ uiLabels.returnToStart }}</button>
+
+        </div>
+
+        <div class="rightColumn">
+            <div>
+                <img :src="avatars[opponentAvatarIndex].image" class = "boardAvatars"></img>
+                <h3 class="boardLabel">{{opponentName}}s {{ uiLabels.board }}</h3>
+                <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
+                    :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
+                    :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
+            </div>
+            <div>
+                <img :src="avatars[avatarIndex].image" class = "boardAvatars"></img>
+                <h3 class="boardLabel">{{playerName}}s {{ uiLabels.board }}</h3>
+                <GameBoard :isOpponent="true" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
+                    :placedShips="placedShips" />
             </div>
         </div>
+
     </div>
 
-    <div class="popupBackgroundMakeMove" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
-        <div class="popup">
-            <p>{{ uiLabels.makeAMove }}</p>
-            <button @click="confirmShot()" id="okButton">OK</button>
-
-        </div>
-    </div>
-
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
         <div class="popup">
             <p>{{ uiLabels.wrongAnswer }}</p>
-            <button @click="showPopupBoolean = false; popupType = null" id="okButton">OK</button>
+            <button @click="showPopupBoolean = false; popupType = null" class="okButton">OK</button>
         </div>
     </div>
 
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
         <div class="popup">
             <p>{{ uiLabels.waitForOpponent }}</p>
         </div>
     </div>
 
-</template>
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'gameOverPopup'">
+        <div class="popup">
+            <p v-if="winnerId === playerId">{{ playerName }} {{ uiLabels.won }}</p>
+            <p v-else>{{ opponentName }} {{ uiLabels.won }}</p>
+            <button class="okButton" @click="() => {
+                this.$router.push({ path: `/` });
+            }">{{ uiLabels.returnToStart }}</button>
+        </div>
+    </div>
 
+</template>
 <script>
-    import io from 'socket.io-client';
-    const socket = io();
-    import avatars from "../assets/avatars.json";
+import io from 'socket.io-client';
+const socket = io();
+import avatars from "../assets/avatars.json";
+import GameBoard from '../components/GameBoard.vue';
 
 export default {
-    name: 'observeView',
+    name: 'StartView',
     props: ["uiLabels"],
-
+    components: { GameBoard },
     data: function () {
         return {
             hideNav: true,
@@ -84,7 +92,7 @@ export default {
             playerName: "",
             avatarIndex: 0,
             selectedAvatar: 0,
-            player1Id: 0,
+            playerId: 0,
             placedShips: [
                 null, null, null,
             ],
@@ -99,6 +107,8 @@ export default {
 
             //placeholder tills att socket data kommer in
 
+            selectedAvatarIndex: 1, //byt så indeselectedx byt ut automatiskt
+            avatars: avatars,
 
             currentEquation: null,
             currentQuestion: null,
@@ -108,6 +118,12 @@ export default {
             hasShotThisRound: false,
             selectedShotIndex: null,
             opponentShots: {},
+            playerShots: {},
+            waitingForNextQuestion: false,
+
+            gameOver: false,
+            winnerId: null,
+            gottenplayer1: false,
         }
     },
 
@@ -122,12 +138,14 @@ export default {
 
         ;
         socket.on("playerInfo", (playerId, playerInfo) => {
-            if (playerId == this.player1Id) {
+            if (!this.gottenplayer1) {
                 console.log("INFO:"); console.log(playerInfo);
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
                 this.playerName = playerInfo.playerName;
+                this.playerId = playerId;
                 console.log(this.placedShips);
+                this.gottenplayer1 = true;
             }
             else {
                 console.log("MOTSTÅNDARINFO:"); console.log(playerInfo);
@@ -148,26 +166,56 @@ export default {
             }
         });
 
+        socket.on("closePopups", () => {
+            if (this.gameOver) return
+            this.showPopupBoolean = false;
+            this.popupType = null;
+            this.playerAnswer = "";
+        });
 
         socket.on("newQuestion", (equation) => {
+            this.waitingForNextQuestion = false;
             this.currentEquation = equation;
             this.currentQuestion = equation.question;
-            this.playerAnswer = "";
-            this.canShoot = false;
-            this.showPopupBoolean = false;
         });
 
         socket.on("startGame", () => {
             console.log("[client] startGame received. lobby:", this.lobbyId, "playerId:", this.playerId);
         });
 
-        socket.on("shotResult", () => {
+        socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
+            const result = hit ? "hit" : "miss";
+            if (shooterId !== this.playerId) {
+                this.opponentShots = {
+                    ...this.opponentShots,
+                    [shootIndex]: result
+                };
+            }
+            else {
+                this.playerShots = {
+                    ...this.playerShots,
+                    [shootIndex]: result
+                };
+            }
             console.log("[GameView] shotResult received:");
         });
 
 
         socket.on("wrongAnswer", () => {
             this.popupType = "wrongAnswerPopup";
+            this.showPopupBoolean = true;
+        });
+
+        socket.on("waitingForNextQuestion", () => {
+            this.waitingForNextQuestion = true;
+        });
+
+        socket.on("gameOver", ({ winnerId }) => {
+            this.gameOver = true;
+            this.winnerId = winnerId;
+            this.canShoot = false;
+            this.hasShotThisRound = true;
+            this.popupType = "gameOverPopup";
             this.showPopupBoolean = true;
         });
 
@@ -178,39 +226,169 @@ export default {
     },
 
     methods: {
+
+        placeAvatar: function (i) {
+            console.log("placeAvatar", i);
+        },
+
+
+        submitAnswerEquation: function () {
+            socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
+            this.playerAnswer = "";
+        },
+
+        makeAMove: function () {
+            this.popupType = "makeMovePopup";
+            this.showPopupBoolean = true;
+            this.canShoot = true;
+            this.hasShotThisRound = false;
+            this.selectedShotIndex = null;
+        },
+
+        WaitOnOpponent: function () {
+            this.popupType = "waitOnOpponentPopup";
+            this.showPopupBoolean = true;
+            this.canShoot = false;
+        },
+
+        shootAtOpponent: function (squareIndex) {
+            if (!this.canShoot) return;
+            if (this.hasShotThisRound) return;
+            if (this.playerShots[squareIndex] !== undefined) return;
+
+            this.selectedShotIndex = squareIndex;
+            console.log("Selected shot at index:", squareIndex);
+        },
+
+        confirmShot: function () {
+            if (this.selectedShotIndex === null || this.playerShots[this.selectedShotIndex] !== undefined) return;
+
+            socket.emit("shoot", {
+                lobbyId: this.lobbyId,
+                playerId: this.playerId,
+                shootIndex: this.selectedShotIndex
+            });
+
+            this.hasShotThisRound = true;
+            this.canShoot = false;
+            this.selectedShotIndex = null;
+
+            this.showPopupBoolean = false;
+            this.popupType = null;
+
+        },
+
     }
 }
 </script>
 
-<style>
-.board {
-    position: relative;
-    top: 1em;
-    width: 400px;
-    height: 300px;
-    min-width: 300px;
-    min-height: 300px;
-    border: 12px solid #962d9a;
-    border-radius: 12px;
-    margin: 2rem;
-}
-
-.overlay {
+<style scoped>
+#vsScreen {
+    position: fixed;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    background-color: rgb(189, 123, 206);
+    grid-template-columns: 1fr 1fr;
     width: 100%;
     height: 100%;
-    cursor: pointer;
-    gap: 5px;
+    top: 0;
+    left: 0;
+    z-index: 9999999;
+    background-color: var(--light-blue-base-color);
+    pointer-events: none;
+
+    animation: forwards 4s vsScreenAnimation;
 }
 
-.square {
-    z-index: 50;
-    box-shadow: inset 0 0 4px rgb(255, 255, 255);
+
+@media(max-width: 600px) {
+    #vsScreen {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@keyframes vsScreenAnimation {
+    0% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+
+    }
+
+}
+
+h1 {
+    font-size: 6vw;
+}
+
+p {
+    text-shadow: 2px 2px 1px var(--lavender-darker-color);
+}
+
+.vsPlayer {
+    flex-grow: 1;
+    justify-items: center;
+    overflow: hidden;
+    border: 18px ridge var(--blue-base-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.vsPlayer img {
+    flex-grow: 1;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
+    width: 80%;
+    display: block;
+    object-fit: contain;
+}
+
+.vsPlayer:nth-child(2) {
+    background-color: var(--lavender-base-color);
+    border-color: var(--lavender-darker-color);
+}
+
+#vs {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    font-size: 100px;
+    color: var(--light-gray-base-color);
+    text-shadow: 0 0 5rem #3b053b;
+    margin: 0;
+
+    animation: forwards infinite 4s vsAnimation;
+}
+
+@keyframes vsAnimation {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(-1000deg);
+    }
+
+    30% {
+        transform: translate(-50%, -50%) scale(1) rotate(-20deg);
+    }
+
+    85% {
+        transform: translate(-50%, -50%) scale(1) rotate(-20deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(10) rotate(-1000deg);
+    }
+}
+
+.boardLabel {
+    margin-top: 0;
 }
 
 #player {
@@ -231,16 +409,17 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgb(235, 77, 177);
-    color: white;
+    background-color: var(--lavender-base-color);
+    color: var(--light-gray-base-color);
+    text-shadow: 2px 2px 2px var(--lavender-darker-color);
     border-radius: 0.25rem;
-    border: double 10px rgb(159, 50, 119);
+    border: ridge 10px var(--lavender-darker-color);
     padding: 30px;
-    max-width: 40%;
-
+    width: 70%;
+    max-width: 400px;
 }
 
-.popupBackgroundWaitOnOpponent {
+.popupBackground {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -250,54 +429,31 @@ export default {
     background-color: #00000040;
 }
 
-.popupBackgroundMakeMove {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    pointer-events: none;
-}
-
-.popupBackgroundMakeMove .popup {
-    pointer-events: auto;
-}
-
-.leftColumns {
-    display: flex;
-    flex-direction: column;
-}
-
 .rightColumn {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    margin-top: 2rem;
+    width: 100%;
+    max-width: 400px;
+    padding-bottom: 20px;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
     align-items: center;
 }
 
 #playerAvatar {
-    margin-top: 2rem;
+    border: ridge 3px var(--pink-darker-color);
+    border-radius: 0.25rem;
     min-width: 200px;
-    padding: 1rem;
-    border: 2px solid #962d9a;
-    border-radius: 20px;
-    /* matchar boardens margin */
-    min-width: 200px;
-    padding: 1rem;
-    border: 2px solid #962d9a;
-    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
-
-.placedAvatarShip {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
-}
-
 
 .playerName {
     margin: 0 0 1rem 0;
@@ -313,26 +469,88 @@ export default {
 
 .pageLayout {
     display: flex;
-    align-items: flex-start;
-    gap: 3rem;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
 }
 
 .questionBox {
+    min-width: 150px;
+    background: var(--light-gray-base-color);
+    padding: 10px;
+    border-radius: 0.25rem;
+    border: ridge 4px var(--pink-darker-color);
+}
+
+
+.questionText {
+    font-family: 'ADLaM Display';
+    color: var(--pink-darker-color);
+    letter-spacing: 0.1em;
+    text-shadow: none;
+    margin: 0;
+}
+
+.answerBox {
     min-width: 260px;
-    padding: 1rem;
-    border-radius: 12px;
-    background: white;
-    border: 2px solid #962d9a;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
 
 }
 
-.boardLock {
-    position: absolute;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: auto;
-    /* blockera klick */
+.answerInput {
+    flex: 1;
+    background: var(--light-gray-base-color);
+    padding: 10px;
+    border-radius: 0.25rem;
+    border: ridge 4px var(--pink-darker-color);
+    font-family: 'ADLaM Display';
+    color: var(--pink-darker-color);
+}
 
+.answerButton {
+    border: ridge 3px var(--pink-darker-color);
+    border-radius: 0.25rem;
+    background-color: var(--light-gray-base-color);
+    cursor: pointer;
+    font-family: 'ADLaM Display', sans-serif;
+    color: var(--pink-darker-color);
+    padding: 5px;
+    margin: 10px;
+}
 
+.answerButton:hover {
+    transform: scale(1.05);
+}
+
+::placeholder {
+    color: var(--pink-base-color);
+    font-family: 'ADLaM Display', sans-serif;
+
+}
+
+.okButton {
+    border-color: var(--lavender-darker-color);
+    color: var(--lavender-darker-color);
+    margin-top: 40px;
+}
+
+.hiddenQuestion {
+    visibility: hidden;
+}
+
+.WinPopup {
+    background-color: green;
+}
+
+.LosePopup {
+    background-color: red;
+}
+
+.boardAvatars{
+    width: 5rem;
+    align-top: auto;
 }
 </style>

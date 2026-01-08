@@ -53,5 +53,10 @@
 	"returnToStart": "Return to start page",
 	"opponentsBoard": "Opponents board",
 	"yourBoard": "Your board",
-	"nextQuestion": "Next question in..."
+	"nextQuestion": "Next question in...",
+	"observe": "Observe",
+	"observeMessage": "You are observing",
+	"won": "won",
+	"board": "board",
+	"observePrompt": "Game already in progress, would you like to observe?"
 }

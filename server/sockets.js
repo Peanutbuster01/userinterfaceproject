@@ -47,7 +47,7 @@ function sockets(io, socket, data) {
 
   socket.on('getPlayerInfo', function (lobbyId, playerId) {
     const playerInfo = data.getGame(lobbyId).participants[playerId];
-    console.log(playerInfo)
+    console.log("Now sending" + playerInfo)
     socket.emit("playerInfo", playerId, playerInfo);
   });
 
