@@ -1,5 +1,5 @@
 <template>
-    <title>{{ uiLabels.play }}</title>
+    <title>{{ uiLabels.observe }}</title>
     <h3>{{ uiLabels.gameId }} {{ lobbyId }}</h3>
 
     <div id="vsScreen">
@@ -19,8 +19,7 @@
     <div class="pageLayout">
         <div class="leftColumn">
             <div id="playerAvatar">
-                <h2 class="playerName">{{ playerName }}</h2>
-                <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
+                <h2 class="playerName">{{ uiLabels.observeMessage }}</h2>
             </div>
 
             <div class="questionBox">
@@ -28,38 +27,22 @@
                     {{ currentQuestion }}</p>
             </div>
 
-            <div class="answerBox">
-                <input class="answerInput" type="text" v-model="playerAnswer" @keypress.enter="submitAnswerEquation"
-                    :placeholder="uiLabels.answerMathQuestion" />
-
-                <button class="answerButton" @click="submitAnswerEquation">{{ uiLabels.send }}</button>
-            </div>
         </div>
 
         <div class="rightColumn">
             <div>
-                <h3 class="boardLabel">{{ uiLabels.opponentsBoard }}</h3>
+                <h3 class="boardLabel">{{opponentName}}s {{ uiLabels.board }}</h3>
                 <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
                     :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
                     :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
             </div>
             <div>
-                <h3 class="boardLabel">{{ uiLabels.yourBoard }}</h3>
-                <GameBoard :isOpponent="false" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
+                <h3 class="boardLabel">{{playerName}}s {{ uiLabels.board }}</h3>
+                <GameBoard :isOpponent="true" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
                     :placedShips="placedShips" />
             </div>
         </div>
 
-    </div>
-
-    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
-        <div class="popup">
-            <p>{{ uiLabels.makeAMove }}</p>
-            <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
-                :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
-                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
-            <button @click="confirmShot()" class="okButton">OK</button>
-        </div>
     </div>
 
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
@@ -77,8 +60,8 @@
 
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'gameOverPopup'">
         <div class="popup">
-            <p v-if="winnerId === playerId">{{ uiLabels.youWon }}</p>
-            <p v-else>{{ uiLabels.gameOver }}</p>
+            <p v-if="winnerId === playerId">{{ playerName }} {{ uiLabels.won }}</p>
+            <p v-else>{{ opponentName }} {{ uiLabels.won }}</p>
             <button class="okButton" @click="() => {
                 this.$router.push({ path: `/` });
             }">{{ uiLabels.returnToStart }}</button>
@@ -135,6 +118,7 @@ export default {
 
             gameOver: false,
             winnerId: null,
+            gottenplayer1: false,
         }
     },
 
@@ -149,12 +133,14 @@ export default {
 
         ;
         socket.on("playerInfo", (playerId, playerInfo) => {
-            if (playerId == this.playerId) {
+            if (!this.gottenplayer1) {
                 console.log("INFO:"); console.log(playerInfo);
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
                 this.playerName = playerInfo.playerName;
+                this.playerId = playerId;
                 console.log(this.placedShips);
+                this.gottenplayer1 = true;
             }
             else {
                 console.log("MOTSTÅNDARINFO:"); console.log(playerInfo);

@@ -56,5 +56,6 @@
 	"returnToStart": "Återvänd till startsidan",
 	"opponentsBoard": "Motståndarens bräde",
 	"yourBoard": "Ditt bräde",
-	"won": "vann"
+	"won": "vann",
+	"board": "bräde"
 }

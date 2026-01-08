@@ -134,7 +134,7 @@ export default {
             waitingForNextQuestion: false,
 
             gameOver: false,
-            winnerId: null,
+            winnerId: null
         }
     },
 
