@@ -26,17 +26,22 @@
                 <p class="questionText" :class="{ hiddenQuestion: waitingForNextQuestion }">
                     {{ currentQuestion }}</p>
             </div>
+            <button class="okButton" @click="() => {
+                this.$router.push({ path: `/` });
+            }">{{ uiLabels.returnToStart }}</button>
 
         </div>
 
         <div class="rightColumn">
             <div>
+                <img :src="avatars[opponentAvatarIndex].image" class = "boardAvatars"></img>
                 <h3 class="boardLabel">{{opponentName}}s {{ uiLabels.board }}</h3>
                 <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
                     :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
                     :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
             </div>
             <div>
+                <img :src="avatars[avatarIndex].image" class = "boardAvatars"></img>
                 <h3 class="boardLabel">{{playerName}}s {{ uiLabels.board }}</h3>
                 <GameBoard :isOpponent="true" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
                     :placedShips="placedShips" />
@@ -542,5 +547,10 @@ p {
 
 .LosePopup {
     background-color: red;
+}
+
+.boardAvatars{
+    width: 5rem;
+    align-top: auto;
 }
 </style>
