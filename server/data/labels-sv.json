@@ -57,5 +57,6 @@
 	"opponentsBoard": "Motståndarens bräde",
 	"yourBoard": "Ditt bräde",
 	"won": "vann",
-	"board": "bräde"
+	"board": "bräde",
+	"observePrompt": "Ett spel är redan igång, vill du åskåda det?"
 }

@@ -49,6 +49,18 @@
       OK
     </button>
   </div>
+  <div id="popup" v-if="showObservePrompt">
+    {{uiLabels.observePrompt}}
+    <button class="okButton" @click="() => {
+      showObservePrompt = false
+      this.$router.push({path: `/observe/${this.lobbyId}`});
+    }">
+      Yes
+    </button>
+    <button class="okButton" @click="showObservePrompt = false">
+        No
+    </button>
+  </div>
 
 </template>
 
@@ -69,6 +81,7 @@ export default {
       hideNav: true,
       showRulesBoolean: false,
       showNoGameExistBoolean: false,
+      showObservePrompt: false,
     }
   },
   created() {
@@ -78,7 +91,7 @@ export default {
       }
       else if
         (response == "full") {
-        this.$router.push({path: `/observe/${this.lobbyId}`})
+        this.showObservePrompt = true;
       }
 
       else {
@@ -206,5 +219,15 @@ input:focus {
 .okButton {
   border-color: var(--pink-darker-color);
   color: var(--pink-darker-color);
+}
+
+.popupBackground {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    background-color: #00000040;
 }
 </style>
