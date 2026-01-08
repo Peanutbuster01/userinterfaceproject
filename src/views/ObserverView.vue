@@ -2,66 +2,62 @@
     <title>{{uiLabels.observe}}</title>
     <p>Lobby-ID: {{ lobbyId }}</p>
 
-    <div class="pageLayout">
-        <!--vänster sida (boards)-->
-        <div class="leftColumns">
-            <div id="OpponentBoard">
-                <div class="board">
-                    <div class="overlay">
-                        <div v-for="(x, i) in 12" :key="'opp-' + i" class="square"
-                            :class="{ selectedShot: selectedShotIndex === i }" @click="shootAtOpponent(i)">
-                            <span v-if="opponentShots[i]">{{ opponentShots[i] }}</span>
-                        </div>
-                    </div>
-                    <div class="boardLock"></div>
-
-                </div>
-            </div>
-
-            <div id="playerBoard">
-                <div class="board">
-                    <div class="overlay">
-                        <div v-for="(x, i) in 12" class="square">
-                            <img class="placedAvatarShip" v-if="placedShips.includes(i)"
-                                :src="avatars[avatarIndex].image">
-                        </div>
-                    </div>
-                    <div v-if="canShoot || hasShotThisRound" class="boardLock"></div>
-                </div>
-            </div>
+    <div id="vsScreen">
+        <div class="vsPlayer">
+            <h1 style="text-shadow: 4px 4px 2px var(--blue-base-color);">{{ playerName }}</h1>
+            <img :src="avatars[avatarIndex].image"></img>
         </div>
+        <div class="vsPlayer">
+            <h1 style="text-shadow: 4px 4px 2px var(--lavender-darker-color);">{{ opponentName }}</h1>
+            <img :src="avatars[opponentAvatarIndex].image"></img>
+        </div>
+        <h1 id="vs">
+            VS
+        </h1>
+    </div>
 
-
-        <!--hö nger karaktär, fråga, svar-->
-        <div class="rightColumn">
+    <div class="pageLayout">
+        <div class="leftColumn">
             <div id="playerAvatar">
-                <h2 class="playerName">{{uiLabels.observeMessage}}</h2>
+                <h2 class="playerName">{{ playerName }}</h2>
+                <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
             </div>
 
             <div class="questionBox">
-                <p class="questionText">{{ currentQuestion }}</p>
+                <p class="questionText" :class="{ hiddenQuestion: waitingForNextQuestion }">
+                    {{ currentQuestion }}</p>
             </div>
         </div>
-    </div>
 
-    <div class="popupBackgroundMakeMove" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
-        <div class="popup">
-            <p>{{ uiLabels.makeAMove }}</p>
-            <button @click="confirmShot()" id="okButton">OK</button>
-
+        <div class="rightColumn">
+            <div>
+                <h3 class="boardLabel">{{ uiLabels.opponentsBoard }}</h3>
+                <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
+                    :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
+                    :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
+            </div>
+            <div>
+                <h3 class="boardLabel">{{ uiLabels.yourBoard }}</h3>
+                <GameBoard :isOpponent="true" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
+                    :placedShips="placedShips" />
+            </div>
         </div>
+
     </div>
 
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
-        <div class="popup">
-            <p>{{ uiLabels.wrongAnswer }}</p>
-            <button @click="showPopupBoolean = false; popupType = null" id="okButton">OK</button>
-        </div>
-    </div>
-
-    <div class="popupBackgroundWaitOnOpponent" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
         <div class="popup">
             <p>{{ uiLabels.waitForOpponent }}</p>
+        </div>
+    </div>
+
+    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'gameOverPopup'">
+        <div class="popup">
+            <p v-if="winnerId === playerId">{{playerName}} {{uiLabels.won}}</p>
+            <p v-else>{{playerName}} {{uiLabels.won}}</p>
+            <button class="okButton" @click="() => {
+                this.$router.push({ path: `/` });
+            }">{{ uiLabels.returnToStart }}</button>
         </div>
     </div>
 
@@ -84,7 +80,7 @@ export default {
             playerName: "",
             avatarIndex: 0,
             selectedAvatar: 0,
-            player1Id: 0,
+            playerId: 0,
             placedShips: [
                 null, null, null,
             ],
@@ -122,7 +118,7 @@ export default {
 
         ;
         socket.on("playerInfo", (playerId, playerInfo) => {
-            if (playerId == this.player1Id) {
+            if (playerId == this.playerId) {
                 console.log("INFO:"); console.log(playerInfo);
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
@@ -335,4 +331,4 @@ export default {
 
 
 }
-</style>
+</styl

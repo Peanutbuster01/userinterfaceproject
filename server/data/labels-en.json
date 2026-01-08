@@ -52,5 +52,8 @@
 	"youWon": "You won!",
 	"returnToStart": "Return to start page",
 	"opponentsBoard": "Opponents board",
-	"yourBoard": "Your board"
+	"yourBoard": "Your board",
+	"observe": "Observe",
+	"observeMessage": "You are observing",
+	"won": "won"
 }
