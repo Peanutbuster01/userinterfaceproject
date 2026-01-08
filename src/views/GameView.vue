@@ -27,13 +27,6 @@
                 <p class="questionText" :class="{ hiddenQuestion: waitingForNextQuestion }">
                     {{ currentQuestion }}</p>
             </div>
-
-            <div class="answerBox">
-                <input class="answerInput" type="text" v-model="playerAnswer" @keypress.enter="submitAnswerEquation"
-                    :placeholder="uiLabels.answerMathQuestion" />
-
-                <button class="answerButton" @click="submitAnswerEquation">{{ uiLabels.send }}</button>
-            </div>
         </div>
 
         <div class="rightColumn">
