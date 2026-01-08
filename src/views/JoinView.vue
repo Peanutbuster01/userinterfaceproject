@@ -327,31 +327,6 @@ label {
     transform: scale(1.05);
 }
 
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--lavender-base-color);
-    color: var(--light-gray-base-color);
-    text-shadow: 2px 2px 2px var(--lavender-darker-color);
-    border-radius: 0.25rem;
-    border: ridge 10px var(--lavender-darker-color);
-    padding: 30px;
-    max-width: 40%;
-}
-
-
-.popupBackground {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    background-color: #00000040;
-}
-
 .okButton {
     border-color: var(--lavender-darker-color);
     color: var(--lavender-darker-color);
