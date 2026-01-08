@@ -51,6 +51,8 @@
 	"gameOver": "Du förlorade",
 	"youWon": "Du vann!",
 	"waitingForOpponent": "Väntar på motståndaren...",
+	"observe": "Kolla",
+	"observeMessage": "Du åskådar",
 	"returnToStart": "Återvänd till startsidan",
 	"opponentsBoard": "Motståndarens bräde",
 	"yourBoard": "Ditt bräde"
