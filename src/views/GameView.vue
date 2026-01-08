@@ -60,11 +60,12 @@
             <button @click="confirmShot()" class="okButton">OK</button>
         </div>
     </div>
+    <div class="popupBackground counterPopupBackground" v-if="waitingForNextQuestion">
+        <div class="popup counterPopup" v-if="waitingForNextQuestion">
+            <p>{{ uiLabels.nextQuestion }}</p>
+            <ul></ul>
+            <h1 style="text-shadow: 4px 4px 2px var(--lavender-darker-color);">{{ counterNumber }}</h1>
 
-    <div class="popup counterPopup" v-if="waitingForNextQuestion">
-        {{ uiLabels.nextQuestion }} <ul></ul>
-        <div id="counter" :key="counterNumber">
-            {{ counterNumber }}
         </div>
     </div>
 
@@ -419,22 +420,26 @@ p {
 
 .counterPopup {
     pointer-events: none;
-
-    animation: forwards infinite 5s counterPopupAnimation;
-
+    animation: forwards 5s counterPopupAnimation;
 }
+
 
 @keyframes counterPopupAnimation {
     0% {
         opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+
     }
 
     90% {
         opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+
     }
 
     100% {
         opacity: 0;
+        transform: translate(-50%, -50%) rotate(450deg) scale(10);
     }
 }
 
@@ -455,30 +460,7 @@ p {
     margin-bottom: 50px;
 }
 
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--lavender-base-color);
-    color: var(--light-gray-base-color);
-    text-shadow: 2px 2px 2px var(--lavender-darker-color);
-    border-radius: 0.25rem;
-    border: ridge 10px var(--lavender-darker-color);
-    padding: 30px;
-    width: 70%;
-    max-width: 400px;
-}
 
-.popupBackground {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    background-color: #00000040;
-}
 
 .rightColumn {
     display: flex;
@@ -541,6 +523,7 @@ p {
     letter-spacing: 0.1em;
     text-shadow: none;
     margin: 0;
+    font-size: xx-large;
 }
 
 .answerBox {
@@ -562,24 +545,26 @@ p {
 }
 
 .answerButton {
-    border: ridge 3px var(--pink-darker-color);
+    border: ridge 4px var(--pink-darker-color);
     border-radius: 0.25rem;
     background-color: var(--light-gray-base-color);
     cursor: pointer;
-    font-family: 'ADLaM Display', sans-serif;
+    font-family: 'Super Funky', sans-serif;
     color: var(--pink-darker-color);
     padding: 5px;
     margin: 10px;
+    font-size: larger;
+    letter-spacing: 0.1em;
 }
 
 .answerButton:hover {
     transform: scale(1.05);
+    background-color: var(--pink-lighter-color);
 }
 
 ::placeholder {
     color: var(--pink-base-color);
     font-family: 'ADLaM Display', sans-serif;
-
 }
 
 .okButton {
