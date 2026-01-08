@@ -7,7 +7,6 @@
   </div>
 
   <div id="createJoin">
-
     <section class="gamePanel">
       <h6 class="gameSubtitles">{{ uiLabels.createGame }}</h6>
       <p>{{ uiLabels.createGameInstructions }}</p>
@@ -23,22 +22,17 @@
       <h6 class="gameSubtitles">{{ uiLabels.joinGame }}</h6>
       <p>{{ uiLabels.joinGameInstructions }}</p>
 
-
       <div>
         <input class="gameButtons" type="text" maxlength="4" @input="validateLobbyId" v-model="lobbyId"
           :placeholder="uiLabels.fourCharGameID" @keypress.enter="checkLobbyId">
 
-        <p v-if="lobbyId.length < 4" class="joinErrorMessage">
-          {{ joinMessage }}
-        </p>
+        <p v-if="lobbyId.length < 4" class="joinErrorMessage">{{ joinMessage }}</p>
       </div>
 
       <div class="ButtonRow">
-
         <button class="gameButtons" @click="checkLobbyId">
           {{ uiLabels.joinGameButton }}
         </button>
-
       </div>
     </section>
   </div>
@@ -49,17 +43,21 @@
       OK
     </button>
   </div>
+
   <div id="popup" v-if="showObservePrompt">
     {{uiLabels.observePrompt}}
+
     <button class="okButton" @click="() => {
       showObservePrompt = false
       this.$router.push({path: `/observe/${this.lobbyId}`});
     }">
       Yes
     </button>
+
     <button class="okButton" @click="showObservePrompt = false">
         No
     </button>
+    
   </div>
 
 </template>

@@ -23,8 +23,7 @@
             </div>
 
             <div class="questionBox">
-                <p class="questionText" :class="{ hiddenQuestion: waitingForNextQuestion }">
-                    {{ currentQuestion }}</p>
+                <p class="questionText" :class="{ hiddenQuestion: waitingForNextQuestion }">{{ currentQuestion }}</p>
             </div>
             <button class="okButton" @click="() => {
                 this.$router.push({ path: `/` });
@@ -84,6 +83,7 @@ export default {
     name: 'StartView',
     props: ["uiLabels"],
     components: { GameBoard },
+
     data: function () {
         return {
             hideNav: true,
@@ -200,12 +200,6 @@ export default {
             console.log("[GameView] shotResult received:");
         });
 
-
-        socket.on("wrongAnswer", () => {
-            this.popupType = "wrongAnswerPopup";
-            this.showPopupBoolean = true;
-        });
-
         socket.on("waitingForNextQuestion", () => {
             this.waitingForNextQuestion = true;
         });
@@ -231,53 +225,11 @@ export default {
             console.log("placeAvatar", i);
         },
 
-
-        submitAnswerEquation: function () {
-            socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
-            this.playerAnswer = "";
-        },
-
-        makeAMove: function () {
-            this.popupType = "makeMovePopup";
-            this.showPopupBoolean = true;
-            this.canShoot = true;
-            this.hasShotThisRound = false;
-            this.selectedShotIndex = null;
-        },
-
         WaitOnOpponent: function () {
             this.popupType = "waitOnOpponentPopup";
             this.showPopupBoolean = true;
             this.canShoot = false;
         },
-
-        shootAtOpponent: function (squareIndex) {
-            if (!this.canShoot) return;
-            if (this.hasShotThisRound) return;
-            if (this.playerShots[squareIndex] !== undefined) return;
-
-            this.selectedShotIndex = squareIndex;
-            console.log("Selected shot at index:", squareIndex);
-        },
-
-        confirmShot: function () {
-            if (this.selectedShotIndex === null || this.playerShots[this.selectedShotIndex] !== undefined) return;
-
-            socket.emit("shoot", {
-                lobbyId: this.lobbyId,
-                playerId: this.playerId,
-                shootIndex: this.selectedShotIndex
-            });
-
-            this.hasShotThisRound = true;
-            this.canShoot = false;
-            this.selectedShotIndex = null;
-
-            this.showPopupBoolean = false;
-            this.popupType = null;
-
-        },
-
     }
 }
 </script>
