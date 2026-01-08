@@ -49,7 +49,6 @@
                     :placedShips="placedShips" />
             </div>
         </div>
-
     </div>
 
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
@@ -59,6 +58,13 @@
                 :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
                 :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
             <button @click="confirmShot()" class="okButton">OK</button>
+        </div>
+    </div>
+
+    <div class="popup counterPopup" v-if="waitingForNextQuestion">
+        {{ uiLabels.nextQuestion }} <ul></ul>
+        <div id="counter" :key="counterNumber">
+            {{ counterNumber }}
         </div>
     </div>
 
@@ -117,9 +123,9 @@ export default {
                 null, null, null
             ],
 
-            //placeholder tills att socket data kommer in
 
-            selectedAvatarIndex: 1, //byt så indeselectedx byt ut automatiskt
+            counterNumber: 5,
+            selectedAvatarIndex: 1,
             avatars: avatars,
 
             currentEquation: null,
@@ -137,6 +143,7 @@ export default {
             winnerId: null,
         }
     },
+
 
     created: function () {
         this.lobbyId = this.$route.params.id;
@@ -217,6 +224,7 @@ export default {
 
         socket.on("waitingForNextQuestion", () => {
             this.waitingForNextQuestion = true;
+            this.startCountDown();
         });
 
         socket.on("gameOver", ({ winnerId }) => {
@@ -286,6 +294,19 @@ export default {
             this.popupType = null;
 
         },
+
+        startCountDown: function () {
+            const interval = setInterval(() => {
+                this.counterNumber--;
+
+                if (this.counterNumber === 0) {
+                    clearInterval(interval);
+                    this.waitingForNextQuestion = false;
+                }
+            }, 1000);
+            this.counterNumber = 5;
+
+        }
 
     }
 }
@@ -393,6 +414,27 @@ p {
 
     100% {
         transform: translate(-50%, -50%) scale(10) rotate(-1000deg);
+    }
+}
+
+.counterPopup {
+    pointer-events: none;
+
+    animation: forwards infinite 5s counterPopupAnimation;
+
+}
+
+@keyframes counterPopupAnimation {
+    0% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
     }
 }
 
