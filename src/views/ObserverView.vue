@@ -1,6 +1,7 @@
 <template>
-    <title>{{uiLabels.observe}}</title>
-    <h3>{{ uiLabels.observeMessage }} {{ lobbyId }}</h3>
+    <title>{{ uiLabels.play }}</title>
+    <h3>{{ uiLabels.gameId }} {{ lobbyId }}</h3>
+
     <div id="vsScreen">
         <div class="vsPlayer">
             <h1 style="text-shadow: 4px 4px 2px var(--blue-base-color);">{{ playerName }}</h1>
@@ -83,20 +84,18 @@
             }">{{ uiLabels.returnToStart }}</button>
         </div>
     </div>
-    
-</template>
 
+</template>
 <script>
-    import io from 'socket.io-client';
-    const socket = io();
-    import avatars from "../assets/avatars.json";
-    import GameBoard from '../components/GameBoard.vue';
+import io from 'socket.io-client';
+const socket = io();
+import avatars from "../assets/avatars.json";
+import GameBoard from '../components/GameBoard.vue';
 
 export default {
-    name: 'observeView',
+    name: 'StartView',
     props: ["uiLabels"],
-    components: {GameBoard},
-
+    components: { GameBoard },
     data: function () {
         return {
             hideNav: true,
@@ -117,9 +116,10 @@ export default {
             opponentPlacedShips: [
                 null, null, null
             ],
-            gottenPlayer1: false,
 
             //placeholder tills att socket data kommer in
+
+            selectedAvatarIndex: 1, //byt så indeselectedx byt ut automatiskt
             avatars: avatars,
 
             currentEquation: null,
@@ -130,11 +130,17 @@ export default {
             hasShotThisRound: false,
             selectedShotIndex: null,
             opponentShots: {},
+            playerShots: {},
+            waitingForNextQuestion: false,
+
+            gameOver: false,
+            winnerId: null,
         }
     },
 
     created: function () {
         this.lobbyId = this.$route.params.id;
+        this.playerId = Number(this.$route.params.playerId);
         socket.emit("joinLobby", this.lobbyId);
 
         socket.on("gameSettings", (settings) => {
@@ -143,13 +149,12 @@ export default {
 
         ;
         socket.on("playerInfo", (playerId, playerInfo) => {
-            if (!this.gottenPlayer1) {
+            if (playerId == this.playerId) {
                 console.log("INFO:"); console.log(playerInfo);
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
                 this.playerName = playerInfo.playerName;
                 console.log(this.placedShips);
-                this.gottenPlayer1 = true;
             }
             else {
                 console.log("MOTSTÅNDARINFO:"); console.log(playerInfo);
@@ -230,17 +235,63 @@ export default {
     },
 
     methods: {
+
+        placeAvatar: function (i) {
+            console.log("placeAvatar", i);
+        },
+
+
+        submitAnswerEquation: function () {
+            socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
+            this.playerAnswer = "";
+        },
+
+        makeAMove: function () {
+            this.popupType = "makeMovePopup";
+            this.showPopupBoolean = true;
+            this.canShoot = true;
+            this.hasShotThisRound = false;
+            this.selectedShotIndex = null;
+        },
+
         WaitOnOpponent: function () {
             this.popupType = "waitOnOpponentPopup";
             this.showPopupBoolean = true;
             this.canShoot = false;
         },
 
+        shootAtOpponent: function (squareIndex) {
+            if (!this.canShoot) return;
+            if (this.hasShotThisRound) return;
+            if (this.playerShots[squareIndex] !== undefined) return;
+
+            this.selectedShotIndex = squareIndex;
+            console.log("Selected shot at index:", squareIndex);
+        },
+
+        confirmShot: function () {
+            if (this.selectedShotIndex === null || this.playerShots[this.selectedShotIndex] !== undefined) return;
+
+            socket.emit("shoot", {
+                lobbyId: this.lobbyId,
+                playerId: this.playerId,
+                shootIndex: this.selectedShotIndex
+            });
+
+            this.hasShotThisRound = true;
+            this.canShoot = false;
+            this.selectedShotIndex = null;
+
+            this.showPopupBoolean = false;
+            this.popupType = null;
+
+        },
+
     }
 }
 </script>
 
-<style>
+<style scoped>
 #vsScreen {
     position: fixed;
     display: grid;
