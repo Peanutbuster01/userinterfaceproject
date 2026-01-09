@@ -163,7 +163,7 @@ export default {
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
                 this.playerName = playerInfo.playerName;
-                socket.emit("getShots", this.lobbyId)
+                socket.emit("getShots", this.gameId)
                 socket.on("shots", (shots) => {
                     this.playerShots = shots[playerId];
                 });
@@ -174,7 +174,7 @@ export default {
                 this.opponentPlacedShips = playerInfo.placedShips;
                 this.opponentAvatarIndex = playerInfo.avatarIndex;
                 this.opponentName = playerInfo.playerName;
-                socket.emit("getShots", this.lobbyId)
+                socket.emit("getShots", this.gameId)
                 socket.on("shots", (shots) => {
                     this.opponentShots = shots[playerId];
                 });
@@ -247,10 +247,10 @@ export default {
 
             if (winnerId === this.playerId) {
                 playSound("win");
-            } 
+            }
             else {
                 playSound("lose");
-            }   
+            }
         });
 
         socket.emit("getUILabels", this.lang);

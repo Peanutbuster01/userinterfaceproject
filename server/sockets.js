@@ -218,8 +218,8 @@ function sockets(io, socket, data) {
     // TODO
   });
 
-  socket.on("getShots", function (lobbyId){
-    const game = data.getGame(lobbyId);
+  socket.on("getShots", function (gameId) {
+    const game = data.getGame(gameId);
     socket.emit("shots", game.shots)
   });
 

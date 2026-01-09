@@ -147,7 +147,7 @@ export default {
                 this.playerId = playerId;
                 console.log(this.placedShips);
                 this.gottenplayer1 = true;
-                socket.emit("getShots", this.lobbyId)
+                socket.emit("getShots", this.gameId)
                 socket.on("shots", (shots) => {
                     this.playerShots = shots[playerId];
                 });
@@ -159,13 +159,13 @@ export default {
                 this.opponentName = playerInfo.playerName;
                 this.opponentId = playerId;
                 console.log(this.opponentName);
-                socket.emit("getShots", this.lobbyId);
+                socket.emit("getShots", this.gameId);
                 socket.on("shots", (shots) => {
                     this.opponentShots = shots[playerId];
                 });
             }
-        
-        
+
+
         });
 
         socket.on("roundWinner", (winnerPlayerId) => {
