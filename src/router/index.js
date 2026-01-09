@@ -15,12 +15,6 @@ const router = createRouter({
       name: 'CreateView',
       component: () => import('../views/CreateView.vue')
     },
-    {
-      path: '/lobby/',
-      name: 'LobbyView',
-      component: () => import('../views/LobbyView.vue')
-    },
-
     
     {
       path: '/join/:id',
@@ -39,7 +33,6 @@ const router = createRouter({
       name: 'ObserverView',
       component: () => import('../views/ObserverView.vue')
     }
-
 
   ]
 })
