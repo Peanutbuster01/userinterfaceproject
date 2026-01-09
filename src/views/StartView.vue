@@ -69,14 +69,12 @@
 
 
 <script>
-import { playSound } from "../src/utils/sound"; //testa ljud, ta bort sen!
 import io from 'socket.io-client';
 const socket = io();
 
 export default {
   name: 'StartView',
   props: ["uiLabels"],
-
 
   data: function () {
     return {
@@ -111,11 +109,8 @@ export default {
     checkGameId() {
       socket.emit('tryGameId', this.gameId)
     },
-
   }
 }
-
-
 </script>
 
 
