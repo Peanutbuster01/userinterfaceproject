@@ -63,7 +63,7 @@
 
 
     <div class="createSection">
-      <img class="infoIcon" src="https://upload.wikimedia.org/wikipedia/commons/4/43/Minimalist_info_Icon.png" @click="difficultyPopupShowing=true">
+      <img class="infoIcon" src="https://upload.wikimedia.org/wikipedia/commons/4/43/Minimalist_info_Icon.png" @click="difficultyPopupShowing=!difficultyPopupShowing">
       <h3>{{ uiLabels.level }}</h3>
       <div class="chooseSettings">
         <div class="pictureAndButton">
