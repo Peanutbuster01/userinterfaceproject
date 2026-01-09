@@ -4,7 +4,7 @@
     <div class="left">
       <button class="langBtn" :style="{ backgroundImage: `url(${uiLabels.flag})` }" @click="switchLanguage"> </button>
 
-      <button class="rulesButton" @click="showRulesBoolean = !showRulesBoolean">
+      <button class="rulesButton" @click="showRulesBoolean = true">
         {{ uiLabels.rules }} </button>
 
     </div>
@@ -12,11 +12,16 @@
     <div class="logo">
       {{ uiLabels.siteName }}
     </div>
-    
+
   </header>
 
-  <div class="ruleSquare" v-if="showRulesBoolean">
-    {{ uiLabels.ruleBody }}
+  <div class="popupBackground" v-if="showRulesBoolean">
+    <div class="popup">
+      <p>{{ uiLabels.ruleBody }}</p>
+      <button class="okButton" @click="showRulesBoolean = false">
+        {{ uiLabels.close }}
+      </button>
+    </div>
   </div>
 
   <RouterView v-slot="{ Component }">
@@ -113,6 +118,7 @@ export default {
   padding: 0;
   border-radius: 0.25rem;
   border: ridge 2px var(--lavender-darker-color);
+  box-shadow: 3px 3px 2px 0px var(--lavender-darker-color);
 }
 
 .langBtn:hover {
@@ -121,26 +127,6 @@ export default {
 
 .flag {
   width: 60px;
-}
-
-.ruleSquare {
-  margin: 5% auto;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  white-space: pre-line;
-  position: fixed;
-
-  padding: 20px;
-  color: var(--light-gray-base-color);
-  background-color: var(--lavender-base-color);
-  border-radius: 0.25rem;
-  border: ridge 10px var(--lavender-darker-color);
-  font-family: 'ADLaM Display', sans-serif;
-  box-shadow: 5px 4px 5px var(--pink-darker-color);
-  z-index: 100000;
-
 }
 
 .rulesButton {
@@ -153,6 +139,7 @@ export default {
   border-radius: 0.25rem;
   border: ridge 3px var(--lavender-darker-color);
   cursor: pointer;
+  box-shadow: 3px 3px 2px 0px var(--lavender-darker-color);
 }
 
 .rulesButton:hover {

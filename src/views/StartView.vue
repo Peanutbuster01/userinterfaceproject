@@ -2,7 +2,7 @@
 
   <title>{{ uiLabels.start }}</title>
 
-  <div class="welcomeMessages">
+  <div class="welcomeMessage">
     <h1>{{ uiLabels.welcomeTitle }}</h1>
   </div>
 
@@ -25,14 +25,14 @@
       <p>{{ uiLabels.joinGameInstructions }}</p>
 
       <div>
-        <input class="gameButtons" type="text" maxlength="4" @input="validateLobbyId" v-model="lobbyId"
-          :placeholder="uiLabels.fourCharGameID" @keypress.enter="checkLobbyId">
+        <input class="gameButtons" type="text" maxlength="4" @input="validateGameId" v-model="gameId"
+          :placeholder="uiLabels.fourCharGameID" @keypress.enter="checkGameId">
 
-        <p v-if="lobbyId.length < 4" class="joinErrorMessage">{{ joinMessage }}</p>
+        <p v-if="gameId.length < 4" class="joinErrorMessage">{{ joinMessage }}</p>
       </div>
 
       <div class="ButtonRow">
-        <button class="gameButtons" @click="checkLobbyId">
+        <button class="gameButtons" @click="checkGameId">
           {{ uiLabels.joinGameButton }}
         </button>
       </div>
@@ -53,7 +53,7 @@
       <p>{{ uiLabels.observePrompt }}</p>
       <button class="okButton" @click="() => {
         showObservePrompt = false
-        this.$router.push({ path: `/observe/${this.lobbyId}` });
+        this.$router.push({ path: `/observe/${this.gameId}` });
       }">
         {{ uiLabels.yes }}
       </button>
@@ -80,18 +80,17 @@ export default {
 
   data: function () {
     return {
-      lobbyId: "",
+      gameId: "",
       joinMessage: "",
-      hideNav: true,
       showRulesBoolean: false,
       showNoGameExistBoolean: false,
       showObservePrompt: false,
     }
   },
   created() {
-    socket.on('lobbyIdResponse', (response) => {
+    socket.on('gameIdResponse', (response) => {
       if (response == "valid") {
-        this.$router.push({ path: `/join/${this.lobbyId}` })
+        this.$router.push({ path: `/join/${this.gameId}` })
       }
       else if
         (response == "full") {
@@ -99,19 +98,18 @@ export default {
       }
 
       else {
-        console.log("INTE OK ID")
         this.showNoGameExistBoolean = true;
       }
     })
 
   },
   methods: {
-    validateLobbyId() {
+    validateGameId() {
       this.joinMessage = this.uiLabels.joinErrorMessage || "Spel-ID måste vara 4 tecken";
     },
 
-    checkLobbyId() {
-      socket.emit('tryLobbyId', this.lobbyId)
+    checkGameId() {
+      socket.emit('tryGameId', this.gameId)
     },
 
   }
@@ -122,11 +120,8 @@ export default {
 
 
 <style scoped>
-
-.welcomeMessages {
-  border-radius: 6px;
+.welcomeMessage {
   margin-top: 3rem;
-  text-align: center;
 }
 
 #createJoin {
@@ -140,6 +135,7 @@ export default {
 .gamePanel {
   background: var(--light-blue-base-color);
   border: ridge 5px var(--blue-base-color);
+  box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
   border-radius: 0.25rem;
   padding: 1rem;
   width: 320px;
@@ -172,6 +168,7 @@ export default {
   font-family: 'Super Funky', sans-serif;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: 3px 3px 2px 0px var(--blue-base-color);
 }
 
 .gameButtons:hover {
@@ -204,7 +201,7 @@ input:focus {
 }
 
 .joinErrorMessage {
-  color: red;
+  color: var(--red-darker-color);
   text-shadow: none;
 }
 </style>

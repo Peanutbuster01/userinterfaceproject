@@ -5,34 +5,34 @@ function sockets(io, socket, data) {
   });
 
   socket.on('createGame', function (d) {
-    data.createGame(d.lobbyId, d.settings)
-    socket.emit('gameCreated', d.lobbyId);
+    data.createGame(d.gameId, d.settings)
+    socket.emit('gameCreated', d.gameId);
   });
 
-  socket.on('generateLobbyId', function () {
-      let lobbyId;
+  socket.on('generateGameId', function () {
+    let gameId;
 
-      function generateFourDigitId() {
-        let id = "";
+    function generateFourDigitId() {
+      let id = "";
 
-        for (let i = 0; i < 4; i++) {
-          const digit = Math.floor(Math.random() * 10);
-          id += digit.toString();
-        }
-
-        return id;
+      for (let i = 0; i < 4; i++) {
+        const digit = Math.floor(Math.random() * 10);
+        id += digit.toString();
       }
 
-      do {
-        lobbyId = generateFourDigitId();
-      } while (data.getGame(lobbyId)); // finns lobbyt redan? generera nytt
+      return id;
+    }
 
-      socket.emit("lobbyGenerated", lobbyId);
+    do {
+      gameId = generateFourDigitId();
+    } while (data.getGame(gameId)); // finns gamet redan? generera nytt
+
+    socket.emit("gameGenerated", gameId);
   });
 
 
-  socket.on('getGameSettings', function (lobbyId) {
-    socket.emit('gameSettings', data.getGame(lobbyId).settings);
+  socket.on('getGameSettings', function (gameId) {
+    socket.emit('gameSettings', data.getGame(gameId).settings);
   });
 
 
@@ -40,14 +40,14 @@ function sockets(io, socket, data) {
     console.log("PLAYER JOINING: ")
     console.log(playerInfo);
 
-    const game = data.getGame(playerInfo.lobbyId);
+    const game = data.getGame(playerInfo.gameId);
 
     if (game?.participants?.length === 2) {
       socket.emit('gameFull');
       return;
     }
 
-    socket.join(playerInfo.lobbyId);
+    socket.join(playerInfo.gameId);
 
     const playerId = data.joinGame(playerInfo);
     socket.emit('playerJoined', playerId);
@@ -55,102 +55,82 @@ function sockets(io, socket, data) {
 
 
     if (game?.participants?.length === 2) {
-      io.to(playerInfo.lobbyId).emit("startGame");
+      io.to(playerInfo.gameId).emit("startGame");
 
       // Starta första frågan EN gång när båda är inne
       if (!game.firstQuestionScheduled) {
         game.firstQuestionScheduled = true;
 
-        console.log("[server] scheduling first newQuestion for lobby:", playerInfo.lobbyId);
+        console.log("[server] scheduling first newQuestion for game:", playerInfo.gameId);
 
         setTimeout(() => {
           const equation = data.generateEquation(game.settings);
           game.currentEquation = equation;
 
-          console.log("[server] emitting newQuestion to lobby:", playerInfo.lobbyId, equation);
-          io.to(playerInfo.lobbyId).emit("newQuestion", equation);
+          console.log("[server] emitting newQuestion to game:", playerInfo.gameId, equation);
+          io.to(playerInfo.gameId).emit("newQuestion", equation);
         }, 5000);
       }
     }
   });
 
-  socket.on('getPlayerInfo', function (lobbyId, playerId) {
-    const playerInfo = data.getGame(lobbyId).participants[playerId];
+  socket.on('getPlayerInfo', function (gameId, playerId) {
+    const playerInfo = data.getGame(gameId).participants[playerId];
     console.log("Now sending" + playerInfo)
     socket.emit("playerInfo", playerId, playerInfo);
   });
 
 
 
-  socket.on('tryLobbyId', function (lobbyId) {
-    const game = data.getGame(lobbyId);
-    console.log("CHECK ID: " + lobbyId);
+  socket.on('tryGameId', function (gameId) {
+    const game = data.getGame(gameId);
+    console.log("CHECK ID: " + gameId);
     console.log(game);
     if (game === null) {
-      socket.emit("lobbyIdResponse", "invalid");
+      socket.emit("gameIdResponse", "invalid");
 
     } else if (game.participants.length >= 2) {
       console.log("CHECK ID");
       console.log(game);
-      socket.emit("lobbyIdResponse", "full");
+      socket.emit("gameIdResponse", "full");
 
     } else {
       console.log("CHECK ID");
       console.log(game);
-      socket.emit("lobbyIdResponse", "valid");
+      socket.emit("gameIdResponse", "valid");
     }
 
 
   });
 
-
-  socket.on('addQuestion', function (d) {
-    data.addQuestion(d.lobbyId, { q: d.q, a: d.a });
-    socket.emit('questionUpdate', data.activateQuestion(d.lobbyId));
+  socket.on('participateInGame', function (d) {
+    data.participateInGame(d.gameId, d.name);
+    io.to(d.gameId).emit('participantsUpdate', data.getParticipants(d.gameId));
   });
 
-  socket.on('joinPoll', function (lobbyId) {
-    socket.join(lobbyId);
-    socket.emit('questionUpdate', data.activateQuestion(lobbyId))
-    socket.emit('submittedAnswersUpdate', data.getSubmittedAnswers(lobbyId));
-  });
-
-  socket.on('participateInPoll', function (d) {
-    data.participateInPoll(d.lobbyId, d.name);
-    io.to(d.lobbyId).emit('participantsUpdate', data.getParticipants(d.lobbyId));
-  });
-  socket.on('startPoll', function (lobbyId) {
-    io.to(lobbyId).emit('startPoll');
+  socket.on('startGame', function (gameId) {
+    io.to(gameId).emit('startGame');
   })
-  socket.on('runQuestion', function (d) {
-    let question = data.activateQuestion(d.lobbyId, d.questionNumber);
-    io.to(d.lobbyId).emit('questionUpdate', question);
-    io.to(d.lobbyId).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.lobbyId));
-  });
 
-  socket.on('submitAnswer', function (d) {
-    data.submitAnswer(d.lobbyId, d.answer);
-    io.to(d.lobbyId).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.lobbyId));
-  });
 
-  socket.on("answer", (lobbyId, playerId, answer) => {
-    const game = data.getGame(lobbyId);
+  socket.on("answer", (gameId, playerId, answer) => {
+    const game = data.getGame(gameId);
     if (!game) return;
     if (game.gameOver) return;
 
     const correct = (answer === game.currentEquation.answer)
 
     if (correct) {
-      io.to(lobbyId).emit("roundWinner", playerId);
+      io.to(gameId).emit("roundWinner", playerId);
     } else {
       socket.emit("wrongAnswer");
     }
   });
 
-  socket.on("joinLobby", function (lobbyId) {
-    socket.join(lobbyId);
+  socket.on("joinGame", function (gameId) {
+    socket.join(gameId);
 
-    const game = data.getGame(lobbyId);
+    const game = data.getGame(gameId);
     if (!game) return;
 
     // Om en fråga redan finns, skicka den direkt till den här klienten
@@ -160,9 +140,9 @@ function sockets(io, socket, data) {
   });
 
 
-  socket.on("shoot", ({ lobbyId, playerId, shootIndex }) => {
+  socket.on("shoot", ({ gameId, playerId, shootIndex }) => {
 
-    const game = data.getGame(lobbyId);
+    const game = data.getGame(gameId);
     if (!game) return;
     if (game.gameOver) return;
 
@@ -185,10 +165,10 @@ function sockets(io, socket, data) {
     if (hit) game.scores[playerId] += 1;
     const winner = (game.scores[playerId] >= 3) ? playerId : null;
 
-    console.log("[server] emitting shotResult:", { lobbyId, playerId, shootIndex, hit, scores: game.scores });
+    console.log("[server] emitting shotResult:", { gameId, playerId, shootIndex, hit, scores: game.scores });
 
-    // Skicka till båda spelare i lobbyn
-    io.to(lobbyId).emit("shotResult", {
+    // Skicka till båda spelare i gamen
+    io.to(gameId).emit("shotResult", {
       shooterId: playerId,
       shootIndex,
       hit,
@@ -200,15 +180,15 @@ function sockets(io, socket, data) {
     if (winner !== null) {
       game.gameOver = true;
 
-      io.to(lobbyId).emit("gameOver", {
+      io.to(gameId).emit("gameOver", {
         winnerId: winner,
         scores: game.scores
       });
 
       return;
     }
-    io.to(lobbyId).emit("closePopups");
-    io.to(lobbyId).emit("waitingForNextQuestion");
+    io.to(gameId).emit("closePopups");
+    io.to(gameId).emit("waitingForNextQuestion");
 
     // Guard: schemalägg bara en ny fråga per skott/round
     if (game.nextQuestionScheduled) return;
@@ -224,7 +204,7 @@ function sockets(io, socket, data) {
       const equation = data.generateEquation(game.settings);
       game.currentEquation = equation;
 
-      io.to(lobbyId).emit("newQuestion", equation);
+      io.to(gameId).emit("newQuestion", equation);
 
       // Släpp guard när frågan skickats
       game.nextQuestionScheduled = false;
@@ -232,8 +212,8 @@ function sockets(io, socket, data) {
 
   });
 
-  socket.on("newRound", function (lobbyId, confirmShot) {
-    const game = data.getGame(lobbyId);
+  socket.on("newRound", function (gameId, confirmShot) {
+    const game = data.getGame(gameId);
     if (!game) return;
     // TODO
   });

@@ -1,6 +1,6 @@
 <template>
     <title>{{ uiLabels.play }}</title>
-    <h3>{{ uiLabels.gameId }} {{ lobbyId }}</h3>
+    <h3>{{ uiLabels.gameId }} {{ gameId }}</h3>
 
     <div id="vsScreen">
         <div class="vsPlayer">
@@ -56,7 +56,8 @@
             <p>{{ uiLabels.makeAMove }}</p>
             <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
                 :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
-                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
+                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)"
+                style="box-shadow: 3px 3px 2px 0px var(--lavender-darker-color);" />
             <button @click="confirmShot()" class="okButton">OK</button>
         </div>
     </div>
@@ -106,8 +107,7 @@ export default {
     components: { GameBoard },
     data: function () {
         return {
-            hideNav: true,
-            lobbyId: "",
+            gameId: "",
 
             playerName: "",
             avatarIndex: 0,
@@ -148,9 +148,9 @@ export default {
 
 
     created: function () {
-        this.lobbyId = this.$route.params.id;
+        this.gameId = this.$route.params.id;
         this.playerId = Number(this.$route.params.playerId);
-        socket.emit("joinLobby", this.lobbyId);
+        socket.emit("joinGame", this.gameId);
 
         socket.on("gameSettings", (settings) => {
             console.log("gameSettings:", settings);
@@ -206,7 +206,7 @@ export default {
         });
 
         socket.on("startGame", () => {
-            console.log("[client] startGame received. lobby:", this.lobbyId, "playerId:", this.playerId);
+            console.log("[client] startGame received. game:", this.gameId, "playerId:", this.playerId);
         });
 
         socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
@@ -247,16 +247,16 @@ export default {
 
             if (winnerId === this.playerId) {
                 playSound("win");
-            } 
+            }
             //else {
             //    playSound("lose");
             //}   
         });
 
         socket.emit("getUILabels", this.lang);
-        socket.emit("getGameSettings", this.lobbyId);
-        socket.emit("getPlayerInfo", this.lobbyId, 0);
-        socket.emit("getPlayerInfo", this.lobbyId, 1);
+        socket.emit("getGameSettings", this.gameId);
+        socket.emit("getPlayerInfo", this.gameId, 0);
+        socket.emit("getPlayerInfo", this.gameId, 1);
     },
 
     methods: {
@@ -267,7 +267,7 @@ export default {
 
 
         submitAnswerEquation: function () {
-            socket.emit("answer", this.lobbyId, this.playerId, parseInt(this.playerAnswer));
+            socket.emit("answer", this.gameId, this.playerId, parseInt(this.playerAnswer));
             this.playerAnswer = "";
         },
 
@@ -298,7 +298,7 @@ export default {
             if (this.selectedShotIndex === null || this.playerShots[this.selectedShotIndex] !== undefined) return;
 
             socket.emit("shoot", {
-                lobbyId: this.lobbyId,
+                gameId: this.gameId,
                 playerId: this.playerId,
                 shootIndex: this.selectedShotIndex
             });
@@ -517,14 +517,6 @@ h1 {
     margin-top: 2rem;
 }
 
-.questionBox {
-    min-width: 150px;
-    background: var(--light-gray-base-color);
-    padding: 10px;
-    border-radius: 0.25rem;
-    border: ridge 4px var(--pink-darker-color);
-}
-
 
 .questionText {
     font-family: 'ADLaM Display';
@@ -540,7 +532,6 @@ h1 {
     display: flex;
     gap: 0.75rem;
     align-items: center;
-
 }
 
 .answerInput {
@@ -551,19 +542,7 @@ h1 {
     border: ridge 4px var(--pink-darker-color);
     font-family: 'ADLaM Display';
     color: var(--pink-darker-color);
-}
-
-.answerButton {
-    border: ridge 4px var(--pink-darker-color);
-    border-radius: 0.25rem;
-    background-color: var(--light-gray-base-color);
-    cursor: pointer;
-    font-family: 'Super Funky', sans-serif;
-    color: var(--pink-darker-color);
-    padding: 5px;
-    margin: 10px;
-    font-size: larger;
-    letter-spacing: 0.1em;
+    box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }
 
 .answerButton:hover {
@@ -578,13 +557,5 @@ h1 {
 
 .hiddenQuestion {
     visibility: hidden;
-}
-
-.WinPopup {
-    background-color: green;
-}
-
-.LosePopup {
-    background-color: red;
 }
 </style>

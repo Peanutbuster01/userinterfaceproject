@@ -1,13 +1,10 @@
 <template>
   <title>{{ uiLabels.createGame }}</title>
+  <h3>{{ uiLabels.yourGameId }} {{ gameId }}</h3>
 
   <div id="container">
     <div class="createSection">
       <h2>{{ uiLabels.pageDescription }}</h2>
-    </div>
-
-    <div class="createSection">
-      <h3>{{ uiLabels.yourGameId }} {{ lobbyId }}</h3>
     </div>
 
     <div class="createSection">
@@ -17,7 +14,7 @@
       <div class="chooseSettings">
         <div class="pictureAndButton">
           <img class="settingIcon" src="https://www.pngmart.com/files/21/Addition-PNG-Photos.png" alt="addition">
-          
+
           <button :class="selectedOperations.includes('addition') ? 'chosen' : ''" @click="chooseOperation('addition')">
             {{ uiLabels.addition }}
           </button>
@@ -35,7 +32,7 @@
 
         <div class="pictureAndButton">
           <img class="settingIcon" src="https://iconape.com/wp-content/png_logo_vector/arrow-7.png"
-            alt="multiplikation">
+            alt="multiplication">
 
 
           <button :class="selectedOperations.includes('multiplication') ? 'chosen' : ''"
@@ -57,7 +54,8 @@
 
 
     <div class="createSection">
-      <img class="infoIcon" src="https://upload.wikimedia.org/wikipedia/commons/4/43/Minimalist_info_Icon.png" @click="difficultyPopupShowing=!difficultyPopupShowing">
+      <img class="infoIcon" src="https://upload.wikimedia.org/wikipedia/commons/4/43/Minimalist_info_Icon.png"
+        @click="difficultyPopupShowing = !difficultyPopupShowing">
       <h3>{{ uiLabels.level }}</h3>
       <div class="chooseSettings">
         <div class="pictureAndButton">
@@ -101,15 +99,15 @@
     </div>
 
     <div class="createSection">
-      <h3>{{ uiLabels.createLobbyInstructions }}</h3>
-      <button @click="createGame" :class="createLobbyReady ? 'createLobbyButtonReady' : 'createLobbyButtonNotReady'">
-        {{ createLobbyReady ? uiLabels.createLobbyButtonReady : uiLabels.createLobbyButtonNotReady }}
+      <h3>{{ uiLabels.createGameRequirement }}</h3>
+      <button @click="createGame" :class="createGameReady ? 'createGameButtonReady' : 'createGameButtonNotReady'">
+        {{ createGameReady ? uiLabels.createGameButtonReady : uiLabels.createGameButtonNotReady }}
       </button>
     </div>
   </div>
   <div class="popup" v-if="difficultyPopupShowing">
     {{ uiLabels.difficultyInfo }}
-    <button @click="difficultyPopupShowing=false">Ok</button>
+    <button @click="difficultyPopupShowing = false">Ok</button>
   </div>
 
 </template>
@@ -124,48 +122,42 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      selectedOperations: [], //sparar vilka räknesätt som valts av host
+      selectedOperations: [],
       selectedLevel: null,
-      lobbyId: "",
-      lobbyMessage: "",
+      gameId: "",
+      gameMessage: "",
       difficultyPopupShowing: false,
     }
   },
 
-created: function () {
-  socket.on("lobbyGenerated", (id) => {
-    this.lobbyId = id;
-    this.validatelobbyId();
-  });
+  created: function () {
+    socket.on("gameGenerated", (id) => {
+      this.gameId = id;
+    });
 
-  socket.on("gameCreated", (lobbyId) => {
-    console.log("spel skapat", lobbyId);
-    this.$router.push({ path: `/join/${lobbyId}` });
-  });
+    socket.on("gameCreated", (gameId) => {
+      console.log("spel skapat", gameId);
+      this.$router.push({ path: `/join/${gameId}` });
+    });
 
-  socket.emit("generateLobbyId"); // automatiskt generera lobby id när sidan laddas
-},
+    socket.emit("generateGameId");
+  },
 
 
   methods: {
-
-    generateLobbyId() {
-      socket.emit("generateLobbyId");
-    },
-
     chooseOperation: function (name) {
       const index = this.selectedOperations.indexOf(name);
       if (index === -1) {
-        this.selectedOperations.push(name); //lägger till längst bak i listan
+        this.selectedOperations.push(name);
       } else {
-        this.selectedOperations.splice(index, 1); //tar bort 1 element på positionen index
+        this.selectedOperations.splice(index, 1);
       }
 
     },
 
     chooseLevel: function (name) {
       if (this.selectedLevel === name) {
-        this.selectedLevel = null; //klicka igen gör att de avmarkeras
+        this.selectedLevel = null;
       }
       else {
         this.selectedLevel = name;
@@ -173,34 +165,23 @@ created: function () {
     },
 
     createGame: function () {
-      if (this.lobbyId.length === 4 &&
+      if (this.gameId.length === 4 &&
         this.selectedOperations.length > 0 &&
         this.selectedLevel !== null) {
         socket.emit('createGame', {
-          lobbyId: this.lobbyId,
+          gameId: this.gameId,
           settings: {
             level: this.selectedLevel,
             operations: this.selectedOperations
           }
         })
       }
-
     },
-
-    validatelobbyId() {
-      if (this.lobbyId.length === 4) {
-        this.lobbyMessage = this.uiLabels.lobbyApprovedMessage || "Spel-ID godkänt";
-      } else {
-        this.lobbyMessage = this.uiLabels.lobbyErrorMessage || "Spel-ID måste vara 4 tecken";
-      }
-    },
-
   },
 
-  computed: { //använder computed för att systemet ska uppdateras automatiskt när ngt ändras
-    createLobbyReady() {
-      return this.lobbyId.length === 4 && //att skriva return är som att skriva return true if, att skrivva && betyder att alla villkor måste vara sanna
-        this.selectedOperations.length > 0 &&
+  computed: {
+    createGameReady() {
+      return this.selectedOperations.length > 0 &&
         this.selectedLevel !== null;
     }
   }
@@ -213,33 +194,17 @@ created: function () {
 }
 
 h2,
-h3 {
+.createSection>h3 {
   text-shadow: 4px 4px 2px var(--blue-base-color);
 }
 
 .createSection {
   border: 10px ridge var(--pink-darker-color);
   background-color: var(--light-blue-base-color);
+  box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
   border-radius: 0.25rem;
   padding: 2%;
   margin-bottom: 1rem;
-
-}
-
-.lobbyInput {
-  padding: 5px;
-  border-radius: 0.25rem;
-  border: ridge 2px var(--blue-base-color);
-  max-width: 4rem;
-  font-family: 'Super Funky', sans-serif;
-  letter-spacing: 0.1em;
-  color: var(--blue-base-color);
-  text-align: center;
-}
-
-textarea:focus,
-input:focus {
-  outline: none;
 }
 
 .chooseSettings {
@@ -271,8 +236,6 @@ input:focus {
 }
 
 
-
-
 button {
   cursor: pointer;
   border-radius: 0.25rem;
@@ -288,6 +251,7 @@ button {
   color: var(--light-gray-base-color);
   font-family: 'Super Funky', sans-serif;
   letter-spacing: 1px;
+  box-shadow: 3px 3px 2px 0px var(--blue-base-color);
 }
 
 button:hover {
@@ -299,30 +263,27 @@ button:hover {
   border-color: var(--green-darker-color);
 }
 
-.lobbyErrorMessage {
-  color: red;
-}
 
-.lobbyApprovedMessage {
-  color: darkgreen;
-}
-
-
-.createLobbyButtonReady {
+.createGameButtonReady {
   background-color: var(--green-base-color);
   border-color: var(--green-darker-color);
   padding: 10px 5px;
   width: 60%;
 }
 
-.createLobbyButtonNotReady {
+.createGameButtonNotReady {
   background-color: var(--red-base-color);
   border-color: var(--red-darker-color);
   padding: 10px 5px;
   width: 70%;
+  cursor: auto;
 }
 
-.infoIcon{
+.createGameButtonNotReady:hover {
+  transform: none;
+}
+
+.infoIcon {
   width: 5%;
   position: absolute;
   left: 5%;
@@ -331,12 +292,12 @@ button:hover {
 
 @media(min-width: 600px) {
 
-  .createLobbyButtonNotReady {
+  .createGameButtonNotReady {
     width: 30%;
   }
 
-  .createLobbyButtonReady {
-    width: 15%;
+  .createGameButtonReady {
+    width: 20%;
   }
 }
 </style>
