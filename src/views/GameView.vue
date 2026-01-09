@@ -91,6 +91,7 @@ import io from 'socket.io-client';
 const socket = io();
 import avatars from "../assets/avatars.json";
 import GameBoard from '../components/GameBoard.vue';
+import { playSound } from "../src/utils/sound";
 
 export default {
     name: 'StartView',
@@ -226,6 +227,13 @@ export default {
             this.hasShotThisRound = true;
             this.popupType = "gameOverPopup";
             this.showPopupBoolean = true;
+
+            if (winnerId === this.playerId) {
+                playSound("win");
+            } 
+            //else {
+            //    playSound("lose");
+            //}   
         });
 
         socket.emit("getUILabels", this.lang);

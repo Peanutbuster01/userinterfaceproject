@@ -9,6 +9,27 @@ function sockets(io, socket, data) {
     socket.emit('gameCreated', d.lobbyId);
   });
 
+  socket.on('generateLobbyId', function () {
+      let lobbyId;
+
+      function generateFourDigitId() {
+        let id = "";
+
+        for (let i = 0; i < 4; i++) {
+          const digit = Math.floor(Math.random() * 10);
+          id += digit.toString();
+        }
+
+        return id;
+      }
+
+      do {
+        lobbyId = generateFourDigitId();
+      } while (data.getGame(lobbyId)); // finns lobbyt redan? generera nytt
+
+      socket.emit("lobbyGenerated", lobbyId);
+  });
+
 
   socket.on('getGameSettings', function (lobbyId) {
     socket.emit('gameSettings', data.getGame(lobbyId).settings);
@@ -118,17 +139,6 @@ function sockets(io, socket, data) {
     }
   });
 
-  //socket.on("requestNewQuestion", function (lobbyId) {
-  //  const game = data.getGame(lobbyId);
-  // if (!game) return;
-
-  // setTimeout(() => {
-  //  const equation = data.generateEquation(game.settings);
-  //  game.currentEquation = equation;
-  //   io.to(lobbyId).emit("newQuestion", equation);
-  //  }, 5000);
-  //});
-
   socket.on("joinLobby", function (lobbyId) {
     socket.join(lobbyId);
 
@@ -140,6 +150,7 @@ function sockets(io, socket, data) {
       socket.emit("newQuestion", game.currentEquation);
     }
   });
+
 
   socket.on("shoot", ({ lobbyId, playerId, shootIndex }) => {
 
@@ -210,8 +221,6 @@ function sockets(io, socket, data) {
       // Släpp guard när frågan skickats
       game.nextQuestionScheduled = false;
     }, 5000);
-
-
 
   });
 

@@ -54,6 +54,7 @@
 
 
 <script>
+import { playSound } from "../src/utils/sound"; //testa ljud, ta bort sen!
 import io from 'socket.io-client';
 const socket = io();
 
@@ -91,11 +92,12 @@ export default {
   methods: {
     validateLobbyId() {
       this.joinMessage = this.uiLabels.joinErrorMessage || "Spel-ID måste vara 4 tecken";
-    }
-    ,
+    },
+
     checkLobbyId() {
       socket.emit('tryLobbyId', this.lobbyId)
-    }
+    },
+
   }
 }
 
@@ -104,7 +106,6 @@ export default {
 
 
 <style scoped>
-@import url('https://fonts.cdnfonts.com/css/super-funky');
 
 .welcomeMessages {
   border-radius: 6px;

@@ -55,5 +55,6 @@
 	"observeMessage": "Du åskådar",
 	"returnToStart": "Återvänd till startsidan",
 	"opponentsBoard": "Motståndarens bräde",
-	"yourBoard": "Ditt bräde"
+	"yourBoard": "Ditt bräde",
+	"yourGameId": "Ditt spel-ID är:"
 }

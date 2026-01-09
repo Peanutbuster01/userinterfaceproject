@@ -7,13 +7,7 @@
     </div>
 
     <div class="createSection">
-      <h3>{{ uiLabels.createLobbyId }}</h3>
-      <input type="text" v-model="lobbyId" :placeholder="uiLabels.fourCharlobbyId" maxlength="4"
-        @input="validatelobbyId" class="lobbyInput">
-
-      <p v-if="lobbyMessage" :class="lobbyId.length === 4 ? 'lobbyApprovedMessage' : 'lobbyErrorMessage'">
-        {{ lobbyMessage }}
-      </p>
+      <h3>{{ uiLabels.yourGameId }} {{ lobbyId }}</h3>
     </div>
 
     <div class="createSection">
@@ -131,14 +125,27 @@ export default {
       lobbyMessage: "",
     }
   },
-  created: function () {
-    socket.on('gameCreated', (lobbyId) => {
-      console.log("spel skapat", lobbyId)
-      this.$router.push({ path: `/join/${lobbyId}` })
-    });
-  },
+
+created: function () {
+  socket.on("lobbyGenerated", (id) => {
+    this.lobbyId = id;
+    this.validatelobbyId();
+  });
+
+  socket.on("gameCreated", (lobbyId) => {
+    console.log("spel skapat", lobbyId);
+    this.$router.push({ path: `/join/${lobbyId}` });
+  });
+
+  socket.emit("generateLobbyId"); // automatiskt generera lobby id när sidan laddas
+},
+
 
   methods: {
+
+    generateLobbyId() {
+      socket.emit("generateLobbyId");
+    },
 
     chooseOperation: function (name) {
       const index = this.selectedOperations.indexOf(name);
