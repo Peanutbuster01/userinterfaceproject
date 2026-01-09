@@ -503,6 +503,5 @@ p {
 
 .boardAvatars{
     width: 5rem;
-    align-top: auto;
 }
 </style>
