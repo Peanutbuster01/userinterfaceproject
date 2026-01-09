@@ -163,6 +163,10 @@ export default {
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
                 this.playerName = playerInfo.playerName;
+                socket.emit("getShots", this.lobbyId)
+                socket.on("shots", (shots) => {
+                    this.playerShots = shots[playerId];
+                });
                 console.log(this.placedShips);
             }
             else {
@@ -170,6 +174,10 @@ export default {
                 this.opponentPlacedShips = playerInfo.placedShips;
                 this.opponentAvatarIndex = playerInfo.avatarIndex;
                 this.opponentName = playerInfo.playerName;
+                socket.emit("getShots", this.lobbyId)
+                socket.on("shots", (shots) => {
+                    this.opponentShots = shots[playerId];
+                });
                 console.log(this.opponentName);
             }
         });

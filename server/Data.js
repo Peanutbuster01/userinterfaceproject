@@ -49,7 +49,7 @@ Data.prototype.createGame = function (pollId, settings) {
 
     poll.currentEquation = null;
     poll.firstQuestionScheduled = false;
-
+    poll.shots = {0: {}, 1: {}};
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
@@ -65,7 +65,7 @@ Data.prototype.getGame = function (pollId) {
 
 Data.prototype.joinGame = function (d) {
   if (this.pollExists(d.lobbyId)) {
-    this.polls[d.lobbyId].participants.push({ playerName: d.name, placedShips: d.ships, avatarIndex: d.avatarIndex })
+    this.polls[d.lobbyId].participants.push({ playerName: d.name, placedShips: d.ships, avatarIndex: d.avatarIndex})
     return this.polls[d.lobbyId].participants.length - 1;
   }
 }

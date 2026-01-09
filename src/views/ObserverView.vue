@@ -99,6 +99,7 @@ export default {
             showPopupBoolean: false,
             popupType: null,
 
+            opponentId: 0,
             opponentName: "",
             opponentAvatarIndex: 0,
             opponentPlacedShips: [
@@ -146,14 +147,25 @@ export default {
                 this.playerId = playerId;
                 console.log(this.placedShips);
                 this.gottenplayer1 = true;
+                socket.emit("getShots", this.lobbyId)
+                socket.on("shots", (shots) => {
+                    this.playerShots = shots[playerId];
+                });
             }
             else {
                 console.log("MOTSTÅNDARINFO:"); console.log(playerInfo);
                 this.opponentPlacedShips = playerInfo.placedShips;
                 this.opponentAvatarIndex = playerInfo.avatarIndex;
                 this.opponentName = playerInfo.playerName;
+                this.opponentId = playerId;
                 console.log(this.opponentName);
+                socket.emit("getShots", this.lobbyId);
+                socket.on("shots", (shots) => {
+                    this.opponentShots = shots[playerId];
+                });
             }
+        
+        
         });
 
         socket.on("roundWinner", (winnerPlayerId) => {

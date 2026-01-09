@@ -238,6 +238,11 @@ function sockets(io, socket, data) {
     // TODO
   });
 
+  socket.on("getShots", function (lobbyId){
+    const game = data.getGame(lobbyId);
+    socket.emit("shots", game.shots)
+  });
+
 
 }
 
