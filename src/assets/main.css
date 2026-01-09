@@ -59,8 +59,7 @@ h6 {
 p {
   font-family: 'ADLaM Display', sans-serif;
   color: var(--light-gray-base-color);
-  text-shadow: 2px 2px 1px var(--blue-base-color);
-
+  text-shadow: 2px 2px 1px var(--lavender-darker-color);
 }
 
 
@@ -68,6 +67,8 @@ p {
   border: ridge 3px;
   border-radius: 0.25rem;
   background-color: var(--light-gray-base-color);
+  border-color: var(--lavender-darker-color);
+  color: var(--lavender-darker-color);
   cursor: pointer;
   font-family: 'ADLaM Display', sans-serif;
   padding: 5px;
@@ -75,7 +76,8 @@ p {
 }
 
 .okButton:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
+  background-color: var(--lavender-lighter-color);
 }
 
 .popup {
