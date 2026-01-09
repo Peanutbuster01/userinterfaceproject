@@ -51,11 +51,11 @@
       showObservePrompt = false
       this.$router.push({path: `/observe/${this.lobbyId}`});
     }">
-      Yes
+      {{ uiLabels.yes }}
     </button>
 
     <button class="okButton" @click="showObservePrompt = false">
-        No
+        {{ uiLabels.no }}
     </button>
     
   </div>

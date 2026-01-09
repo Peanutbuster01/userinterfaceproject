@@ -113,6 +113,10 @@
       </button>
     </div>
   </div>
+  <div class="popup" v-if="difficultyPopupShowing">
+    {{ uiLabels.difficultyInfo }}
+    <button @click="difficultyPopupShowing=false">Ok</button>
+  </div>
 
 </template>
 <script>
@@ -312,9 +316,8 @@ button:hover {
   width: 5%;
   position: absolute;
   left: 5%;
+  cursor: pointer;
 }
-
-
 
 @media(min-width: 600px) {
 

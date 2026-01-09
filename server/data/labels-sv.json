@@ -59,5 +59,7 @@
 	"nextQuestion": "Nästa fråga om...",
 	"won": "vann",
 	"board": "bräde",
-	"observePrompt": "Ett spel är redan igång, vill du åskåda det?"
+	"observePrompt": "Ett spel är redan igång, vill du åskåda det?",
+	"yes": "Ja",
+	"no": "Nej"
 }
