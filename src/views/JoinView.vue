@@ -54,6 +54,27 @@
         </div>
     </div>
 
+    <div class="popupBackground" v-if="showObservePrompt">
+        <div class="popup">
+            <p>{{ uiLabels.observePrompt }}</p>
+            <button class="okButton" @click="() => {
+                showObservePrompt = false
+                this.$router.push({ path: `/observe/${this.lobbyId}` });
+            }">
+                {{ uiLabels.yes }}
+            </button>
+
+            <button class="okButton" @click="() => {
+                showObservePrompt = false
+                this.$router.push({ path: `/` });
+
+            }">
+                {{ uiLabels.noBackToStart }}
+            </button>
+
+        </div>
+    </div>
+
 
 
 
@@ -85,6 +106,7 @@ export default {
             selectedAvatar: 0,
             showPopupBoolean: false,
             waitingForOpponentBoolean: false,
+            showObservePrompt: false,
         }
     },
     created: function () {
@@ -96,10 +118,15 @@ export default {
         socket.on("playerJoined", (playerId) => {
             console.log("spelare skapad", this.lobbyId);
             this.playerId = playerId;
+            this.waitingForOpponentBoolean = true;
         });
 
         socket.on("startGame", () => {
             this.$router.push({ path: `/game/${this.lobbyId}/${this.playerId}` });
+        });
+
+        socket.on("gameFull", () => {
+            this.showObservePrompt = true;
         })
 
 
@@ -157,7 +184,6 @@ export default {
                     lobbyId: this.lobbyId,
                     avatarIndex: this.avatarIndex
                 });
-                this.waitingForOpponentBoolean = true;
             }
         }
     }
@@ -330,10 +356,6 @@ label {
 .okButton {
     border-color: var(--lavender-darker-color);
     color: var(--lavender-darker-color);
-}
-
-p {
-    text-shadow: 2px 2px 1px var(--lavender-darker-color);
 }
 
 h5 {

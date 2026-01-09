@@ -12,9 +12,11 @@
       <p>{{ uiLabels.createGameInstructions }}</p>
 
       <div class="ButtonRow">
-        <router-link class="gameButtons" to="/create/">
+        <button class="gameButtons" @click="() => {
+          this.$router.push({ path: `/create/` });
+        }">
           {{ uiLabels.createGameButton }}
-        </router-link>
+        </button>
       </div>
     </section>
 
@@ -37,27 +39,30 @@
     </section>
   </div>
 
-  <div id="noGameExist" v-if="showNoGameExistBoolean">
-    {{ uiLabels.noGameExist }}
-    <button class="okButton" @click="showNoGameExistBoolean = !showNoGameExistBoolean">
-      OK
-    </button>
+  <div class="popupBackground" v-if="showNoGameExistBoolean">
+    <div class="popup">
+      <p>{{ uiLabels.noGameExist }}</p>
+      <button class="okButton" @click="showNoGameExistBoolean = false">
+        OK
+      </button>
+    </div>
   </div>
 
-  <div id="popup" v-if="showObservePrompt">
-    {{uiLabels.observePrompt}}
+  <div class="popupBackground" v-if="showObservePrompt">
+    <div class="popup">
+      <p>{{ uiLabels.observePrompt }}</p>
+      <button class="okButton" @click="() => {
+        showObservePrompt = false
+        this.$router.push({ path: `/observe/${this.lobbyId}` });
+      }">
+        {{ uiLabels.yes }}
+      </button>
 
-    <button class="okButton" @click="() => {
-      showObservePrompt = false
-      this.$router.push({path: `/observe/${this.lobbyId}`});
-    }">
-      Yes
-    </button>
+      <button class="okButton" @click="showObservePrompt = false">
+        {{ uiLabels.no }}
+      </button>
 
-    <button class="okButton" @click="showObservePrompt = false">
-        No
-    </button>
-    
+    </div>
   </div>
 
 </template>
@@ -143,6 +148,10 @@ export default {
   gap: 0.5rem;
 }
 
+.gamePanel>p {
+  text-shadow: 2px 2px 1px var(--blue-base-color);
+}
+
 .gameSubtitles {
   margin: 0;
   font-size: 1.5rem;
@@ -166,11 +175,13 @@ export default {
 
 .gameButtons:hover {
   transform: scale(1.1);
+  background-color: var(--blue-lighter-color);
 }
 
 input.gameButtons:hover {
   transform: none;
   cursor: text;
+  background-color: var(--light-gray-base-color);
 }
 
 textarea:focus,
@@ -193,39 +204,6 @@ input:focus {
 
 .joinErrorMessage {
   color: red;
-}
-
-#noGameExist {
-  margin: 5% auto;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20%;
-  white-space: pre-line;
-  position: fixed;
-
-  padding: 20px;
-  color: red;
-  background-color: var(--pink-base-color);
-  border-radius: 0.25rem;
-  border: ridge 10px var(--pink-darker-color);
-  font-family: 'ADLaM Display', sans-serif;
-  box-shadow: 5px 4px 5px var(--pink-darker-color);
-  z-index: 1000000;
-}
-
-.okButton {
-  border-color: var(--pink-darker-color);
-  color: var(--pink-darker-color);
-}
-
-.popupBackground {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    background-color: #00000040;
+  text-shadow: none;
 }
 </style>

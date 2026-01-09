@@ -297,6 +297,7 @@ export default {
         },
 
         startCountDown: function () {
+            this.counterNumber = 5;
             const interval = setInterval(() => {
                 this.counterNumber--;
 
@@ -305,10 +306,7 @@ export default {
                     this.waitingForNextQuestion = false;
                 }
             }, 1000);
-            this.counterNumber = 5;
-
         }
-
     }
 }
 </script>
@@ -334,7 +332,6 @@ export default {
     #vsScreen {
         grid-template-columns: 1fr;
     }
-
 }
 
 @keyframes vsScreenAnimation {
@@ -355,10 +352,6 @@ export default {
 
 h1 {
     font-size: 6vw;
-}
-
-p {
-    text-shadow: 2px 2px 1px var(--lavender-darker-color);
 }
 
 .vsPlayer {
@@ -397,7 +390,7 @@ p {
     text-shadow: 0 0 5rem #3b053b;
     margin: 0;
 
-    animation: forwards infinite 4s vsAnimation;
+    animation: forwards 4s vsAnimation;
 }
 
 @keyframes vsAnimation {
@@ -431,7 +424,7 @@ p {
 
     }
 
-    90% {
+    85% {
         opacity: 1;
         transform: translate(-50%, -50%) rotate(0deg) scale(1);
 
@@ -565,12 +558,6 @@ p {
 ::placeholder {
     color: var(--pink-base-color);
     font-family: 'ADLaM Display', sans-serif;
-}
-
-.okButton {
-    border-color: var(--lavender-darker-color);
-    color: var(--lavender-darker-color);
-    margin-top: 40px;
 }
 
 .hiddenQuestion {

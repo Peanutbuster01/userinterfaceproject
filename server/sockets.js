@@ -18,12 +18,20 @@ function sockets(io, socket, data) {
   socket.on('submitPlayerInfo', function (playerInfo) {
     console.log("PLAYER JOINING: ")
     console.log(playerInfo);
+
+    const game = data.getGame(playerInfo.lobbyId);
+
+    if (game?.participants?.length === 2) {
+      socket.emit('gameFull');
+      return;
+    }
+
     socket.join(playerInfo.lobbyId);
 
     const playerId = data.joinGame(playerInfo);
     socket.emit('playerJoined', playerId);
 
-    const game = data.getGame(playerInfo.lobbyId);
+
 
     if (game?.participants?.length === 2) {
       io.to(playerInfo.lobbyId).emit("startGame");

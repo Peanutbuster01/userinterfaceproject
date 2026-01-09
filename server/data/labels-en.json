@@ -58,5 +58,8 @@
 	"observeMessage": "You are observing",
 	"won": "won",
 	"board": "board",
-	"observePrompt": "Game already in progress, would you like to observe?"
+	"observePrompt": "Game already in progress, would you like to observe?",
+	"yes": "Yes",
+	"no": "No",
+	"noBackToStart": "No, back to start"
 }

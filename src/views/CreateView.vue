@@ -283,6 +283,7 @@ button:hover {
 
 .chosen {
   background-color: var(--green-base-color);
+  border-color: var(--green-darker-color);
 }
 
 .lobbyErrorMessage {
@@ -295,13 +296,15 @@ button:hover {
 
 
 .createLobbyButtonReady {
-  background-color: lightgreen;
+  background-color: var(--green-base-color);
+  border-color: var(--green-darker-color);
   padding: 10px 5px;
   width: 60%;
 }
 
 .createLobbyButtonNotReady {
-  background-color: lightcoral;
+  background-color: var(--red-base-color);
+  border-color: var(--red-darker-color);
   padding: 10px 5px;
   width: 70%;
 }
