@@ -56,9 +56,7 @@
 	"returnToStart": "Återvänd till startsidan",
 	"opponentsBoard": "Motståndarens bräde",
 	"yourBoard": "Ditt bräde",
-<<<<<<< HEAD
-	"yourGameId": "Ditt spel-ID är:"
-=======
+	"yourGameId": "Ditt spel-ID är:",
 	"nextQuestion": "Nästa fråga om...",
 	"won": "vann",
 	"board": "bräde",
@@ -66,5 +64,4 @@
 	"yes": "Ja",
 	"no": "Nej",
 	"noBackToStart": "Nej, tillbaka till startsidan"
->>>>>>> c95c5dd2f13719f1926d992f73bad16296481426
 }
