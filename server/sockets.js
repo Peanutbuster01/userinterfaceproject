@@ -103,6 +103,9 @@ function sockets(io, socket, data) {
 
   });
 
+
+
+
   socket.on('participateInGame', function (d) {
     data.participateInGame(d.gameId, d.name);
     io.to(d.gameId).emit('participantsUpdate', data.getParticipants(d.gameId));
@@ -133,7 +136,6 @@ function sockets(io, socket, data) {
     const game = data.getGame(gameId);
     if (!game) return;
 
-    // Om en fråga redan finns, skicka den direkt till den här klienten
     if (game.currentEquation) {
       socket.emit("newQuestion", game.currentEquation);
     }
@@ -160,14 +162,10 @@ function sockets(io, socket, data) {
     const opponentShips = opponent?.placedShips || [];
     const hit = opponentShips.includes(shootIndex);
 
-
     game.shots[playerId][shootIndex] = hit ? "hit" : "miss";
     if (hit) game.scores[playerId] += 1;
     const winner = (game.scores[playerId] >= 3) ? playerId : null;
 
-    console.log("[server] emitting shotResult:", { gameId, playerId, shootIndex, hit, scores: game.scores });
-
-    // Skicka till båda spelare i gamen
     io.to(gameId).emit("shotResult", {
       shooterId: playerId,
       shootIndex,
@@ -187,30 +185,35 @@ function sockets(io, socket, data) {
 
       return;
     }
+ 
+   
+    
+     setTimeout(() => {
+
+    if (game.gameOver) return;
+
     io.to(gameId).emit("closePopups");
     io.to(gameId).emit("waitingForNextQuestion");
 
-    // Guard: schemalägg bara en ny fråga per skott/round
     if (game.nextQuestionScheduled) return;
-    game.nextQuestionScheduled = true;
+    game.nextQuestionScheduled = true; 
 
-    setTimeout(() => {
-
-      if (game.gameOver) {
-        game.nextQuestionScheduled = false;
-        return;
+    setTimeout(() => { 
+      if (game.gameOver) { 
+        game.nextQuestionScheduled = false; 
+        return; 
       }
 
-      const equation = data.generateEquation(game.settings);
-      game.currentEquation = equation;
-
-      io.to(gameId).emit("newQuestion", equation);
+      const equation = data.generateEquation(game.settings); 
+      game.currentEquation = equation; 
+      io.to(gameId).emit("newQuestion", equation); 
 
       // Släpp guard när frågan skickats
       game.nextQuestionScheduled = false;
     }, 5000);
 
-  });
+  }, 1500); 
+});
 
   socket.on("newRound", function (gameId, confirmShot) {
     const game = data.getGame(gameId);
@@ -222,8 +225,7 @@ function sockets(io, socket, data) {
     const game = data.getGame(gameId);
     socket.emit("shots", game.shots)
   });
-
-
 }
+
 
 export { sockets };
