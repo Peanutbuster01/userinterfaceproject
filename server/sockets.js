@@ -104,6 +104,8 @@ function sockets(io, socket, data) {
   });
 
 
+
+
   socket.on('addQuestion', function (d) {
     data.addQuestion(d.lobbyId, { q: d.q, a: d.a });
     socket.emit('questionUpdate', data.activateQuestion(d.lobbyId));
@@ -159,86 +161,83 @@ function sockets(io, socket, data) {
     }
   });
 
+socket.on("shoot", ({ lobbyId, playerId, shootIndex }) => { 
+  const game = data.getGame(lobbyId); 
+  if (!game) return; 
+  if (game.gameOver) 
+    return; if (!game.shots) 
+  
+  game.shots = { 0: {}, 1: {} }; 
+  if (!game.shots[0]) game.shots[0] = {}; 
+  if (!game.shots[1]) game.shots[1] = {}; 
+  
+  if (!game.scores) game.scores = [0, 0]; 
+  if (game.scores[0] == null) game.scores[0] = 0; 
+  if (game.scores[1] == null) game.scores[1] = 0; 
+  
+  const opponentId = (playerId === 0) ? 1 : 0; 
+  const opponent = game.participants[opponentId]; 
+  const opponentShips = opponent?.placedShips || []; 
+  const hit = opponentShips.includes(shootIndex); 
+  
+  game.shots[playerId][shootIndex] = hit ? "hit" : "miss"; 
+  if (hit) game.scores[playerId] += 1; 
+  
+  const winner = (game.scores[playerId] >= 3) ? playerId : null; 
 
-  socket.on("shoot", ({ lobbyId, playerId, shootIndex }) => {
+  // Skicka till båda spelare i lobbyn 
+  io.to(lobbyId).emit("shotResult", { 
+    shooterId: 
+    playerId, 
+    shootIndex, 
+    hit, 
+    shots: game.shots, 
+    scores: game.scores, 
+    winner, }); 
+  
+    if (winner !== null) { 
+      game.gameOver = true; 
+      
+      io.to(lobbyId).emit("gameOver", { 
+        winnerId: winner, 
+        scores: game.scores 
+      }); 
+      return; 
+    } 
+    
+     setTimeout(() => {
 
-    const game = data.getGame(lobbyId);
-    if (!game) return;
     if (game.gameOver) return;
 
-    if (!game.shots) game.shots = { 0: {}, 1: {} };
-    if (!game.shots[0]) game.shots[0] = {};
-    if (!game.shots[1]) game.shots[1] = {};
+    io.to(lobbyId).emit("closePopups"); 
+    io.to(lobbyId).emit("waitingForNextQuestion"); 
 
-    if (!game.scores) game.scores = [0, 0];
-    if (game.scores[0] == null) game.scores[0] = 0;
-    if (game.scores[1] == null) game.scores[1] = 0;
-
-    const opponentId = (playerId === 0) ? 1 : 0;
-    const opponent = game.participants[opponentId];
-
-    const opponentShips = opponent?.placedShips || [];
-    const hit = opponentShips.includes(shootIndex);
-
-
-    game.shots[playerId][shootIndex] = hit ? "hit" : "miss";
-    if (hit) game.scores[playerId] += 1;
-    const winner = (game.scores[playerId] >= 3) ? playerId : null;
-
-    console.log("[server] emitting shotResult:", { lobbyId, playerId, shootIndex, hit, scores: game.scores });
-
-    // Skicka till båda spelare i lobbyn
-    io.to(lobbyId).emit("shotResult", {
-      shooterId: playerId,
-      shootIndex,
-      hit,
-      shots: game.shots,
-      scores: game.scores,
-      winner,
-    });
-
-    if (winner !== null) {
-      game.gameOver = true;
-
-      io.to(lobbyId).emit("gameOver", {
-        winnerId: winner,
-        scores: game.scores
-      });
-
-      return;
-    }
-    io.to(lobbyId).emit("closePopups");
-    io.to(lobbyId).emit("waitingForNextQuestion");
-
-    // Guard: schemalägg bara en ny fråga per skott/round
+    // Guard: bara en ny fråga
     if (game.nextQuestionScheduled) return;
-    game.nextQuestionScheduled = true;
+    game.nextQuestionScheduled = true; 
 
-    setTimeout(() => {
-
-      if (game.gameOver) {
-        game.nextQuestionScheduled = false;
-        return;
+    setTimeout(() => { 
+      if (game.gameOver) { 
+        game.nextQuestionScheduled = false; 
+        return; 
       }
 
-      const equation = data.generateEquation(game.settings);
-      game.currentEquation = equation;
+      const equation = data.generateEquation(game.settings); 
+      game.currentEquation = equation; 
+      io.to(lobbyId).emit("newQuestion", equation); 
 
-      io.to(lobbyId).emit("newQuestion", equation);
-
-      // Släpp guard när frågan skickats
-      game.nextQuestionScheduled = false;
+      game.nextQuestionScheduled = false; 
     }, 5000);
 
-  });
+  }, 1500); 
+});
 
   socket.on("newRound", function (lobbyId, confirmShot) {
     const game = data.getGame(lobbyId);
     if (!game) return;
     // TODO
   });
-
-
 }
+
 
 export { sockets };

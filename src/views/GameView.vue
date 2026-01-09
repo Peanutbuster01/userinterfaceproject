@@ -92,6 +92,16 @@
         </div>
     </div>
 
+     <<div class="showHitOrMiss">
+        <h1 v-if="shotResultText === true">
+        {{ uiLabels.hit }}
+        </h1>
+
+        <h1 v-else-if="shotResultText === false">
+        {{ uiLabels.miss }}
+        </h1>
+    </div>
+
 </template>
 <script>
 import io from 'socket.io-client';
@@ -99,6 +109,7 @@ const socket = io();
 import avatars from "../assets/avatars.json";
 import GameBoard from '../components/GameBoard.vue';
 import { playSound } from "../src/utils/sound";
+import { NavigationFailureType } from 'vue-router';
 
 export default {
     name: 'StartView',
@@ -140,6 +151,9 @@ export default {
             opponentShots: {},
             playerShots: {},
             waitingForNextQuestion: false,
+            showHit: false,
+            showMiss: false,
+            shotResultText: null,
 
             gameOver: false,
             winnerId: null
@@ -204,25 +218,27 @@ export default {
         socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
             const result = hit ? "hit" : "miss";
             if (shooterId !== this.playerId) {
-                this.opponentShots = {
-                    ...this.opponentShots,
-                    [shootIndex]: result
+                this.opponentShots = {...this.opponentShots,[shootIndex]: result
                 };
             }
             else {
-                this.playerShots = {
-                    ...this.playerShots,
-                    [shootIndex]: result
+                this.playerShots = {...this.playerShots,[shootIndex]: result
                 };
             }
-            console.log("[GameView] shotResult received:");
         });
-
-
+     
         socket.on("wrongAnswer", () => {
             this.popupType = "wrongAnswerPopup";
             this.showPopupBoolean = true;
         });
+
+        socket.on("shotResult", ({ hit }) => {
+        this.shotResultText = hit;
+        setTimeout(() => {
+        this.shotResultText = null;
+        }, 1500);
+        });
+
 
         socket.on("waitingForNextQuestion", () => {
             this.waitingForNextQuestion = true;
@@ -234,15 +250,18 @@ export default {
             this.winnerId = winnerId;
             this.canShoot = false;
             this.hasShotThisRound = true;
+
+            setTimeout(() => {
             this.popupType = "gameOverPopup";
             this.showPopupBoolean = true;
 
             if (winnerId === this.playerId) {
                 playSound("win");
             } 
-            //else {
-            //    playSound("lose");
-            //}   
+             else {
+                playSound("lose");
+            }}, 
+            1500);   
         });
 
         socket.emit("getUILabels", this.lang);
@@ -304,6 +323,8 @@ export default {
 
         },
 
+        
+
         startCountDown: function () {
             this.counterNumber = 5;
             const interval = setInterval(() => {
@@ -317,6 +338,7 @@ export default {
         }
     }
 }
+
 </script>
 
 <style scoped>
@@ -399,6 +421,19 @@ h1 {
     margin: 0;
 
     animation: forwards 4s vsAnimation;
+}
+
+.showHitOrMiss{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    color: var(--light-gray-base-color);
+    text-shadow: 0 0 5rem #3b053b;
+    margin: 0;
+    z-index: 10000000;
 }
 
 @keyframes vsAnimation {
