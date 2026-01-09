@@ -4,13 +4,6 @@ import { readFileSync } from "fs";
 // Store data in an object to keep the global namespace clean. In an actual implementation this would be interfacing a database...
 function Data() {
   this.games = {};
-  this.games['test'] = {
-    lang: "en",
-    questions: [],
-    answers: [],
-    currentQuestion: 0,
-    participants: []
-  }
 }
 
 /***********************************************
