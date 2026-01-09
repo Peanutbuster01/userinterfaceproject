@@ -116,7 +116,7 @@ export default {
   data: function () {
     return {
       uiLabels: {},
-      selectedOperations: [], //sparar vilka räknesätt som valts av host
+      selectedOperations: [],
       selectedLevel: null,
       gameId: "",
       gameMessage: "",
@@ -133,7 +133,7 @@ export default {
       this.$router.push({ path: `/join/${gameId}` });
     });
 
-    socket.emit("generateGameId"); // automatiskt generera game id när sidan laddas
+    socket.emit("generateGameId");
   },
 
 
@@ -141,16 +141,16 @@ export default {
     chooseOperation: function (name) {
       const index = this.selectedOperations.indexOf(name);
       if (index === -1) {
-        this.selectedOperations.push(name); //lägger till längst bak i listan
+        this.selectedOperations.push(name);
       } else {
-        this.selectedOperations.splice(index, 1); //tar bort 1 element på positionen index
+        this.selectedOperations.splice(index, 1);
       }
 
     },
 
     chooseLevel: function (name) {
       if (this.selectedLevel === name) {
-        this.selectedLevel = null; //klicka igen gör att de avmarkeras
+        this.selectedLevel = null;
       }
       else {
         this.selectedLevel = name;
@@ -194,6 +194,7 @@ h2,
 .createSection {
   border: 10px ridge var(--pink-darker-color);
   background-color: var(--light-blue-base-color);
+  box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
   border-radius: 0.25rem;
   padding: 2%;
   margin-bottom: 1rem;
@@ -228,8 +229,6 @@ h2,
 }
 
 
-
-
 button {
   cursor: pointer;
   border-radius: 0.25rem;
@@ -245,6 +244,7 @@ button {
   color: var(--light-gray-base-color);
   font-family: 'Super Funky', sans-serif;
   letter-spacing: 1px;
+  box-shadow: 3px 3px 2px 0px var(--blue-base-color);
 }
 
 button:hover {

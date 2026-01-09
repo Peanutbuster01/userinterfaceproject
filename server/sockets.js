@@ -103,35 +103,15 @@ function sockets(io, socket, data) {
 
   });
 
-
-  socket.on('addQuestion', function (d) {
-    data.addQuestion(d.gameId, { q: d.q, a: d.a });
-    socket.emit('questionUpdate', data.activateQuestion(d.gameId));
-  });
-
-  socket.on('joinPoll', function (gameId) {
-    socket.join(gameId);
-    socket.emit('questionUpdate', data.activateQuestion(gameId))
-    socket.emit('submittedAnswersUpdate', data.getSubmittedAnswers(gameId));
-  });
-
-  socket.on('participateInPoll', function (d) {
-    data.participateInPoll(d.gameId, d.name);
+  socket.on('participateInGame', function (d) {
+    data.participateInGame(d.gameId, d.name);
     io.to(d.gameId).emit('participantsUpdate', data.getParticipants(d.gameId));
   });
-  socket.on('startPoll', function (gameId) {
-    io.to(gameId).emit('startPoll');
-  })
-  socket.on('runQuestion', function (d) {
-    let question = data.activateQuestion(d.gameId, d.questionNumber);
-    io.to(d.gameId).emit('questionUpdate', question);
-    io.to(d.gameId).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.gameId));
-  });
 
-  socket.on('submitAnswer', function (d) {
-    data.submitAnswer(d.gameId, d.answer);
-    io.to(d.gameId).emit('submittedAnswersUpdate', data.getSubmittedAnswers(d.gameId));
-  });
+  socket.on('startGame', function (gameId) {
+    io.to(gameId).emit('startGame');
+  })
+
 
   socket.on("answer", (gameId, playerId, answer) => {
     const game = data.getGame(gameId);

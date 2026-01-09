@@ -49,6 +49,7 @@ export default {
     aspect-ratio: 4 / 3;
     border: 12px ridge var(--blue-base-color);
     border-radius: 12px;
+    box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }
 
 .opponentBoard {

@@ -12,7 +12,7 @@
     <div class="logo">
       {{ uiLabels.siteName }}
     </div>
-    
+
   </header>
 
   <div class="ruleSquare" v-if="showRulesBoolean">
@@ -113,6 +113,7 @@ export default {
   padding: 0;
   border-radius: 0.25rem;
   border: ridge 2px var(--lavender-darker-color);
+  box-shadow: 3px 3px 2px 0px var(--lavender-darker-color);
 }
 
 .langBtn:hover {
@@ -153,6 +154,7 @@ export default {
   border-radius: 0.25rem;
   border: ridge 3px var(--lavender-darker-color);
   cursor: pointer;
+  box-shadow: 3px 3px 2px 0px var(--lavender-darker-color);
 }
 
 .rulesButton:hover {

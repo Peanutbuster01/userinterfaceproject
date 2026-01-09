@@ -4,8 +4,6 @@
     <h2>{{ uiLabels.joinWelcome }}</h2>
 
     <div id="container">
-
-
         <div id="player">
             <div>
                 <label for="name">{{ uiLabels.playerName }}</label>
@@ -169,9 +167,6 @@ export default {
             }
 
         },
-        select: function () {
-
-        },
         readyToPlay: function () {
             console.log(this.playerName)
             if (this.placedShips.includes(null) || this.playerName.length == 0) {
@@ -236,12 +231,6 @@ export default {
     gap: 5px;
 }
 
-.square {
-    z-index: 50;
-    box-shadow: inset 0 0 4px rgb(255, 255, 255);
-    position: relative;
-    overflow: hidden;
-}
 
 .square:hover {
     transform: scale(0.95);
@@ -268,8 +257,6 @@ export default {
     padding: 20px;
 }
 
-
-
 #name {
     padding: 10px;
     border-radius: 0.25rem;
@@ -277,6 +264,7 @@ export default {
     font-family: 'Super Funky', sans-serif;
     color: var(--pink-darker-color);
     letter-spacing: 0.1em;
+    box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }
 
 label {

@@ -356,31 +356,6 @@ p {
     margin-bottom: 50px;
 }
 
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--lavender-base-color);
-    color: var(--light-gray-base-color);
-    text-shadow: 2px 2px 2px var(--lavender-darker-color);
-    border-radius: 0.25rem;
-    border: ridge 10px var(--lavender-darker-color);
-    padding: 30px;
-    width: 70%;
-    max-width: 400px;
-}
-
-.popupBackground {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    background-color: #00000040;
-}
-
 .rightColumn {
     display: flex;
     flex-direction: column;
@@ -427,14 +402,6 @@ p {
     margin-top: 2rem;
 }
 
-.questionBox {
-    min-width: 150px;
-    background: var(--light-gray-base-color);
-    padding: 10px;
-    border-radius: 0.25rem;
-    border: ridge 4px var(--pink-darker-color);
-}
-
 
 .questionText {
     font-family: 'ADLaM Display';
@@ -444,34 +411,6 @@ p {
     margin: 0;
 }
 
-.answerBox {
-    min-width: 260px;
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-
-}
-
-.answerInput {
-    flex: 1;
-    background: var(--light-gray-base-color);
-    padding: 10px;
-    border-radius: 0.25rem;
-    border: ridge 4px var(--pink-darker-color);
-    font-family: 'ADLaM Display';
-    color: var(--pink-darker-color);
-}
-
-.answerButton {
-    border: ridge 3px var(--pink-darker-color);
-    border-radius: 0.25rem;
-    background-color: var(--light-gray-base-color);
-    cursor: pointer;
-    font-family: 'ADLaM Display', sans-serif;
-    color: var(--pink-darker-color);
-    padding: 5px;
-    margin: 10px;
-}
 
 .answerButton:hover {
     transform: scale(1.05);
@@ -480,29 +419,13 @@ p {
 ::placeholder {
     color: var(--pink-base-color);
     font-family: 'ADLaM Display', sans-serif;
-
-}
-
-.okButton {
-    border-color: var(--lavender-darker-color);
-    color: var(--lavender-darker-color);
-    margin-top: 40px;
 }
 
 .hiddenQuestion {
     visibility: hidden;
 }
 
-.WinPopup {
-    background-color: green;
-}
-
-.LosePopup {
-    background-color: red;
-}
-
 .boardAvatars {
     width: 5rem;
-    align-top: auto;
 }
 </style>

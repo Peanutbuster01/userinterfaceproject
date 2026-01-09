@@ -73,6 +73,7 @@ p {
   font-family: 'ADLaM Display', sans-serif;
   padding: 5px;
   margin: 10px;
+  box-shadow: 3px 3px 2px 0px var(--lavender-darker-color);
 }
 
 .okButton:hover {
@@ -103,4 +104,35 @@ p {
   left: 0;
   z-index: 10000;
   background-color: #00000040;
+}
+
+.answerButton {
+  border: ridge 3px var(--pink-darker-color);
+  border-radius: 0.25rem;
+  background-color: var(--light-gray-base-color);
+  cursor: pointer;
+  font-family: 'ADLaM Display', sans-serif;
+  color: var(--pink-darker-color);
+  padding: 5px;
+  margin: 10px;
+  box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
+}
+
+.answerInput {
+  flex: 1;
+  background: var(--light-gray-base-color);
+  padding: 10px;
+  border-radius: 0.25rem;
+  border: ridge 4px var(--pink-darker-color);
+  font-family: 'ADLaM Display';
+  color: var(--pink-darker-color);
+}
+
+.questionBox {
+  min-width: 150px;
+  background: var(--light-gray-base-color);
+  padding: 10px;
+  border-radius: 0.25rem;
+  border: ridge 4px var(--pink-darker-color);
+  box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }

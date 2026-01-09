@@ -56,7 +56,8 @@
             <p>{{ uiLabels.makeAMove }}</p>
             <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
                 :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
-                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
+                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)"
+                style="box-shadow: 3px 3px 2px 0px var(--lavender-darker-color);" />
             <button @click="confirmShot()" class="okButton">OK</button>
         </div>
     </div>
@@ -106,7 +107,6 @@ export default {
     components: { GameBoard },
     data: function () {
         return {
-            hideNav: true,
             gameId: "",
 
             playerName: "",
@@ -509,14 +509,6 @@ h1 {
     margin-top: 2rem;
 }
 
-.questionBox {
-    min-width: 150px;
-    background: var(--light-gray-base-color);
-    padding: 10px;
-    border-radius: 0.25rem;
-    border: ridge 4px var(--pink-darker-color);
-}
-
 
 .questionText {
     font-family: 'ADLaM Display';
@@ -532,7 +524,6 @@ h1 {
     display: flex;
     gap: 0.75rem;
     align-items: center;
-
 }
 
 .answerInput {
@@ -543,19 +534,7 @@ h1 {
     border: ridge 4px var(--pink-darker-color);
     font-family: 'ADLaM Display';
     color: var(--pink-darker-color);
-}
-
-.answerButton {
-    border: ridge 4px var(--pink-darker-color);
-    border-radius: 0.25rem;
-    background-color: var(--light-gray-base-color);
-    cursor: pointer;
-    font-family: 'Super Funky', sans-serif;
-    color: var(--pink-darker-color);
-    padding: 5px;
-    margin: 10px;
-    font-size: larger;
-    letter-spacing: 0.1em;
+    box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }
 
 .answerButton:hover {
@@ -570,13 +549,5 @@ h1 {
 
 .hiddenQuestion {
     visibility: hidden;
-}
-
-.WinPopup {
-    background-color: green;
-}
-
-.LosePopup {
-    background-color: red;
 }
 </style>

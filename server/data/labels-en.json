@@ -47,7 +47,7 @@
 	"waitForOpponent": "Waiting for opponent to make their move...",
 	"waitingForOpponent": "Waiting for opponent",
 	"play": "Play",
-	"gameOver": "Game over",
+	"gameOver": "You lost",
 	"youWon": "You won!",
 	"returnToStart": "Return to start page",
 	"opponentsBoard": "Opponents board",
