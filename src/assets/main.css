@@ -94,6 +94,8 @@ p {
   padding: 30px;
   width: 70%;
   max-width: 400px;
+  white-space: pre-line;
+  z-index: 100000;
 }
 
 .popupBackground {
