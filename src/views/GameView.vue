@@ -98,7 +98,7 @@ import io from 'socket.io-client';
 const socket = io();
 import avatars from "../assets/avatars.json";
 import GameBoard from '../components/GameBoard.vue';
-import { playSound } from "../src/utils/sound";
+import { playSound } from "../assets/utils/sound.js";
 
 export default {
     name: 'StartView',
@@ -240,9 +240,9 @@ export default {
             if (winnerId === this.playerId) {
                 playSound("win");
             } 
-            //else {
-            //    playSound("lose");
-            //}   
+            else {
+                playSound("lose");
+            }   
         });
 
         socket.emit("getUILabels", this.lang);

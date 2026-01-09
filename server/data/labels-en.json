@@ -34,7 +34,7 @@
 	"medium": "Medium",
 	"hard": "Hard",
 	"nightmare": "Nightmare",
-	"pageDescription": "Create a game ID and choose your game settings",
+	"pageDescription": "Choose your game settings",
 	"lobbyErrorMessage": "Game ID must be 4 charachters",
 	"lobbyApprovedMessage": "Game ID is valid",
 	"fourCharLobbyID": "4 characters",

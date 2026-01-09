@@ -34,7 +34,7 @@
 	"medium": "Mellan",
 	"hard": "Svår",
 	"nightmare": "Mardröm",
-	"pageDescription": "Skapa ett spel-ID och välj dina spelinställningar",
+	"pageDescription": "Välj dina spelinställningar",
 	"createLobby": "Skapa spel",
 	"lobbyErrorMessage": "Spel-ID måste vara 4 tecken",
 	"lobbyApprovedMessage": "Spel-ID är giltigt",
