@@ -1,6 +1,6 @@
 <template>
     <title>{{ uiLabels.join }}</title>
-    <h3>{{ uiLabels.gameId }} {{ lobbyId }}</h3>
+    <h3>{{ uiLabels.gameId }} {{ gameId }}</h3>
     <h2>{{ uiLabels.joinWelcome }}</h2>
 
     <div id="container">
@@ -59,7 +59,7 @@
             <p>{{ uiLabels.observePrompt }}</p>
             <button class="okButton" @click="() => {
                 showObservePrompt = false
-                this.$router.push({ path: `/observe/${this.lobbyId}` });
+                this.$router.push({ path: `/observe/${this.gameId}` });
             }">
                 {{ uiLabels.yes }}
             </button>
@@ -95,7 +95,7 @@ export default {
         return {
             uiLabels: {},
             hideNav: true,
-            lobbyId: "",
+            gameId: "",
             playerId: 0,
             playerName: "",
             avatars,
@@ -110,19 +110,19 @@ export default {
         }
     },
     created: function () {
-        this.lobbyId = this.$route.params.id;
+        this.gameId = this.$route.params.id;
 
         socket.on("gameSettings", (settings) => { console.log(settings) })
 
 
         socket.on("playerJoined", (playerId) => {
-            console.log("spelare skapad", this.lobbyId);
+            console.log("spelare skapad", this.gameId);
             this.playerId = playerId;
             this.waitingForOpponentBoolean = true;
         });
 
         socket.on("startGame", () => {
-            this.$router.push({ path: `/game/${this.lobbyId}/${this.playerId}` });
+            this.$router.push({ path: `/game/${this.gameId}/${this.playerId}` });
         });
 
         socket.on("gameFull", () => {
@@ -130,7 +130,7 @@ export default {
         })
 
 
-        socket.emit("getGameSettings", this.lobbyId)
+        socket.emit("getGameSettings", this.gameId)
         socket.emit("getUILabels", this.lang);
 
     },
@@ -181,7 +181,7 @@ export default {
                 socket.emit("submitPlayerInfo", {
                     name: this.playerName,
                     ships: this.placedShips,
-                    lobbyId: this.lobbyId,
+                    gameId: this.gameId,
                     avatarIndex: this.avatarIndex
                 });
             }

@@ -64,9 +64,9 @@ Data.prototype.getGame = function (pollId) {
 }
 
 Data.prototype.joinGame = function (d) {
-  if (this.pollExists(d.lobbyId)) {
-    this.polls[d.lobbyId].participants.push({ playerName: d.name, placedShips: d.ships, avatarIndex: d.avatarIndex })
-    return this.polls[d.lobbyId].participants.length - 1;
+  if (this.pollExists(d.gameId)) {
+    this.polls[d.gameId].participants.push({ playerName: d.name, placedShips: d.ships, avatarIndex: d.avatarIndex })
+    return this.polls[d.gameId].participants.length - 1;
   }
 }
 
@@ -131,50 +131,50 @@ Data.prototype.submitAnswer = function (pollId, answer) {
 
 Data.prototype.randomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
+};
 
 Data.prototype.makeAddition = function (level) {
   const a = this.randomInt(level.min, level.max);
   const b = this.randomInt(level.min, level.max);
 
-    return {
+  return {
     question: `${a} + ${b} = ?`,
     answer: a + b
-    };
   };
+};
 
-  Data.prototype.makeSubtraction = function (level) {
-    const a = this.randomInt(level.min, level.max);
-    const b = this.randomInt(level.min, level.max);
+Data.prototype.makeSubtraction = function (level) {
+  const a = this.randomInt(level.min, level.max);
+  const b = this.randomInt(level.min, level.max);
 
-    return {
-      question: `${a} - ${b} = ?`,
-      answer: a - b
-    };
+  return {
+    question: `${a} - ${b} = ?`,
+    answer: a - b
   };
+};
 
-  Data.prototype.makeMultiplication = function (level) {
-    const a = this.randomInt(level.min, level.max);
-    const b = this.randomInt(level.min, level.max);
+Data.prototype.makeMultiplication = function (level) {
+  const a = this.randomInt(level.min, level.max);
+  const b = this.randomInt(level.min, level.max);
 
-      return {
-        question: `${a} × ${b} = ?`,
-        answer: a * b
-      };
-    };
-
-  Data.prototype.makeDivision = function (level) {
-    const b = this.randomInt(level.min + 1, level.max); // undvik division med 0
-    const answer = this.randomInt(level.min, level.max);
-    const a = b * answer; // se till att det går jämnt ut
-
-    return {
-      question: `${a} ÷ ${b} = ?`,
-      answer: answer
-    };
+  return {
+    question: `${a} × ${b} = ?`,
+    answer: a * b
   };
+};
 
-  Data.prototype.chosenGameSetting = function (level, operations) {
+Data.prototype.makeDivision = function (level) {
+  const b = this.randomInt(level.min + 1, level.max); // undvik division med 0
+  const answer = this.randomInt(level.min, level.max);
+  const a = b * answer; // se till att det går jämnt ut
+
+  return {
+    question: `${a} ÷ ${b} = ?`,
+    answer: answer
+  };
+};
+
+Data.prototype.chosenGameSetting = function (level, operations) {
   let chosenMethods = [];
   let levelRange = { min: 0, max: 0 };
 
@@ -216,7 +216,7 @@ Data.prototype.generateEquation = function (settings) {
   const randomCalculationMethod = operations[Math.floor(Math.random() * operations.length)];
   const equation = randomCalculationMethod(levelRange);
 
-  return equation; 
+  return equation;
 };
 
 

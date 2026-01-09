@@ -1,6 +1,6 @@
 <template>
     <title>{{ uiLabels.observe }}</title>
-    <h3>{{ uiLabels.gameId }} {{ lobbyId }}</h3>
+    <h3>{{ uiLabels.gameId }} {{ gameId }}</h3>
 
     <div id="vsScreen">
         <div class="vsPlayer">
@@ -33,15 +33,15 @@
 
         <div class="rightColumn">
             <div>
-                <img :src="avatars[opponentAvatarIndex].image" class = "boardAvatars"></img>
-                <h3 class="boardLabel">{{opponentName}}s {{ uiLabels.board }}</h3>
+                <img :src="avatars[opponentAvatarIndex].image" class="boardAvatars"></img>
+                <h3 class="boardLabel">{{ opponentName }}s {{ uiLabels.board }}</h3>
                 <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
                     :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
                     :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
             </div>
             <div>
-                <img :src="avatars[avatarIndex].image" class = "boardAvatars"></img>
-                <h3 class="boardLabel">{{playerName}}s {{ uiLabels.board }}</h3>
+                <img :src="avatars[avatarIndex].image" class="boardAvatars"></img>
+                <h3 class="boardLabel">{{ playerName }}s {{ uiLabels.board }}</h3>
                 <GameBoard :isOpponent="true" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
                     :placedShips="placedShips" />
             </div>
@@ -87,7 +87,7 @@ export default {
     data: function () {
         return {
             hideNav: true,
-            lobbyId: "",
+            gameId: "",
 
             playerName: "",
             avatarIndex: 0,
@@ -128,9 +128,9 @@ export default {
     },
 
     created: function () {
-        this.lobbyId = this.$route.params.id;
+        this.gameId = this.$route.params.id;
         this.playerId = Number(this.$route.params.playerId);
-        socket.emit("joinLobby", this.lobbyId);
+        socket.emit("joinGame", this.gameId);
 
         socket.on("gameSettings", (settings) => {
             console.log("gameSettings:", settings);
@@ -180,7 +180,7 @@ export default {
         });
 
         socket.on("startGame", () => {
-            console.log("[client] startGame received. lobby:", this.lobbyId, "playerId:", this.playerId);
+            console.log("[client] startGame received. game:", this.gameId, "playerId:", this.playerId);
         });
 
         socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
@@ -214,9 +214,9 @@ export default {
         });
 
         socket.emit("getUILabels", this.lang);
-        socket.emit("getGameSettings", this.lobbyId);
-        socket.emit("getPlayerInfo", this.lobbyId, 0);
-        socket.emit("getPlayerInfo", this.lobbyId, 1);
+        socket.emit("getGameSettings", this.gameId);
+        socket.emit("getPlayerInfo", this.gameId, 0);
+        socket.emit("getPlayerInfo", this.gameId, 1);
     },
 
     methods: {
@@ -501,7 +501,7 @@ p {
     background-color: red;
 }
 
-.boardAvatars{
+.boardAvatars {
     width: 5rem;
     align-top: auto;
 }
