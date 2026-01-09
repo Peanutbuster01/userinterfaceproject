@@ -63,5 +63,6 @@
 	"observePrompt": "Ett spel är redan igång, vill du åskåda det?",
 	"yes": "Ja",
 	"no": "Nej",
-	"noBackToStart": "Nej, tillbaka till startsidan"
+	"noBackToStart": "Nej, tillbaka till startsidan",
+	"difficultyInfo": "Lätt nivå: nummer 1-10\nMellan nivå: nummer 1-20\nSvår Nivå: nummer 1-50\nMardröm nivå: nummer 1-100"
 }

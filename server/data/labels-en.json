@@ -62,5 +62,6 @@
 	"observePrompt": "Game already in progress, would you like to observe?",
 	"yes": "Yes",
 	"no": "No",
-	"noBackToStart": "No, back to start"
+	"noBackToStart": "No, back to start",
+	"difficultyInfo": "Level easy: numbers 1-10\nLevel medium: numbers 1-20\nLevel hard: numbers 1-50\nLevel nightmare: numbers 1-100"
 }

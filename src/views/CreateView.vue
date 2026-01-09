@@ -17,7 +17,7 @@
       <div class="chooseSettings">
         <div class="pictureAndButton">
           <img class="settingIcon" src="https://www.pngmart.com/files/21/Addition-PNG-Photos.png" alt="addition">
-
+          
           <button :class="selectedOperations.includes('addition') ? 'chosen' : ''" @click="chooseOperation('addition')">
             {{ uiLabels.addition }}
           </button>
@@ -57,6 +57,7 @@
 
 
     <div class="createSection">
+      <img class="infoIcon" src="https://upload.wikimedia.org/wikipedia/commons/4/43/Minimalist_info_Icon.png" @click="difficultyPopupShowing=!difficultyPopupShowing">
       <h3>{{ uiLabels.level }}</h3>
       <div class="chooseSettings">
         <div class="pictureAndButton">
@@ -106,6 +107,10 @@
       </button>
     </div>
   </div>
+  <div class="popup" v-if="difficultyPopupShowing">
+    {{ uiLabels.difficultyInfo }}
+    <button @click="difficultyPopupShowing=false">Ok</button>
+  </div>
 
 </template>
 <script>
@@ -123,6 +128,7 @@ export default {
       selectedLevel: null,
       lobbyId: "",
       lobbyMessage: "",
+      difficultyPopupShowing: false,
     }
   },
 
@@ -314,6 +320,13 @@ button:hover {
   border-color: var(--red-darker-color);
   padding: 10px 5px;
   width: 70%;
+}
+
+.infoIcon{
+  width: 5%;
+  position: absolute;
+  left: 5%;
+  cursor: pointer;
 }
 
 @media(min-width: 600px) {

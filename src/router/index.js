@@ -15,7 +15,7 @@ const router = createRouter({
       name: 'CreateView',
       component: () => import('../views/CreateView.vue')
     },
-
+ 
     {
       path: '/join/:id',
       name: 'JoinView',
@@ -33,7 +33,6 @@ const router = createRouter({
       name: 'ObserverView',
       component: () => import('../views/ObserverView.vue')
     }
-
 
   ]
 })
