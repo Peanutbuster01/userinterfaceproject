@@ -59,8 +59,7 @@ h6 {
 p {
   font-family: 'ADLaM Display', sans-serif;
   color: var(--light-gray-base-color);
-  text-shadow: 2px 2px 1px var(--blue-base-color);
-
+  text-shadow: 2px 2px 1px var(--lavender-darker-color);
 }
 
 
@@ -68,6 +67,8 @@ p {
   border: ridge 3px;
   border-radius: 0.25rem;
   background-color: var(--light-gray-base-color);
+  border-color: var(--lavender-darker-color);
+  color: var(--lavender-darker-color);
   cursor: pointer;
   font-family: 'ADLaM Display', sans-serif;
   padding: 5px;
@@ -75,5 +76,31 @@ p {
 }
 
 .okButton:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
+  background-color: var(--lavender-lighter-color);
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--lavender-base-color);
+  color: var(--light-gray-base-color);
+  text-shadow: 2px 2px 2px var(--lavender-darker-color);
+  border-radius: 0.25rem;
+  border: ridge 10px var(--lavender-darker-color);
+  padding: 30px;
+  width: 70%;
+  max-width: 400px;
+}
+
+.popupBackground {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  background-color: #00000040;
 }

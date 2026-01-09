@@ -53,5 +53,17 @@
 	"returnToStart": "Return to start page",
 	"opponentsBoard": "Opponents board",
 	"yourBoard": "Your board",
+<<<<<<< HEAD
 	"yourGameId": "your game ID is:"
+=======
+	"nextQuestion": "Next question in...",
+	"observe": "Observe",
+	"observeMessage": "You are observing",
+	"won": "won",
+	"board": "board",
+	"observePrompt": "Game already in progress, would you like to observe?",
+	"yes": "Yes",
+	"no": "No",
+	"noBackToStart": "No, back to start"
+>>>>>>> c95c5dd2f13719f1926d992f73bad16296481426
 }

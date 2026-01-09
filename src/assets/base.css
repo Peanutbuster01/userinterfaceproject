@@ -1,28 +1,21 @@
 :root {
-  --foreground-color: red;
-  --background-color: green;
-  --board-border-color: #962d9a;
-  --board-background-color: rgb(189, 123, 206);
-  --header-color: rgb(215, 61, 130);
-  --square-shadow: rgb(255, 255, 255);
-  --avatar-button-color: rgb(235, 77, 177);
-  --avatar-button-hover: rgb(159, 50, 119);
-  --button-shadow-color: black;
-
   --pink-base-color: #F7AEF8;
   --lavender-base-color: #B388EB;
   --blue-base-color: #8093F1;
   --light-blue-base-color: #72DDF7;
   --light-gray-base-color: #F4F4ED;
 
+  --blue-lighter-color: #ccd3fa;
+  --pink-lighter-color: #fee3fe;
   --pink-darker-color: #cf6ad1;
+  --lavender-lighter-color: #dfcbfa;
   --lavender-darker-color: #9a67dd;
 
   --green-base-color: lightgreen;
   --green-darker-color: rgb(28, 162, 28);
 
-  /* green: rgb(36, 209, 36) */
-
+  --red-base-color: lightcoral;
+  --red-darker-color: rgb(199, 72, 72);
 
 }
 

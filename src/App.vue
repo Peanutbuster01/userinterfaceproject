@@ -12,6 +12,7 @@
     <div class="logo">
       {{ uiLabels.siteName }}
     </div>
+    
   </header>
 
   <div class="ruleSquare" v-if="showRulesBoolean">

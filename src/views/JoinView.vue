@@ -54,6 +54,27 @@
         </div>
     </div>
 
+    <div class="popupBackground" v-if="showObservePrompt">
+        <div class="popup">
+            <p>{{ uiLabels.observePrompt }}</p>
+            <button class="okButton" @click="() => {
+                showObservePrompt = false
+                this.$router.push({ path: `/observe/${this.lobbyId}` });
+            }">
+                {{ uiLabels.yes }}
+            </button>
+
+            <button class="okButton" @click="() => {
+                showObservePrompt = false
+                this.$router.push({ path: `/` });
+
+            }">
+                {{ uiLabels.noBackToStart }}
+            </button>
+
+        </div>
+    </div>
+
 
 
 
@@ -85,6 +106,7 @@ export default {
             selectedAvatar: 0,
             showPopupBoolean: false,
             waitingForOpponentBoolean: false,
+            showObservePrompt: false,
         }
     },
     created: function () {
@@ -96,10 +118,15 @@ export default {
         socket.on("playerJoined", (playerId) => {
             console.log("spelare skapad", this.lobbyId);
             this.playerId = playerId;
+            this.waitingForOpponentBoolean = true;
         });
 
         socket.on("startGame", () => {
             this.$router.push({ path: `/game/${this.lobbyId}/${this.playerId}` });
+        });
+
+        socket.on("gameFull", () => {
+            this.showObservePrompt = true;
         })
 
 
@@ -157,7 +184,6 @@ export default {
                     lobbyId: this.lobbyId,
                     avatarIndex: this.avatarIndex
                 });
-                this.waitingForOpponentBoolean = true;
             }
         }
     }
@@ -327,38 +353,9 @@ label {
     transform: scale(1.05);
 }
 
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--lavender-base-color);
-    color: var(--light-gray-base-color);
-    text-shadow: 2px 2px 2px var(--lavender-darker-color);
-    border-radius: 0.25rem;
-    border: ridge 10px var(--lavender-darker-color);
-    padding: 30px;
-    max-width: 40%;
-}
-
-
-.popupBackground {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    background-color: #00000040;
-}
-
 .okButton {
     border-color: var(--lavender-darker-color);
     color: var(--lavender-darker-color);
-}
-
-p {
-    text-shadow: 2px 2px 1px var(--lavender-darker-color);
 }
 
 h5 {
