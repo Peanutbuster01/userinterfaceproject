@@ -1,6 +1,6 @@
 <template>
     <title>{{ uiLabels.observe }}</title>
-    <h3>{{ uiLabels.gameId }} {{ gameId }}</h3>
+    <h3>{{ uiLabels.gameId }} <span style="font-size: x-large;">{{ gameId }}</span></h3>
 
     <div id="vsScreen">
         <div class="vsPlayer">
@@ -49,18 +49,6 @@
 
     </div>
 
-    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'wrongAnswerPopup'">
-        <div class="popup">
-            <p>{{ uiLabels.wrongAnswer }}</p>
-            <button @click="showPopupBoolean = false; popupType = null" class="okButton">OK</button>
-        </div>
-    </div>
-
-    <div class="popupBackground" v-if="showPopupBoolean && popupType === 'waitOnOpponentPopup'">
-        <div class="popup">
-            <p>{{ uiLabels.waitForOpponent }}</p>
-        </div>
-    </div>
 
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'gameOverPopup'">
         <div class="popup">
@@ -86,7 +74,6 @@ export default {
 
     data: function () {
         return {
-            hideNav: true,
             gameId: "",
 
             playerName: "",
