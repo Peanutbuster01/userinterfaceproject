@@ -2,6 +2,10 @@
     <title>{{ uiLabels.play }}</title>
     <h3>{{ uiLabels.gameId }} {{ gameId }}</h3>
 
+
+    <VsScreen :avatarIndex="avatarIndex" :opponentAvatarIndex="opponentAvatarIndex" :playerName="playerName"
+        :opponentName="opponentName" />
+
     <div id="vsScreen">
         <div class="vsPlayer">
             <h1 style="text-shadow: 4px 4px 2px var(--blue-base-color);">{{ playerName }}</h1>
@@ -93,15 +97,15 @@
         </div>
     </div>
 
-     <<div class="showHitOrMiss">
+    <<div class="showHitOrMiss">
         <h1 v-if="shotResultText === true">
-        {{ uiLabels.hit }}
+            {{ uiLabels.hit }}
         </h1>
 
         <h1 v-else-if="shotResultText === false">
-        {{ uiLabels.miss }}
+            {{ uiLabels.miss }}
         </h1>
-    </div>
+        </div>
 
 </template>
 <script>
@@ -111,11 +115,12 @@ import avatars from "../assets/avatars.json";
 import GameBoard from '../components/GameBoard.vue';
 import { playSound } from "../assets/utils/sound.js";
 import { NavigationFailureType } from 'vue-router';
+import VsScreen from '../components/VsScreen.vue';
 
 export default {
     name: 'StartView',
     props: ["uiLabels"],
-    components: { GameBoard },
+    components: { GameBoard, VsScreen },
     data: function () {
         return {
             gameId: "",
@@ -226,25 +231,27 @@ export default {
         socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
             const result = hit ? "hit" : "miss";
             if (shooterId !== this.playerId) {
-                this.opponentShots = {...this.opponentShots,[shootIndex]: result
+                this.opponentShots = {
+                    ...this.opponentShots, [shootIndex]: result
                 };
             }
             else {
-                this.playerShots = {...this.playerShots,[shootIndex]: result
+                this.playerShots = {
+                    ...this.playerShots, [shootIndex]: result
                 };
             }
         });
-     
+
         socket.on("wrongAnswer", () => {
             this.popupType = "wrongAnswerPopup";
             this.showPopupBoolean = true;
         });
 
         socket.on("shotResult", ({ hit }) => {
-        this.shotResultText = hit;
-        setTimeout(() => {
-        this.shotResultText = null;
-        }, 1500);
+            this.shotResultText = hit;
+            setTimeout(() => {
+                this.shotResultText = null;
+            }, 1500);
         });
 
 
@@ -260,16 +267,17 @@ export default {
             this.hasShotThisRound = true;
 
             setTimeout(() => {
-            this.popupType = "gameOverPopup";
-            this.showPopupBoolean = true;
+                this.popupType = "gameOverPopup";
+                this.showPopupBoolean = true;
 
-            if (winnerId === this.playerId) {
-                playSound("win");
-            } 
-             else {
-                playSound("lose");
-            }}, 
-            1500);   
+                if (winnerId === this.playerId) {
+                    playSound("win");
+                }
+                else {
+                    playSound("lose");
+                }
+            },
+                1500);
         });
 
         socket.emit("getUILabels", this.lang);
@@ -331,7 +339,7 @@ export default {
 
         },
 
-        
+
 
         startCountDown: function () {
             this.counterNumber = 5;
@@ -431,7 +439,7 @@ h1 {
     animation: forwards 4s vsAnimation;
 }
 
-.showHitOrMiss{
+.showHitOrMiss {
     position: absolute;
     left: 50%;
     top: 50%;
