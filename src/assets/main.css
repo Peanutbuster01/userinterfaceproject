@@ -34,10 +34,11 @@ h2 {
 }
 
 h3 {
-  font-family: 'Super funky', sans-serif;
+  font-family: 'ADLaM Display', sans-serif;
   color: var(--light-gray-base-color);
-  text-shadow: 4px 4px 2px var(--pink-darker-color);
+  text-shadow: 3px 2px 2px var(--pink-darker-color);
   letter-spacing: 0.1em;
+  font-size: larger;
 }
 
 h5 {

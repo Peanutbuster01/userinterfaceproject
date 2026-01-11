@@ -1,6 +1,6 @@
 <template>
   <title>{{ uiLabels.createGame }}</title>
-  <h3>{{ uiLabels.yourGameId }} {{ gameId }}</h3>
+  <h3>{{ uiLabels.gameId }} <span style="font-size: x-large;">{{ gameId }}</span></h3>
 
   <div id="container">
     <div class="createSection">
@@ -15,7 +15,8 @@
         <div class="pictureAndButton">
           <img class="settingIcon" src="https://www.pngmart.com/files/21/Addition-PNG-Photos.png" alt="addition">
 
-          <button :class="selectedOperations.includes('addition') ? 'chosen' : ''" @click="chooseOperation('addition')">
+          <button class="createButton" :class="selectedOperations.includes('addition') ? 'chosen' : ''"
+            @click="chooseOperation('addition')">
             {{ uiLabels.addition }}
           </button>
         </div>
@@ -24,7 +25,7 @@
           <img class="settingIcon" src="https://www.freeiconspng.com/uploads/subtract-icon-png-26.png"
             alt="subtraktion">
 
-          <button :class="selectedOperations.includes('subtraction') ? 'chosen' : ''"
+          <button class="createButton" :class="selectedOperations.includes('subtraction') ? 'chosen' : ''"
             @click="chooseOperation('subtraction')">
             {{ uiLabels.subtraction }}
           </button>
@@ -35,7 +36,7 @@
             alt="multiplication">
 
 
-          <button :class="selectedOperations.includes('multiplication') ? 'chosen' : ''"
+          <button class="createButton" :class="selectedOperations.includes('multiplication') ? 'chosen' : ''"
             @click="chooseOperation('multiplication')">
             {{ uiLabels.multiplication }}
           </button>
@@ -45,7 +46,8 @@
           <img class="settingIcon" src="https://static.thenounproject.com/png/517809-200.png" alt="division">
 
 
-          <button :class="selectedOperations.includes('division') ? 'chosen' : ''" @click="chooseOperation('division')">
+          <button class="createButton" :class="selectedOperations.includes('division') ? 'chosen' : ''"
+            @click="chooseOperation('division')">
             {{ uiLabels.division }}
           </button>
         </div>
@@ -63,7 +65,7 @@
             src="https://image.similarpng.com/file/similarpng/original-picture/2021/10/Cartoon-baby-hand-drawn-on-transpsrent-background-PNG.png"
             alt="easy">
 
-          <button :class="selectedLevel === 'easy' ? 'chosen' : ''" @click="chooseLevel('easy')">
+          <button class="createButton" :class="selectedLevel === 'easy' ? 'chosen' : ''" @click="chooseLevel('easy')">
             {{ uiLabels.easy }}
           </button>
         </div>
@@ -73,7 +75,8 @@
             src="https://static.vecteezy.com/system/resources/previews/027/728/659/non_2x/cute-little-boy-cartoon-standing-free-png.png"
             alt="medium">
 
-          <button :class="selectedLevel === 'medium' ? 'chosen' : ''" @click="chooseLevel('medium')">
+          <button class="createButton" :class="selectedLevel === 'medium' ? 'chosen' : ''"
+            @click="chooseLevel('medium')">
             {{ uiLabels.medium }}
           </button>
         </div>
@@ -83,7 +86,7 @@
             src="https://cdni.iconscout.com/illustration/premium/thumb/strongman-illustration-svg-download-png-5367726.png"
             alt="hard">
 
-          <button :class="selectedLevel === 'hard' ? 'chosen' : ''" @click="chooseLevel('hard')">
+          <button class="createButton" :class="selectedLevel === 'hard' ? 'chosen' : ''" @click="chooseLevel('hard')">
             {{ uiLabels.hard }}
           </button>
         </div>
@@ -91,7 +94,8 @@
         <div class="pictureAndButton">
           <img class="settingIcon" src="https://japaclip.com/en/files/cb01-crying.png" alt="nightmare">
 
-          <button :class="selectedLevel === 'nightmare' ? 'chosen' : ''" @click="chooseLevel('nightmare')">
+          <button class="createButton" :class="selectedLevel === 'nightmare' ? 'chosen' : ''"
+            @click="chooseLevel('nightmare')">
             {{ uiLabels.nightmare }}
           </button>
         </div>
@@ -100,14 +104,15 @@
 
     <div class="createSection">
       <h3>{{ uiLabels.createGameRequirement }}</h3>
-      <button @click="createGame" :class="createGameReady ? 'createGameButtonReady' : 'createGameButtonNotReady'">
+      <button class="createButton" @click="createGame"
+        :class="createGameReady ? 'createGameButtonReady' : 'createGameButtonNotReady'">
         {{ createGameReady ? uiLabels.createGameButtonReady : uiLabels.createGameButtonNotReady }}
       </button>
     </div>
   </div>
   <div class="popup" v-if="difficultyPopupShowing">
-    {{ uiLabels.difficultyInfo }}
-    <button @click="difficultyPopupShowing = false">Ok</button>
+    <p>{{ uiLabels.difficultyInfo }}</p>
+    <button class="okButton" @click="difficultyPopupShowing = false">Ok</button>
   </div>
 
 </template>
@@ -195,7 +200,7 @@ export default {
 
 h2,
 .createSection>h3 {
-  text-shadow: 4px 4px 2px var(--blue-base-color);
+  text-shadow: 3px 2px 2px var(--blue-base-color);
 }
 
 .createSection {
@@ -205,6 +210,7 @@ h2,
   border-radius: 0.25rem;
   padding: 2%;
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .chooseSettings {
@@ -236,7 +242,7 @@ h2,
 }
 
 
-button {
+.createButton {
   cursor: pointer;
   border-radius: 0.25rem;
 
@@ -284,9 +290,10 @@ button:hover {
 }
 
 .infoIcon {
-  width: 5%;
+  width: 40px;
   position: absolute;
-  left: 5%;
+  left: 10px;
+  top: 10px;
   cursor: pointer;
 }
 
