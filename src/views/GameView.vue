@@ -6,10 +6,6 @@
     <VsScreen :avatarIndex="avatarIndex" :opponentAvatarIndex="opponentAvatarIndex" :playerName="playerName"
         :opponentName="opponentName" />
 
-
-    <VsScreen :avatarIndex="avatarIndex" :opponentAvatarIndex="opponentAvatarIndex" :playerName="playerName"
-        :opponentName="opponentName" />
-
     <div id="vsScreen">
         <div class="vsPlayer">
             <h1 style="text-shadow: 4px 4px 2px var(--blue-base-color);">{{ playerName }}</h1>
