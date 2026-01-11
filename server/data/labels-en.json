@@ -62,5 +62,5 @@
 	"yes": "Yes",
 	"no": "No",
 	"noBackToStart": "No, back to start",
-	"difficultyInfo": "Level easy: numbers 1-10\nLevel medium: numbers 1-20\nLevel hard: numbers 1-50\nLevel nightmare: numbers 1-100"
+	"difficultyInfo": "Expressions with the selected operations will consist of:\nLevel easy: Numbers between 1-10\nLevel medium: Numbers between 1-20\nLevel hard: Numbers between 1-50\nLevel nightmare: Numbers between 1-100"
 }
