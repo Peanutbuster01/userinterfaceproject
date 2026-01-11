@@ -1,6 +1,10 @@
 <template>
     <title>{{ uiLabels.play }}</title>
-    <h3>{{ uiLabels.gameId }} {{ gameId }}</h3>
+    <h3>{{ uiLabels.gameId }} <span style="font-size: x-large;">{{ gameId }}</span></h3>
+
+
+    <VsScreen :avatarIndex="avatarIndex" :opponentAvatarIndex="opponentAvatarIndex" :playerName="playerName"
+        :opponentName="opponentName" />
 
 
     <VsScreen :avatarIndex="avatarIndex" :opponentAvatarIndex="opponentAvatarIndex" :playerName="playerName"
@@ -97,7 +101,7 @@
         </div>
     </div>
 
-    <<div class="showHitOrMiss">
+    <div class="showHitOrMiss">
         <h1 v-if="shotResultText === true">
             {{ uiLabels.hit }}
         </h1>
@@ -105,7 +109,7 @@
         <h1 v-else-if="shotResultText === false">
             {{ uiLabels.miss }}
         </h1>
-        </div>
+    </div>
 
 </template>
 <script>

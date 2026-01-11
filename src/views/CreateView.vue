@@ -1,6 +1,6 @@
 <template>
   <title>{{ uiLabels.createGame }}</title>
-  <h3>{{ uiLabels.yourGameId }} {{ gameId }}</h3>
+  <h3>{{ uiLabels.gameId }} <span style="font-size: x-large;">{{ gameId }}</span></h3>
 
   <div id="container">
     <div class="createSection">
@@ -200,7 +200,7 @@ export default {
 
 h2,
 .createSection>h3 {
-  text-shadow: 4px 4px 2px var(--blue-base-color);
+  text-shadow: 3px 2px 2px var(--blue-base-color);
 }
 
 .createSection {
@@ -210,6 +210,7 @@ h2,
   border-radius: 0.25rem;
   padding: 2%;
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .chooseSettings {
@@ -289,9 +290,10 @@ button:hover {
 }
 
 .infoIcon {
-  width: 5%;
+  width: 40px;
   position: absolute;
-  left: 5%;
+  left: 10px;
+  top: 10px;
   cursor: pointer;
 }
 
