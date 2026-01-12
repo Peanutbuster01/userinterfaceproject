@@ -62,7 +62,11 @@
 	"yes": "Yes",
 	"no": "No",
 	"noBackToStart": "No, back to start",
+<<<<<<< HEAD
+	"difficultyInfo": "Expressions with the selected operations will consist of:\nLevel easy: Numbers between 1-10\nLevel medium: Numbers between 1-20\nLevel hard: Numbers between 1-50\nLevel nightmare: Numbers between 1-100"
+=======
 	"difficultyInfo": "Easy: 1-10\nMedium: 1-20\nHard: 1-50\nNightmare: 1-100",
 	"miss": "miss",
 	"hit": "Hit!"
+>>>>>>> dc61794b0c3dd4525c69d740a8f362530de11af1
 }
