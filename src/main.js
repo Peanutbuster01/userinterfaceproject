@@ -11,8 +11,6 @@ app.use(router)
 
 app.mount('#app')
 
-
-
 document.addEventListener("click", (e) => {
   if (e.target.closest("button")) {
     playSound("buttonClick");

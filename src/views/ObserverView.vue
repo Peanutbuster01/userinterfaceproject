@@ -216,15 +216,6 @@ export default {
     margin-bottom: 50px;
 }
 
-.rightColumn {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    width: 100%;
-    max-width: 400px;
-    padding-bottom: 20px;
-}
-
 .gameInfo {
     display: flex;
     flex-direction: column;
@@ -265,20 +256,6 @@ export default {
     }
 }
 
-
-.questionText {
-    font-family: 'ADLaM Display';
-    color: var(--pink-darker-color);
-    letter-spacing: 0.1em;
-    text-shadow: none;
-    margin: 0;
-}
-
-
-.answerButton:hover {
-    transform: scale(1.05);
-}
-
 ::placeholder {
     color: var(--pink-base-color);
     font-family: 'ADLaM Display', sans-serif;
@@ -299,16 +276,4 @@ export default {
     box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }
 
-.showHitOrMiss {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform-origin: center;
-    transform: translate(-50%, -50%);
-    font-size: 100px;
-    color: var(--light-gray-base-color);
-    text-shadow: 0 0 5rem #3b053b;
-    margin: 0;
-    z-index: 10000000;
-}
 </style>

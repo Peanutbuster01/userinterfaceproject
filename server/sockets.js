@@ -207,11 +207,6 @@ function sockets(io, socket, data) {
   }, 1500); 
 });
 
-  socket.on("newRound", function (gameId, confirmShot) {
-    const game = data.getGame(gameId);
-    if (!game) return;
-  });
-
   socket.on("getShots", function (gameId) {
     const game = data.getGame(gameId);
     socket.emit("shots", game.shots)

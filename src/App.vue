@@ -40,7 +40,6 @@ export default {
     return {
       uiLabels: {},
       lang: localStorage.getItem("lang") || "sv",
-      hideNav: true,
       showRulesBoolean: false
     }
   },

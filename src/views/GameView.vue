@@ -14,7 +14,7 @@
                 :placedShips="placedShips" />
         </div>
 
-        <div class="leftColumn">
+        <div class="middleSection">
             <div id="playerAvatar">
                 <h2 class="playerName">{{ playerName }}</h2>
                 <img class="playerAvatarImage" :src="avatars[avatarIndex].image" :alt="selectedAvatar.name" />
@@ -103,7 +103,6 @@ const socket = io();
 import avatars from "../assets/avatars.json";
 import GameBoard from '../components/GameBoard.vue';
 import { playSound } from "../assets/utils/sound.js";
-import { NavigationFailureType } from 'vue-router';
 import VsScreen from '../components/VsScreen.vue';
 
 export default {
@@ -209,10 +208,6 @@ export default {
             this.currentQuestion = equation.question;
         });
 
-        socket.on("startGame", () => {
-            console.log("[client] startGame received. game:", this.gameId, "playerId:", this.playerId);
-        });
-
         socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
             const result = hit ? "hit" : "miss";
             if (shooterId !== this.playerId) {
@@ -235,7 +230,6 @@ export default {
             this.popupType = "wrongAnswerPopup";
             this.showPopupBoolean = true;
         });
-
 
 
         socket.on("waitingForNextQuestion", () => {
@@ -271,11 +265,6 @@ export default {
     },
 
     methods: {
-
-        placeAvatar: function (i) {
-            console.log("placeAvatar", i);
-        },
-
 
         submitAnswerEquation: function () {
             socket.emit("answer", this.gameId, this.playerId, parseInt(this.playerAnswer));
@@ -320,9 +309,7 @@ export default {
 
             this.showPopupBoolean = false;
             this.popupType = null;
-
         },
-
 
 
         startCountDown: function () {
@@ -388,18 +375,7 @@ h1 {
     margin-bottom: 50px;
 }
 
-
-
-.rightColumn {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    width: 100%;
-    max-width: 400px;
-    padding-bottom: 20px;
-}
-
-.leftColumn {
+.middleSection {
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -441,16 +417,6 @@ h1 {
     }
 }
 
-
-.questionText {
-    font-family: 'ADLaM Display';
-    color: var(--pink-darker-color);
-    letter-spacing: 0.1em;
-    text-shadow: none;
-    margin: 0;
-    font-size: xx-large;
-}
-
 .answerBox {
     min-width: 260px;
     display: flex;
@@ -483,16 +449,4 @@ h1 {
     visibility: hidden;
 }
 
-.showHitOrMiss {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform-origin: center;
-    transform: translate(-50%, -50%);
-    font-size: 100px;
-    color: var(--light-gray-base-color);
-    text-shadow: 0 0 5rem #3b053b;
-    margin: 0;
-    z-index: 10000000;
-}
 </style>

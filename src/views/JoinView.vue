@@ -39,14 +39,14 @@
         </div>
 
     </div>
-    <div class="popupBackground" :style="{ display: showPopupBoolean ? 'block' : 'none' }">
+    <div class="popupBackground" v-if="showPopupBoolean">
         <div class="popup">
             <p>{{ uiLabels.notReadyPopup }}</p>
             <button @click="showPopupBoolean = false" class="okButton">OK</button>
         </div>
     </div>
 
-    <div class="popupBackground" :style="{ display: waitingForOpponentBoolean ? 'block' : 'none' }">
+    <div class="popupBackground" v-if="waitingForOpponentBoolean">
         <div class="popup">
             <p>{{ uiLabels.waitingForOpponent }}</p>
         </div>
@@ -91,7 +91,6 @@ export default {
 
     data: function () {
         return {
-            hideNav: true,
             gameId: "",
             playerId: 0,
             playerName: "",

@@ -139,3 +139,25 @@ p {
   border: ridge 4px var(--pink-darker-color);
   box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
 }
+
+.showHitOrMiss {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    color: var(--light-gray-base-color);
+    text-shadow: 0 0 5rem #3b053b;
+    margin: 0;
+    z-index: 10000000;
+}
+
+.questionText {
+    font-family: 'ADLaM Display';
+    color: var(--pink-darker-color);
+    letter-spacing: 0.1em;
+    text-shadow: none;
+    margin: 0;
+    font-size: xx-large;
+}
