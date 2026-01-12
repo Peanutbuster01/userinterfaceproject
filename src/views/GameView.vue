@@ -7,6 +7,13 @@
         :opponentName="opponentName" />
 
     <div class="pageLayout">
+
+        <div>
+            <h3 class="boardLabel">{{ uiLabels.yourBoard }}</h3>
+            <GameBoard :isOpponent="false" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
+                :placedShips="placedShips" />
+        </div>
+
         <div class="leftColumn">
             <div id="playerAvatar">
                 <h2 class="playerName">{{ playerName }}</h2>
@@ -26,19 +33,15 @@
             </div>
         </div>
 
-        <div class="rightColumn">
-            <div>
-                <h3 class="boardLabel">{{ uiLabels.opponentsBoard }}</h3>
-                <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
-                    :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
-                    :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
-            </div>
-            <div>
-                <h3 class="boardLabel">{{ uiLabels.yourBoard }}</h3>
-                <GameBoard :isOpponent="false" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
-                    :placedShips="placedShips" />
-            </div>
+
+        <div>
+            <h3 class="boardLabel">{{ uiLabels.opponentsBoard }}</h3>
+            <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
+                :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
+                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
         </div>
+
+
     </div>
 
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'makeMovePopup'">
@@ -426,11 +429,16 @@ h1 {
 }
 
 .pageLayout {
-    display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+}
+
+@media(max-width: 600px) {
+    .pageLayout {
+        grid-template-columns: 1fr;
+    }
 }
 
 
