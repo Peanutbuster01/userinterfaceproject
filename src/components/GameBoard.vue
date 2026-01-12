@@ -4,7 +4,7 @@
             <div v-for="(x, i) in 12" :key="'sqr-' + i" class="square" :class="[{ selectedShot: selectedShotIndex === i && shots[selectedShotIndex] === undefined },
             { unselectable: shots[i] != undefined }]" @click="$emit('squareClicked', i)">
 
-                <img class="placedAvatarShip" v-if="(!isOpponent && placedShips.includes(i)) || shots[i] === 'hit'"
+                <img class="placedAvatarShip" v-if="(!isOpponent && placedShips?.includes(i)) || shots[i] === 'hit'"
                     :src="avatars[avatarIndex].image">
                 <img v-if="shots[i] === 'hit'" class="hitShot" src="/img/cross.png" />
                 <span v-else-if="shots[i] === 'miss'" class="missedShot"></span>

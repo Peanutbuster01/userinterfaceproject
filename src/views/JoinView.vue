@@ -91,7 +91,6 @@ export default {
 
     data: function () {
         return {
-            uiLabels: {},
             hideNav: true,
             gameId: "",
             playerId: 0,

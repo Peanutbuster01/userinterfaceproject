@@ -2,22 +2,20 @@
     <title>{{ uiLabels.observe }}</title>
     <h3>{{ uiLabels.gameId }} <span style="font-size: x-large;">{{ gameId }}</span></h3>
 
-    <div id="vsScreen">
-        <div class="vsPlayer">
-            <h1 style="text-shadow: 4px 4px 2px var(--blue-base-color);">{{ playerName }}</h1>
-            <img :src="avatars[avatarIndex].image"></img>
-        </div>
-        <div class="vsPlayer">
-            <h1 style="text-shadow: 4px 4px 2px var(--lavender-darker-color);">{{ opponentName }}</h1>
-            <img :src="avatars[opponentAvatarIndex].image"></img>
-        </div>
-        <h1 id="vs">
-            VS
-        </h1>
-    </div>
+
+    <VsScreen :avatarIndex="avatarIndex" :opponentAvatarIndex="opponentAvatarIndex" :playerName="playerName"
+        :opponentName="opponentName" />
 
     <div class="pageLayout">
-        <div class="leftColumn">
+
+        <div>
+            <img :src="avatars[avatarIndex].image" class="boardAvatars"></img>
+            <h3 class="boardLabel">{{ playerName }}s {{ uiLabels.board }}</h3>
+            <GameBoard :isOpponent="false" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
+                :placedShips="placedShips" />
+        </div>
+
+        <div class="gameInfo">
             <div id="playerAvatar">
                 <h2 class="playerName">{{ uiLabels.observeMessage }}</h2>
             </div>
@@ -25,30 +23,31 @@
             <div class="questionBox">
                 <p class="questionText" :class="{ hiddenQuestion: waitingForNextQuestion }">{{ currentQuestion }}</p>
             </div>
-            <button class="okButton" @click="() => {
+            <button class="okButton returnButton" @click="() => {
                 this.$router.push({ path: `/` });
             }">{{ uiLabels.returnToStart }}</button>
 
         </div>
 
-        <div class="rightColumn">
-            <div>
-                <img :src="avatars[opponentAvatarIndex].image" class="boardAvatars"></img>
-                <h3 class="boardLabel">{{ opponentName }}s {{ uiLabels.board }}</h3>
-                <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
-                    :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
-                    :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
-            </div>
-            <div>
-                <img :src="avatars[avatarIndex].image" class="boardAvatars"></img>
-                <h3 class="boardLabel">{{ playerName }}s {{ uiLabels.board }}</h3>
-                <GameBoard :isOpponent="true" :avatarIndex="avatarIndex" :isBoardLocked="true" :shots="opponentShots"
-                    :placedShips="placedShips" />
-            </div>
+        <div>
+            <img :src="avatars[opponentAvatarIndex].image" class="boardAvatars"></img>
+            <h3 class="boardLabel">{{ opponentName }}s {{ uiLabels.board }}</h3>
+            <GameBoard :isOpponent="false" :avatarIndex="opponentAvatarIndex" :isBoardLocked="true" :shots="playerShots"
+                :selectedShotIndex="selectedShotIndex" :placedShips="opponentPlacedShips" />
         </div>
+
 
     </div>
 
+    <div class="showHitOrMiss">
+        <h1 v-if="shotResultText === true">
+            {{ uiLabels.hit }}
+        </h1>
+
+        <h1 v-else-if="shotResultText === false">
+            {{ uiLabels.miss }}
+        </h1>
+    </div>
 
     <div class="popupBackground" v-if="showPopupBoolean && popupType === 'gameOverPopup'">
         <div class="popup">
@@ -66,11 +65,12 @@ import io from 'socket.io-client';
 const socket = io();
 import avatars from "../assets/avatars.json";
 import GameBoard from '../components/GameBoard.vue';
+import VsScreen from '../components/VsScreen.vue';
 
 export default {
     name: 'StartView',
     props: ["uiLabels"],
-    components: { GameBoard },
+    components: { GameBoard, VsScreen },
 
     data: function () {
         return {
@@ -93,14 +93,10 @@ export default {
                 null, null, null
             ],
 
-            //placeholder tills att socket data kommer in
-
-            selectedAvatarIndex: 1, //byt så indeselectedx byt ut automatiskt
             avatars: avatars,
 
             currentEquation: null,
             currentQuestion: null,
-            playerAnswer: "",
 
             canShoot: false,
             hasShotThisRound: false,
@@ -108,62 +104,40 @@ export default {
             opponentShots: {},
             playerShots: {},
             waitingForNextQuestion: false,
+            shotResultText: null,
 
             gameOver: false,
             winnerId: null,
-            gottenplayer1: false,
         }
     },
 
     created: function () {
         this.gameId = this.$route.params.id;
-        this.playerId = Number(this.$route.params.playerId);
         socket.emit("joinGame", this.gameId);
 
-        socket.on("gameSettings", (settings) => {
-            console.log("gameSettings:", settings);
+        socket.on("shots", (shots) => {
+            this.playerShots = shots?.[0] || {};
+            this.opponentShots = shots?.[1] || {};
         });
 
-        ;
+
         socket.on("playerInfo", (playerId, playerInfo) => {
-            if (!this.gottenplayer1) {
+            if (playerId === 0) {
                 console.log("INFO:"); console.log(playerInfo);
                 this.placedShips = playerInfo.placedShips;
                 this.avatarIndex = playerInfo.avatarIndex;
                 this.playerName = playerInfo.playerName;
-                this.playerId = playerId;
                 console.log(this.placedShips);
-                this.gottenplayer1 = true;
-                socket.emit("getShots", this.gameId)
-                socket.on("shots", (shots) => {
-                    this.playerShots = shots[playerId];
-                });
             }
             else {
                 console.log("MOTSTÅNDARINFO:"); console.log(playerInfo);
                 this.opponentPlacedShips = playerInfo.placedShips;
                 this.opponentAvatarIndex = playerInfo.avatarIndex;
                 this.opponentName = playerInfo.playerName;
-                this.opponentId = playerId;
                 console.log(this.opponentName);
-                socket.emit("getShots", this.gameId);
-                socket.on("shots", (shots) => {
-                    this.opponentShots = shots[playerId];
-                });
-            }
-
-
-        });
-
-        socket.on("roundWinner", (winnerPlayerId) => {
-            const myPlayerId = this.playerId;
-
-            if (winnerPlayerId === myPlayerId) {
-                this.makeAMove();
-            } else {
-                this.WaitOnOpponent();
             }
         });
+
 
         socket.on("closePopups", () => {
             if (this.gameOver) return
@@ -176,10 +150,6 @@ export default {
             this.waitingForNextQuestion = false;
             this.currentEquation = equation;
             this.currentQuestion = equation.question;
-        });
-
-        socket.on("startGame", () => {
-            console.log("[client] startGame received. game:", this.gameId, "playerId:", this.playerId);
         });
 
         socket.on("shotResult", ({ shooterId, shootIndex, hit }) => {
@@ -196,6 +166,10 @@ export default {
                     [shootIndex]: result
                 };
             }
+            this.shotResultText = hit;
+            setTimeout(() => {
+                this.shotResultText = null;
+            }, 1500);
             console.log("[GameView] shotResult received:");
         });
 
@@ -216,128 +190,15 @@ export default {
         socket.emit("getGameSettings", this.gameId);
         socket.emit("getPlayerInfo", this.gameId, 0);
         socket.emit("getPlayerInfo", this.gameId, 1);
+        socket.emit("getShots", this.gameId);
     },
 
     methods: {
-
-        placeAvatar: function (i) {
-            console.log("placeAvatar", i);
-        },
-
-        WaitOnOpponent: function () {
-            this.popupType = "waitOnOpponentPopup";
-            this.showPopupBoolean = true;
-            this.canShoot = false;
-        },
     }
 }
 </script>
 
 <style scoped>
-#vsScreen {
-    position: fixed;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 9999999;
-    background-color: var(--light-blue-base-color);
-    pointer-events: none;
-
-    animation: forwards 4s vsScreenAnimation;
-}
-
-
-@media(max-width: 600px) {
-    #vsScreen {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-@keyframes vsScreenAnimation {
-    0% {
-        opacity: 1;
-    }
-
-    90% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-
-    }
-
-}
-
-h1 {
-    font-size: 6vw;
-}
-
-p {
-    text-shadow: 2px 2px 1px var(--lavender-darker-color);
-}
-
-.vsPlayer {
-    flex-grow: 1;
-    justify-items: center;
-    overflow: hidden;
-    border: 18px ridge var(--blue-base-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.vsPlayer img {
-    flex-grow: 1;
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-    width: 80%;
-    display: block;
-    object-fit: contain;
-}
-
-.vsPlayer:nth-child(2) {
-    background-color: var(--lavender-base-color);
-    border-color: var(--lavender-darker-color);
-}
-
-#vs {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform-origin: center;
-    transform: translate(-50%, -50%) rotate(-20deg);
-    font-size: 100px;
-    color: var(--light-gray-base-color);
-    text-shadow: 0 0 5rem #3b053b;
-    margin: 0;
-
-    animation: forwards infinite 4s vsAnimation;
-}
-
-@keyframes vsAnimation {
-    0% {
-        transform: translate(-50%, -50%) scale(0) rotate(-1000deg);
-    }
-
-    30% {
-        transform: translate(-50%, -50%) scale(1) rotate(-20deg);
-    }
-
-    85% {
-        transform: translate(-50%, -50%) scale(1) rotate(-20deg);
-    }
-
-    100% {
-        transform: translate(-50%, -50%) scale(10) rotate(-1000deg);
-    }
-}
-
 .boardLabel {
     margin-top: 0;
 }
@@ -364,7 +225,7 @@ p {
     padding-bottom: 20px;
 }
 
-.leftColumn {
+.gameInfo {
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -375,8 +236,6 @@ p {
     border: ridge 3px var(--pink-darker-color);
     border-radius: 0.25rem;
     min-width: 200px;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     padding: 20px;
 }
@@ -394,11 +253,16 @@ p {
 }
 
 .pageLayout {
-    display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+}
+
+@media(max-width: 600px) {
+    .pageLayout {
+        grid-template-columns: 1fr;
+    }
 }
 
 
@@ -426,5 +290,25 @@ p {
 
 .boardAvatars {
     width: 5rem;
+    height: 5rem;
+}
+
+.returnButton {
+    border-color: var(--pink-darker-color);
+    color: var(--pink-darker-color);
+    box-shadow: 3px 3px 2px 0px var(--pink-darker-color);
+}
+
+.showHitOrMiss {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    color: var(--light-gray-base-color);
+    text-shadow: 0 0 5rem #3b053b;
+    margin: 0;
+    z-index: 10000000;
 }
 </style>
