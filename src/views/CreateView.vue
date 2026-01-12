@@ -126,7 +126,6 @@ export default {
 
   data: function () {
     return {
-      uiLabels: {},
       selectedOperations: [],
       selectedLevel: null,
       gameId: "",
