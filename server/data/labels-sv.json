@@ -66,7 +66,7 @@
 	"yes": "Ja",
 	"no": "Nej",
 	"noBackToStart": "Nej, tillbaka till startsidan",
-	"difficultyInfo": "Uttryck med de valda räknesätten kommer att bestå av:\nLätt: Tal mellan 1-10\nMellan: Tal mellan 1-20\nSvår: Tal mellan 1-50\nMardröm: Tal mellan 1-100\nç",
+	"difficultyInfo": "Uttryck med de valda räknesätten kommer att bestå av:\nLätt: Tal mellan 1-10\nMellan: Tal mellan 1-20\nSvår: Tal mellan 1-50\nMardröm: Tal mellan 1-100\n",
 	"miss": "Miss!",
 	"hit": "Träff!"
 }
