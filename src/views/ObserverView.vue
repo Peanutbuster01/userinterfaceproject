@@ -33,7 +33,7 @@
             <img :src="avatars[opponentAvatarIndex].image" class="boardAvatars"></img>
             <h3 class="boardLabel">{{ opponentName }}s {{ uiLabels.board }}</h3>
             <GameBoard :isOpponent="false" :avatarIndex="opponentAvatarIndex" :isBoardLocked="true" :shots="playerShots"
-                :selectedShotIndex="selectedShotIndex" :placedShips="opponentPlacedShips" />
+                :selectedSquareIndex="selectedSquareIndex" :placedShips="opponentPlacedShips" />
         </div>
 
 
@@ -100,7 +100,7 @@ export default {
 
             canShoot: false,
             hasShotThisRound: false,
-            selectedShotIndex: null,
+            selectedSquareIndex: null,
             opponentShots: {},
             playerShots: {},
             waitingForNextQuestion: false,

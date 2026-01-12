@@ -25,7 +25,7 @@ function sockets(io, socket, data) {
 
     do {
       gameId = generateFourDigitId();
-    } while (data.getGame(gameId)); // finns gamet redan? generera nytt
+    } while (data.getGame(gameId)); 
 
     socket.emit("gameGenerated", gameId);
   });
@@ -52,12 +52,9 @@ function sockets(io, socket, data) {
     const playerId = data.joinGame(playerInfo);
     socket.emit('playerJoined', playerId);
 
-
-
     if (game?.participants?.length === 2) {
       io.to(playerInfo.gameId).emit("startGame");
 
-      // Starta första frågan EN gång när båda är inne
       if (!game.firstQuestionScheduled) {
         game.firstQuestionScheduled = true;
 
@@ -102,8 +99,6 @@ function sockets(io, socket, data) {
 
 
   });
-
-
 
 
   socket.on('participateInGame', function (d) {
@@ -185,8 +180,6 @@ function sockets(io, socket, data) {
 
       return;
     }
- 
-   
     
      setTimeout(() => {
 
@@ -208,7 +201,6 @@ function sockets(io, socket, data) {
       game.currentEquation = equation; 
       io.to(gameId).emit("newQuestion", equation); 
 
-      // Släpp guard när frågan skickats
       game.nextQuestionScheduled = false;
     }, 5000);
 
@@ -218,7 +210,6 @@ function sockets(io, socket, data) {
   socket.on("newRound", function (gameId, confirmShot) {
     const game = data.getGame(gameId);
     if (!game) return;
-    // TODO
   });
 
   socket.on("getShots", function (gameId) {
@@ -226,6 +217,5 @@ function sockets(io, socket, data) {
     socket.emit("shots", game.shots)
   });
 }
-
 
 export { sockets };

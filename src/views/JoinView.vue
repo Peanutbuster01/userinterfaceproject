@@ -20,7 +20,7 @@
                 </h5>
                 <div id="avatarContainer">
                     <template v-for="(x, i) in 3">
-                        <img class="avatarShip" @click="select" v-if="placedShips[i] == null"
+                        <img class="avatarShip" v-if="placedShips[i] == null"
                             :src="avatars[avatarIndex].image">
                     </template>
                 </div>
@@ -31,7 +31,7 @@
 
             <GameBoard :avatarIndex="avatarIndex" :placedShips="placedShips" :is-board-locked="false"
                 :is-opponent="false" @squareClicked="(i) => placeAvatar(i)" :shots="{}"
-                :selectedShotIndex="selectedAvatar == null ? -1 : placedShips[selectedAvatar]" />
+                :selectedSquareIndex="selectedAvatar == null ? -1 : placedShips[selectedAvatar]" />
 
             <div>
                 <button id="readyButton" @click="readyToPlay">{{ uiLabels.ready }}</button>

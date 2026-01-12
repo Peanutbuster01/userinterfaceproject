@@ -155,8 +155,6 @@ Data.prototype.generateEquation = function (settings) {
   return equation;
 };
 
-
-
 export { Data };
 
 

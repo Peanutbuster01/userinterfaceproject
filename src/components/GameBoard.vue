@@ -1,7 +1,7 @@
 <template>
     <div class="board" :class="{ opponentBoard: isOpponent }">
         <div class="overlay">
-            <div v-for="(x, i) in 12" :key="'sqr-' + i" class="square" :class="[{ selectedShot: selectedShotIndex === i && shots[selectedShotIndex] === undefined },
+            <div v-for="(x, i) in 12" :key="'sqr-' + i" class="square" :class="[{ selectedShot: selectedSquareIndex === i && shots[selectedSquareIndex] === undefined },
             { unselectable: shots[i] != undefined }]" @click="$emit('squareClicked', i)">
 
                 <img class="placedAvatarShip" v-if="(!isOpponent && placedShips?.includes(i)) || shots[i] === 'hit'"
@@ -12,9 +12,6 @@
         </div>
         <div v-if="isBoardLocked" class="boardLock"></div>
     </div>
-
-
-
 </template>
 
 <script>
@@ -27,7 +24,7 @@ export default {
         placedShips: Array,
         shots: Object,
         avatarIndex: Number,
-        selectedShotIndex: Number,
+        selectedSquareIndex: Number,
         isBoardLocked: Boolean
     },
     emits: ['squareClicked'],

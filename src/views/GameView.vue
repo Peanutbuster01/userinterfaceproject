@@ -38,7 +38,7 @@
             <h3 class="boardLabel">{{ uiLabels.opponentsBoard }}</h3>
             <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
                 :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
-                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)" />
+                :selectedSquareIndex="selectedSquareIndex" @squareClicked="(i) => shootAtOpponent(i)" />
         </div>
 
 
@@ -49,7 +49,7 @@
             <p>{{ uiLabels.makeAMove }}</p>
             <GameBoard :isOpponent="true" :avatarIndex="opponentAvatarIndex"
                 :isBoardLocked="!canShoot || hasShotThisRound" :shots="playerShots"
-                :selectedShotIndex="selectedShotIndex" @squareClicked="(i) => shootAtOpponent(i)"
+                :selectedSquareIndex="selectedSquareIndex" @squareClicked="(i) => shootAtOpponent(i)"
                 style="box-shadow: 3px 3px 2px 0px var(--lavender-darker-color);" />
             <button @click="confirmShot()" class="okButton">OK</button>
         </div>
@@ -141,7 +141,7 @@ export default {
 
             canShoot: false,
             hasShotThisRound: false,
-            selectedShotIndex: null,
+            selectedSquareIndex: null,
             opponentShots: {},
             playerShots: {},
             waitingForNextQuestion: false,
@@ -287,7 +287,7 @@ export default {
             this.showPopupBoolean = true;
             this.canShoot = true;
             this.hasShotThisRound = false;
-            this.selectedShotIndex = null;
+            this.selectedSquareIndex = null;
         },
 
         WaitOnOpponent: function () {
@@ -301,22 +301,22 @@ export default {
             if (this.hasShotThisRound) return;
             if (this.playerShots[squareIndex] !== undefined) return;
 
-            this.selectedShotIndex = squareIndex;
+            this.selectedSquareIndex = squareIndex;
             console.log("Selected shot at index:", squareIndex);
         },
 
         confirmShot: function () {
-            if (this.selectedShotIndex === null || this.playerShots[this.selectedShotIndex] !== undefined) return;
+            if (this.selectedSquareIndex === null || this.playerShots[this.selectedSquareIndex] !== undefined) return;
 
             socket.emit("shoot", {
                 gameId: this.gameId,
                 playerId: this.playerId,
-                shootIndex: this.selectedShotIndex
+                shootIndex: this.selectedSquareIndex
             });
 
             this.hasShotThisRound = true;
             this.canShoot = false;
-            this.selectedShotIndex = null;
+            this.selectedSquareIndex = null;
 
             this.showPopupBoolean = false;
             this.popupType = null;
